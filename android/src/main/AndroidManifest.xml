@@ -1,0 +1,9 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.rongcloud.reactnativeim">
+
+    <application>
+        <meta-data
+            android:name="rc.imwrapperrn"
+            android:value="cn.rongcloud.im.wrapper.rn.Version" />
+    </application>
+</manifest>
