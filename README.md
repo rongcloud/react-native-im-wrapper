@@ -1,6 +1,6 @@
 # rongcloud-react-native-im-wrapper [![npm version][version-badge]][npm]
 
-融云 React Native IMLib 是以 IMLib SDK 5.2.3.1 版本为基础实现的开源项目，支持 Android、iOS，开发者在集成使用过程中如遇到问题可提交到 GitHub 的 Issues 中，融云技术支持人员会在 1 个工作日内回复问题，谢谢您对融云的理解与支持。
+融云 React Native IMLib 是以 IMLib SDK 5.2.4 版本为基础实现的开源项目，支持 Android、iOS，开发者在集成使用过程中如遇到问题可提交到 GitHub 的 Issues 中，融云技术支持人员会在 1 个工作日内回复问题，谢谢您对融云的理解与支持。
 
 ## 文档
 
@@ -75,5 +75,5 @@ yarn example ios
 └── src (接口实现)
 ```
 
-[npm]: https://www.npmjs.com/package/rongcloud-react-native-im-wrapper
+[npm]: https://www.npmjs.com/package/@rongcloud/react-native-im-wrapper
 [version-badge]: https://badge.fury.io/js/rongcloud-react-native-im-wrapper.svg
