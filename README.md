@@ -76,4 +76,4 @@ yarn example ios
 ```
 
 [npm]: https://www.npmjs.com/package/@rongcloud/react-native-im-wrapper
-[version-badge]: https://badge.fury.io/js/rongcloud-react-native-im-wrapper.svg
+[version-badge]: https://img.shields.io/npm/v/@rongcloud/react-native-im-wrapper
