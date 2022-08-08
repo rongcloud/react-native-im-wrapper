@@ -8,7 +8,7 @@
 
 @end
 @implementation RCReactNativeIMVersion
-static NSString *const VER = @"5.2.4-release.2";
+static NSString *const VER = @"5.2.4-release.3";
 + (void)load {
   [RCUtilities setModuleName:@"imwrapperrn" version:VER];
 }

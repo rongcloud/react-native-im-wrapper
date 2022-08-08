@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.rongcloud.reactnativeim">
+          package="cn.rongcloud.im.wrapper.rn">
 
     <application>
         <meta-data
