@@ -215,7 +215,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSInteger)clearMessages:(RCIMIWConversationType)type
                   targetId:(NSString *)targetId
                  channelId:(NSString *)channelId
-                timestamp:(long long)timestamp;
+                 timestamp:(long long)timestamp;
 
 /*!
  清除历史消息
@@ -272,12 +272,13 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion 此接口只支持单聊。收到远端消息已读回执之后，会回调 delegate 中的 onRemoteConversationReadStatusSynced 方法。
  */
 - (NSInteger)sendPrivateReadReceiptMessage:(NSString *)targetId
-                          channelId:(NSString *)channelId
-                          timestamp:(long long)timestamp;
+                                 channelId:(NSString *)channelId
+                                 timestamp:(long long)timestamp;
 
 #pragma mark - 消息扩展
 
-- (NSInteger)updateMessageExpansion:(NSString *)messageUId expansion:(NSDictionary<NSString *, NSString *> *)expansion;
+- (NSInteger)updateMessageExpansion:(NSString *)messageUId
+                          expansion:(NSDictionary<NSString *, NSString *> *)expansion;
 
 - (NSInteger)removeMessageExpansionForKeys:(NSString *)messageUId keys:(NSArray<NSString *> *)keys;
 
@@ -425,15 +426,16 @@ NS_ASSUME_NONNULL_BEGIN
  * @discussion 如要移除免打扰，设置 level 为 RCIMIWPushNotificationLevelDefault 表示移除免打扰
  */
 - (NSInteger)changeConversationNotificationLevel:(RCIMIWConversationType)type
-                                         targetId:(NSString *)targetId
-                                        channelId:(NSString *)channelId
+                                        targetId:(NSString *)targetId
+                                       channelId:(NSString *)channelId
                                            level:(RCIMIWPushNotificationLevel)level;
 
 - (NSInteger)loadConversationNotificationLevel:(RCIMIWConversationType)type
-                                       targetId:(NSString *)targetId
-                                      channelId:(NSString *)channelId;
+                                      targetId:(NSString *)targetId
+                                     channelId:(NSString *)channelId;
 
-- (NSInteger)loadBlockedConversations:(NSArray<NSNumber *> *)conversationTypes channelId:(NSString *)channelId;
+- (NSInteger)loadBlockedConversations:(NSArray<NSNumber *> *)conversationTypes
+                            channelId:(NSString *)channelId;
 
 /**
  * 设置会话类型免打扰
@@ -484,7 +486,8 @@ NS_ASSUME_NONNULL_BEGIN
 
  @remarks 会话列表
  */
-- (NSInteger)loadTopConversations:(NSArray<NSNumber *> *)conversationTypes channelId:(NSString *)channelId;
+- (NSInteger)loadTopConversations:(NSArray<NSNumber *> *)conversationTypes
+                        channelId:(NSString *)channelId;
 
 #pragma mark - 多端状态同步
 /*!
@@ -636,13 +639,13 @@ NS_ASSUME_NONNULL_BEGIN
  @remarks 消息操作
  */
 - (NSInteger)searchMessagesByTimeRange:(RCIMIWConversationType)type
-                   targetId:(NSString *)targetId
-                  channelId:(NSString *)channelId
-                    keyword:(NSString *)keyword
-                    startTime:(long long)startTime
-                    endTime:(long long)endTime
-                     offset:(int)offset
-                      count:(int)count;
+                              targetId:(NSString *)targetId
+                             channelId:(NSString *)channelId
+                               keyword:(NSString *)keyword
+                             startTime:(long long)startTime
+                               endTime:(long long)endTime
+                                offset:(int)offset
+                                 count:(int)count;
 
 /*!
  按用户 ID 搜索指定会话中的消息
@@ -689,7 +692,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSInteger)loadTags;
 
-- (NSInteger)addConversationsToTag:(NSString *)tagId conversationType:(RCIMIWConversationType)type targetId:(NSString *)targetId;
+- (NSInteger)addConversationsToTag:(NSString *)tagId
+                  conversationType:(RCIMIWConversationType)type
+                          targetId:(NSString *)targetId;
 
 /*!
  从指定标签移除会话
@@ -701,11 +706,15 @@ NS_ASSUME_NONNULL_BEGIN
 /*!
  删除指定会话中的某些标签
  */
-- (NSInteger)removeTagsFromConversation:(RCIMIWConversationType)type targetId:(NSString *)targetId tagIds:(NSArray<NSString *> *)tagIds;
+- (NSInteger)removeTagsFromConversation:(RCIMIWConversationType)type
+                               targetId:(NSString *)targetId
+                                 tagIds:(NSArray<NSString *> *)tagIds;
 
 - (NSInteger)loadTagsFromConversation:(RCIMIWConversationType)type targetId:(NSString *)targetId;
 
-- (NSInteger)loadConversationsFromTagByPage:(NSString *)tagId timestamp:(long long)timestamp count:(int)count;
+- (NSInteger)loadConversationsFromTagByPage:(NSString *)tagId
+                                  timestamp:(long long)timestamp
+                                      count:(int)count;
 
 - (NSInteger)loadUnreadCountByTag:(NSString *)tagId containBlocked:(BOOL)containBlocked;
 
@@ -730,7 +739,9 @@ NS_ASSUME_NONNULL_BEGIN
  23：59，则 spanMins 为 23 * 60 + 59 = 1439 分钟。）
  @param level  传递 RCPushNotificationQuietHoursLevelDefault 表示移除免打扰
  */
-- (NSInteger)changeNotificationQuietHours:(NSString *)startTime spanMins:(int)spanMins level:(RCIMIWPushNotificationQuietHoursLevel)level;
+- (NSInteger)changeNotificationQuietHours:(NSString *)startTime
+                                 spanMins:(int)spanMins
+                                    level:(RCIMIWPushNotificationQuietHoursLevel)level;
 
 - (NSInteger)loadNotificationQuietHours;
 
@@ -783,7 +794,8 @@ deviceToken 是系统提供的，从苹果服务器获取的，用于 APNs 远�
                             channelId:(NSString *)channelId
                             timestamp:(long long)timestamp;
 
-- (NSInteger)loadConversationsForAllChannel:(RCIMIWConversationType)type targetId:(NSString *) targetId;
+- (NSInteger)loadConversationsForAllChannel:(RCIMIWConversationType)type
+                                   targetId:(NSString *) targetId;
 
 - (NSInteger)modifyUltraGroupMessage:(NSString *)messageUId message:(RCIMIWMessage *)message;
 
@@ -804,7 +816,8 @@ deviceToken 是系统提供的，从苹果服务器获取的，用于 APNs 远�
                               channelId:(NSString *)channelId
                            typingStatus:(RCIMIWUltraGroupTypingStatus)typingStatus;
 
-- (NSInteger)clearUltraGroupMessagesForAllChannel:(NSString *)targetId timestamp:(long long)timestamp;
+- (NSInteger)clearUltraGroupMessagesForAllChannel:(NSString *)targetId
+                                        timestamp:(long long)timestamp;
 
 /*!
  获取同一个超级群下的批量服务消息（含所有频道）
@@ -826,7 +839,7 @@ deviceToken 是系统提供的，从苹果服务器获取的，用于 APNs 远�
  @param level                       消息通知级别
  */
 - (NSInteger)changeUltraGroupDefaultNotificationLevel:(NSString *)targetId
-                                                                   level:(RCIMIWPushNotificationLevel)level;
+                                                level:(RCIMIWPushNotificationLevel)level;
 
 /*!
  获取超级群的默认消息状态
@@ -853,7 +866,7 @@ deviceToken 是系统提供的，从苹果服务器获取的，用于 APNs 远�
  @param channelId                   频道 ID
  */
 - (NSInteger)loadUltraGroupChannelDefaultNotificationLevel:(NSString *)targetId
-                                                             channelId:(NSString *)channelId;
+                                                 channelId:(NSString *)channelId;
 // 获取所有会话的未读消息数
 - (NSInteger)loadUltraGroupAllUnreadCount;
 // 获取所有会话的未读 @ 消息数

@@ -10,7 +10,7 @@
 		</data>
 		<key>Frameworks/RongChatRoom.framework/RongChatRoom</key>
 		<data>
-		W93L8v66I5+Owju7S86QQZSIGoE=
+		Dz8LtCJe0f8WjABX9xjLChg1hNg=
 		</data>
 		<key>Frameworks/RongChatRoom.framework/_CodeSignature/CodeResources</key>
 		<data>
@@ -22,7 +22,7 @@
 		</data>
 		<key>Frameworks/RongIMLibCore.framework/RongIMLibCore</key>
 		<data>
-		W1W3PjQiLm6Z15rSowWDjL1e4O4=
+		a6OoGBzfJ0bGmTNMJacasUVgnJI=
 		</data>
 		<key>Frameworks/RongIMLibCore.framework/_CodeSignature/CodeResources</key>
 		<data>
@@ -62,11 +62,11 @@
 		</data>
 		<key>Headers/RCIMIWDefines.h</key>
 		<data>
-		6255k3UtKQYo5REFu86KDDzjZxA=
+		GKDqAP9qDOGz6F/3can+lHEtnW0=
 		</data>
 		<key>Headers/RCIMIWEngine.h</key>
 		<data>
-		XiJhHhxiX3xs/ReUU06x0COF0JA=
+		FaJe5sdn3WGj7ij6EjozyzE7n1g=
 		</data>
 		<key>Headers/RCIMIWEngineDelegate.h</key>
 		<data>
@@ -158,7 +158,7 @@
 		</data>
 		<key>Headers/RongIMWrapper.h</key>
 		<data>
-		1NDVkiP3bnFVL7xedio9tvZHQbQ=
+		2/0R2L6Uh66fqmfsDwXgo5tn+9k=
 		</data>
 		<key>Info.plist</key>
 		<data>
@@ -167,6 +167,10 @@
 		<key>Modules/module.modulemap</key>
 		<data>
 		NZ9No+S4WqrWW5TykXH9+Z5euVk=
+		</data>
+		<key>RongIMWrapper.bundle.RDAUBD/bundle.xar</key>
+		<data>
+		2jmj7l5rSw0yVb/vlWAYkK/YBwk=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -186,11 +190,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			W93L8v66I5+Owju7S86QQZSIGoE=
+			Dz8LtCJe0f8WjABX9xjLChg1hNg=
 			</data>
 			<key>hash2</key>
 			<data>
-			miUyL9DiXOTdAMdnxha+0ispQgtgaaTHNhMMY/acx4Y=
+			kjDc4M8Wy1TEn0h8RaL3dZnZ5huWPVKoXmhbSMxv9Bo=
 			</data>
 		</dict>
 		<key>Frameworks/RongChatRoom.framework/_CodeSignature/CodeResources</key>
@@ -219,11 +223,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			W1W3PjQiLm6Z15rSowWDjL1e4O4=
+			a6OoGBzfJ0bGmTNMJacasUVgnJI=
 			</data>
 			<key>hash2</key>
 			<data>
-			3BjLz7yQztZ9lxAhoEoBvk+FrYjZMakOvvCl9y1MIjI=
+			OWgC0WRaVX0GwGPSt1IOsSd+l4d8BcDnLqclK2GqRI4=
 			</data>
 		</dict>
 		<key>Frameworks/RongIMLibCore.framework/_CodeSignature/CodeResources</key>
@@ -329,22 +333,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			6255k3UtKQYo5REFu86KDDzjZxA=
+			GKDqAP9qDOGz6F/3can+lHEtnW0=
 			</data>
 			<key>hash2</key>
 			<data>
-			DzfGhRvKE3/iYJx9KQvXfbO3zl4s+u/YzLYbeZ8XR28=
+			4R1+Nb30uOmaxGqJZVCTsEUFwjVB4vxNR7oEOtL3odA=
 			</data>
 		</dict>
 		<key>Headers/RCIMIWEngine.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			XiJhHhxiX3xs/ReUU06x0COF0JA=
+			FaJe5sdn3WGj7ij6EjozyzE7n1g=
 			</data>
 			<key>hash2</key>
 			<data>
-			0WuQPP/kDAB51E6MqbsIAWoZOhKmCdAJb8t1REBseB0=
+			5iB08CMLl+vJkrrFiOfDv4xLW2DWx4EegQbmmHk9aEs=
 			</data>
 		</dict>
 		<key>Headers/RCIMIWEngineDelegate.h</key>
@@ -593,11 +597,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			1NDVkiP3bnFVL7xedio9tvZHQbQ=
+			2/0R2L6Uh66fqmfsDwXgo5tn+9k=
 			</data>
 			<key>hash2</key>
 			<data>
-			a7/zUc1zzUMiCtblerqSQWjDkMsi75ydZKhZJBbaxC0=
+			tePaf1mqB6hoGFbjXgSsaC7kWxxmjq8D3RLrTPwWQlY=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
@@ -609,6 +613,17 @@
 			<key>hash2</key>
 			<data>
 			36RjpvjhhFKiIU/yFLXix/9LoU9JtswsvCOB2uxmCKE=
+			</data>
+		</dict>
+		<key>RongIMWrapper.bundle.RDAUBD/bundle.xar</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			2jmj7l5rSw0yVb/vlWAYkK/YBwk=
+			</data>
+			<key>hash2</key>
+			<data>
+			47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
 			</data>
 		</dict>
 	</dict>

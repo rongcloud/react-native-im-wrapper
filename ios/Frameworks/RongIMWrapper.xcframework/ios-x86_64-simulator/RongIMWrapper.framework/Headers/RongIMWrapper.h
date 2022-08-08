@@ -50,3 +50,5 @@ FOUNDATION_EXPORT const unsigned char RongIMWrapperVersionString[];
 
 #import <RongIMWrapper/RCIMIWPlatformConverter.h>
 
+#import <RongIMWrapper/RCIMIWDefines.h>
+

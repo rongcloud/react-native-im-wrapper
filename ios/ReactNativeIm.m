@@ -8,7 +8,7 @@
 
 @end
 @implementation RCReactNativeIMVersion
-static NSString *const VER = @"5.2.3";
+static NSString *const VER = @"5.2.4-release.2";
 + (void)load {
   [RCUtilities setModuleName:@"imwrapperrn" version:VER];
 }
@@ -1858,8 +1858,13 @@ RCT_EXPORT_METHOD(changeLogLevel
         addObject:@(ConversationTypeToNum([types objectAtIndex:i].intValue))];
   [arguments setObject:_types forKey:@"types"];
   [arguments setObject:channelId ? channelId : @"" forKey:@"channelId"];
-  [arguments setObject:conversations ? conversations : @[]
-                forKey:@"conversations"];
+  NSMutableArray<NSDictionary *> *_conversations = [NSMutableArray new];
+  for (int i = 0; conversations && i < conversations.count; i++)
+    [_conversations
+        addObject:[RCIMIWPlatformConverter
+                      convertConversationToDict:[conversations
+                                                    objectAtIndex:i]]];
+  [arguments setObject:_conversations forKey:@"conversations"];
   [self sendEventWithName:eventName body:arguments];
 }
 
@@ -2016,7 +2021,11 @@ RCT_EXPORT_METHOD(changeLogLevel
   [arguments setObject:channelId ? channelId : @"" forKey:@"channelId"];
   [arguments setObject:@(sentTime) forKey:@"sentTime"];
   [arguments setObject:@(TimeOrderToNum(order)) forKey:@"order"];
-  [arguments setObject:messages ? messages : @[] forKey:@"messages"];
+  NSMutableArray<NSDictionary *> *_messages = [NSMutableArray new];
+  for (int i = 0; messages && i < messages.count; i++)
+    [_messages addObject:[RCIMIWPlatformConverter
+                             convertMessageToDict:[messages objectAtIndex:i]]];
+  [arguments setObject:_messages forKey:@"messages"];
   [self sendEventWithName:eventName body:arguments];
 }
 
@@ -2684,8 +2693,13 @@ RCT_EXPORT_METHOD(changeLogLevel
                       [conversationTypes objectAtIndex:i].intValue))];
   [arguments setObject:_conversationTypes forKey:@"conversationTypes"];
   [arguments setObject:channelId ? channelId : @"" forKey:@"channelId"];
-  [arguments setObject:conversations ? conversations : @[]
-                forKey:@"conversations"];
+  NSMutableArray<NSDictionary *> *_conversations = [NSMutableArray new];
+  for (int i = 0; conversations && i < conversations.count; i++)
+    [_conversations
+        addObject:[RCIMIWPlatformConverter
+                      convertConversationToDict:[conversations
+                                                    objectAtIndex:i]]];
+  [arguments setObject:_conversations forKey:@"conversations"];
   [self sendEventWithName:eventName body:arguments];
 }
 
