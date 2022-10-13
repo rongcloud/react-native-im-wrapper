@@ -14,6 +14,7 @@ import Main from "./Main";
 import { styles } from "./Style";
 import {
     createAlertView,
+    isConversationType,
     isEmpty,
     jsonFormat,
     showToast
@@ -277,7 +278,7 @@ export function sendTextMessage(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -380,6 +381,10 @@ export function sendTextMessage(main: Main) {
                     showToast('请输入会话类型')
                     return
                 }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
+                    return
+                }
                 if (isEmpty(useTargetId)) {
                     showToast('请输入targetId')
                     return
@@ -431,7 +436,7 @@ export function sendImageMessage(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -487,6 +492,10 @@ export function sendImageMessage(main: Main) {
             </View>, () => {
                 if (isEmpty(useTypes)) {
                     showToast('请输入会话类型')
+                    return
+                }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
                     return
                 }
                 if (isEmpty(useTargetId)) {
@@ -525,7 +534,7 @@ export function sendFileMessage(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -581,6 +590,10 @@ export function sendFileMessage(main: Main) {
             </View>, () => {
                 if (isEmpty(useTypes)) {
                     showToast('请输入会话类型')
+                    return
+                }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
                     return
                 }
                 if (isEmpty(useTargetId)) {
@@ -620,7 +633,7 @@ export function sendVoiceMessage(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -676,6 +689,10 @@ export function sendVoiceMessage(main: Main) {
             </View>, () => {
                 if (isEmpty(useTypes)) {
                     showToast('请输入会话类型')
+                    return
+                }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
                     return
                 }
                 if (isEmpty(useTargetId)) {
@@ -716,7 +733,7 @@ export function sendSightMessage(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -774,6 +791,10 @@ export function sendSightMessage(main: Main) {
                     showToast('请输入会话类型')
                     return
                 }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
+                    return
+                }
                 if (isEmpty(useTargetId)) {
                     showToast('请输入targetId')
                     return
@@ -811,7 +832,7 @@ export function sendReferenceMessage(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -869,6 +890,10 @@ export function sendReferenceMessage(main: Main) {
                     showToast('请输入会话类型')
                     return
                 }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
+                    return
+                }
                 if (isEmpty(useTargetId)) {
                     showToast('请输入targetId')
                     return
@@ -917,7 +942,7 @@ export function sendGifMessage(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -975,6 +1000,10 @@ export function sendGifMessage(main: Main) {
                     showToast('请输入会话类型')
                     return
                 }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
+                    return
+                }
                 if (isEmpty(useTargetId)) {
                     showToast('请输入targetId')
                     return
@@ -1000,6 +1029,153 @@ export function sendGifMessage(main: Main) {
     main.showAlert(<AlertView />)
 }
 
+export function sendLocationMessage(main: Main) {
+    function AlertView(props: any) {
+        let [useTypes, setTypes] = React.useState('')
+        let [useChannelId, setChannelId] = React.useState('')
+        let [useTargetId, setTargetId] = React.useState('')
+        let [useLongitude, setLongitude] = React.useState('')
+        let [useLatitude, setLatitude] = React.useState('')
+        let [usePoiName, setPoiName] = React.useState('')
+        let [useFilePath, setFilePath] = React.useState('null')
+
+        return createAlertView(2,
+            <View style={{ padding: 15 }}>
+                <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
+                <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
+                <TextInput
+                    keyboardType='number-pad'
+                    placeholderTextColor='grey'
+                    style={{ ...styles.input, marginTop: 10 }}
+                    autoCapitalize='none'
+                    placeholder="输入会话类型"
+                    defaultValue={useTypes}
+                    onChangeText={(key) => {
+                        setTypes(key);
+                    }} />
+                <Text style={{ fontSize: 20, marginTop: 10 }}>请输入channelId</Text>
+                <TextInput
+                    keyboardType='default'
+                    placeholderTextColor='grey'
+                    style={{ ...styles.input, marginTop: 10 }}
+                    autoCapitalize='none'
+                    placeholder='仅对超级群生效，其它类型无需赋值'
+                    defaultValue={useChannelId}
+                    onChangeText={(key) => {
+                        setChannelId(key);
+                    }} />
+                <Text style={{ fontSize: 20, marginTop: 10 }}>请输入targetId</Text>
+                <TextInput
+                    keyboardType='default'
+                    placeholderTextColor='grey'
+                    style={{ ...styles.input, marginTop: 10 }}
+                    autoCapitalize='none'
+                    placeholder='输入targetId'
+                    defaultValue={useTargetId}
+                    onChangeText={(key) => {
+                        setTargetId(key);
+                    }} />
+                <Text style={{ fontSize: 20, marginTop: 10 }}>请输入位置经度</Text>
+                <TextInput
+                    keyboardType='default'
+                    placeholderTextColor='grey'
+                    style={{ ...styles.input, marginTop: 10 }}
+                    autoCapitalize='none'
+                    placeholder='输入位置经度'
+                    defaultValue={useLongitude}
+                    onChangeText={(key) => {
+                        setLongitude(key);
+                    }} />
+                <Text style={{ fontSize: 20, marginTop: 10 }}>请输入位置纬度</Text>
+                <TextInput
+                    keyboardType='default'
+                    placeholderTextColor='grey'
+                    style={{ ...styles.input, marginTop: 10 }}
+                    autoCapitalize='none'
+                    placeholder='输入位置纬度'
+                    defaultValue={useLatitude}
+                    onChangeText={(key) => {
+                        setLatitude(key);
+                    }} />
+                <Text style={{ fontSize: 20, marginTop: 10 }}>请输入PoiName</Text>
+                <TextInput
+                    keyboardType='default'
+                    placeholderTextColor='grey'
+                    style={{ ...styles.input, marginTop: 10 }}
+                    autoCapitalize='none'
+                    placeholder='输入PoiName'
+                    defaultValue={usePoiName}
+                    onChangeText={(key) => {
+                        setPoiName(key);
+                    }} />
+                <Text style={{ fontSize: 20, marginTop: 10 }}>请选择文件</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text>{useFilePath}</Text>
+                    <TouchableOpacity onPress={() => {
+                        ImagePicker.openPicker({
+                            mediaType: "any",
+                            cropping: false,
+                            writeTempFile: false,
+                            waitAnimationEnd: false,
+
+                        }).then((video) => {
+                            let file = video.path
+                            if (Platform.OS == 'ios')
+                                file = file.replace('file://', '')
+                            if (file)
+                                setFilePath(file)
+                            console.log(file)
+                        }).catch(() => { });
+                    }}>
+                        <Text style={{ textDecorationLine: 'underline' }}>选择</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>, () => {
+                if (isEmpty(useTypes)) {
+                    showToast('请输入会话类型')
+                    return
+                }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
+                    return
+                }
+                if (isEmpty(useTargetId)) {
+                    showToast('请输入targetId')
+                    return
+                }
+                if (isEmpty(useLongitude)) {
+                    showToast('请输入位置经度')
+                    return
+                }
+                if (isEmpty(useLatitude)) {
+                    showToast('请输入位置纬度')
+                    return
+                }
+                if (isEmpty(usePoiName)) {
+                    showToast('请输入PoiName')
+                    return
+                }
+                if (useFilePath == 'null') {
+                    showToast('请选择文件')
+                    return
+                }
+
+                let conversationType = Number(useTypes)
+                let longitude = Number(useLongitude)
+                let latitude = Number(useLatitude)
+                let promise = main.engine?.createLocationMessage(conversationType, useTargetId, useChannelId, longitude, latitude, usePoiName, useFilePath)
+                promise?.then(message => {
+                    let promise = main.engine?.sendMessage(message)
+                    promise?.then((code) => {
+                        main.addHistory('sendLocationMessage', jsonFormat({ code: code }), code)
+                    })
+                    main.hideAlert()
+                })
+            }, () => { main.hideAlert() }
+        )
+    }
+    main.showAlert(<AlertView />)
+}
 
 
 export function sendCustomMessage(main: Main) {
@@ -1018,7 +1194,7 @@ export function sendCustomMessage(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -1120,6 +1296,10 @@ export function sendCustomMessage(main: Main) {
             </View>, () => {
                 if (isEmpty(useTypes)) {
                     showToast('请输入会话类型')
+                    return
+                }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
                     return
                 }
                 if (isEmpty(useTargetId)) {
@@ -1243,7 +1423,7 @@ export function sendTypingStatus(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -1290,6 +1470,10 @@ export function sendTypingStatus(main: Main) {
                     showToast('请输入会话类型')
                     return
                 }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
+                    return
+                }
                 if (isEmpty(useTargetId)) {
                     showToast('请输入targetId')
                     return
@@ -1326,7 +1510,7 @@ export function loadMessages(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -1423,6 +1607,10 @@ export function loadMessages(main: Main) {
             </View>, () => {
                 if (isEmpty(useTypes)) {
                     showToast('请输入会话类型')
+                    return
+                }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
                     return
                 }
                 if (isEmpty(useTargetId)) {
@@ -1561,7 +1749,7 @@ export function loadFirstUnreadMessage(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -1595,6 +1783,10 @@ export function loadFirstUnreadMessage(main: Main) {
             </View>, () => {
                 if (isEmpty(useTypes)) {
                     showToast('请输入会话类型')
+                    return
+                }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
                     return
                 }
                 if (isEmpty(useTargetId)) {
@@ -1625,7 +1817,7 @@ export function loadUnreadMentionedMessages(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -1659,6 +1851,10 @@ export function loadUnreadMentionedMessages(main: Main) {
             </View>, () => {
                 if (isEmpty(useTypes)) {
                     showToast('请输入会话类型')
+                    return
+                }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
                     return
                 }
                 if (isEmpty(useTargetId)) {
@@ -1688,7 +1884,7 @@ export function insertMessage(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -1722,6 +1918,10 @@ export function insertMessage(main: Main) {
             </View>, () => {
                 if (isEmpty(useTypes)) {
                     showToast('请输入会话类型')
+                    return
+                }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
                     return
                 }
                 if (isEmpty(useTargetId)) {
@@ -1754,7 +1954,7 @@ export function insertMessages(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -1788,6 +1988,10 @@ export function insertMessages(main: Main) {
             </View>, () => {
                 if (isEmpty(useTypes)) {
                     showToast('请输入会话类型')
+                    return
+                }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
                     return
                 }
                 if (isEmpty(useTargetId)) {
@@ -1824,7 +2028,7 @@ export function clearMessages(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -1875,6 +2079,10 @@ export function clearMessages(main: Main) {
             </View>, () => {
                 if (isEmpty(useTypes)) {
                     showToast('请输入会话类型')
+                    return
+                }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
                     return
                 }
                 if (isEmpty(useTargetId)) {
@@ -1971,7 +2179,7 @@ export function deleteMessages(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -2017,6 +2225,10 @@ export function deleteMessages(main: Main) {
             </View>, () => {
                 if (isEmpty(useTypes)) {
                     showToast('请输入会话类型')
+                    return
+                }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
                     return
                 }
                 if (isEmpty(useTargetId)) {
@@ -2526,7 +2738,7 @@ export function searchMessages(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -2590,6 +2802,10 @@ export function searchMessages(main: Main) {
                     showToast('请输入会话类型')
                     return
                 }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
+                    return
+                }
                 if (isEmpty(useTargetId)) {
                     showToast('请输入targetId')
                     return
@@ -2635,7 +2851,7 @@ export function searchMessagesByTimeRange(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -2715,6 +2931,10 @@ export function searchMessagesByTimeRange(main: Main) {
                     showToast('请输入会话类型')
                     return
                 }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
+                    return
+                }
                 if (isEmpty(useTargetId)) {
                     showToast('请输入targetId')
                     return
@@ -2774,7 +2994,7 @@ export function searchMessagesByUserId(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -2829,6 +3049,10 @@ export function searchMessagesByUserId(main: Main) {
                 }
                 if (isEmpty(useTypes)) {
                     showToast('请输入会话类型')
+                    return
+                }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
                     return
                 }
                 if (isEmpty(useTargetId)) {

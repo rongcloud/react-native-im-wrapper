@@ -4,30 +4,6 @@
 <dict>
 	<key>files</key>
 	<dict>
-		<key>Frameworks/RongChatRoom.framework/Info.plist</key>
-		<data>
-		Fw9Jl8ZgZ+YMj2tHDRZgAtUO5FU=
-		</data>
-		<key>Frameworks/RongChatRoom.framework/RongChatRoom</key>
-		<data>
-		Dz8LtCJe0f8WjABX9xjLChg1hNg=
-		</data>
-		<key>Frameworks/RongChatRoom.framework/_CodeSignature/CodeResources</key>
-		<data>
-		Gp6uHU871VFw5PDlfwnSJDE16bQ=
-		</data>
-		<key>Frameworks/RongIMLibCore.framework/Info.plist</key>
-		<data>
-		01HgrfC2/P0GzbWZ3l1b+FxFdDE=
-		</data>
-		<key>Frameworks/RongIMLibCore.framework/RongIMLibCore</key>
-		<data>
-		a6OoGBzfJ0bGmTNMJacasUVgnJI=
-		</data>
-		<key>Frameworks/RongIMLibCore.framework/_CodeSignature/CodeResources</key>
-		<data>
-		vDMM1lFEZWiclGCw9kNZuJOnV8w=
-		</data>
 		<key>Headers/RCIMIWBlockedMessageInfo.h</key>
 		<data>
 		oFtw97CuFfdFacaQCYa0vlc7X8w=
@@ -46,11 +22,11 @@
 		</data>
 		<key>Headers/RCIMIWCompressOptions.h</key>
 		<data>
-		kotlVNmQcy/j/Zoz6H5HQgGznNQ=
+		xHum9csO4h31oM4ThiqfGWmExVE=
 		</data>
 		<key>Headers/RCIMIWConversation.h</key>
 		<data>
-		ZH6ABdEk03s6PcOCXWSbqLofwlE=
+		5HmJNKO+mJeVymn0CSsPWVKq/jA=
 		</data>
 		<key>Headers/RCIMIWConversationTagInfo.h</key>
 		<data>
@@ -62,15 +38,15 @@
 		</data>
 		<key>Headers/RCIMIWDefines.h</key>
 		<data>
-		GKDqAP9qDOGz6F/3can+lHEtnW0=
+		+JWc06puF8Qlfmz1pt0EbAYFjIA=
 		</data>
 		<key>Headers/RCIMIWEngine.h</key>
 		<data>
-		FaJe5sdn3WGj7ij6EjozyzE7n1g=
+		k8IEgSApwg+z+Y3d6O3rL+mj16s=
 		</data>
 		<key>Headers/RCIMIWEngineDelegate.h</key>
 		<data>
-		TW6yihgTN+CX3JtoSx2e/BOlRWY=
+		ztC8v72cSBa9CkUlpPuKqjC3RQs=
 		</data>
 		<key>Headers/RCIMIWEngineOptions.h</key>
 		<data>
@@ -92,6 +68,10 @@
 		<data>
 		KYDTFZHSu5lEYa4l+lg1KBxDKOs=
 		</data>
+		<key>Headers/RCIMIWLocationMessage.h</key>
+		<data>
+		5mU4FWewcdpZyIUwjF8GOXihTmQ=
+		</data>
 		<key>Headers/RCIMIWMediaMessage.h</key>
 		<data>
 		Jqjv39goLbc6GSwraJ9Wspz/vpA=
@@ -106,11 +86,11 @@
 		</data>
 		<key>Headers/RCIMIWMessagePushOptions.h</key>
 		<data>
-		UYwASfcs6YWqE1BvHLcc5TGfoj8=
+		XOaw4OwHz4xjyd9FmWNudkw3hoQ=
 		</data>
 		<key>Headers/RCIMIWPlatformConverter.h</key>
 		<data>
-		Yhf2WuWGK2kyDTHYdrr9ur5s4tA=
+		tbiQ0Hx+ziPxkDiGRQYMx8apUmk=
 		</data>
 		<key>Headers/RCIMIWRecallNotificationMessage.h</key>
 		<data>
@@ -158,89 +138,19 @@
 		</data>
 		<key>Headers/RongIMWrapper.h</key>
 		<data>
-		2/0R2L6Uh66fqmfsDwXgo5tn+9k=
+		2VkE6IilLIthHdmKvEbqXjElsYA=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		tpgT3lH91SzLKdkxpQzzoOYcWZY=
+		nkn70TydRYMm8pyUvNSVHWavtsI=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
 		NZ9No+S4WqrWW5TykXH9+Z5euVk=
 		</data>
-		<key>RongIMWrapper.bundle.RDAUBD/bundle.xar</key>
-		<data>
-		2jmj7l5rSw0yVb/vlWAYkK/YBwk=
-		</data>
 	</dict>
 	<key>files2</key>
 	<dict>
-		<key>Frameworks/RongChatRoom.framework/Info.plist</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			Fw9Jl8ZgZ+YMj2tHDRZgAtUO5FU=
-			</data>
-			<key>hash2</key>
-			<data>
-			K04p1PcU9Zq5/nfQK2AvrYAT8SaO11CHT8iLACE/Mgg=
-			</data>
-		</dict>
-		<key>Frameworks/RongChatRoom.framework/RongChatRoom</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			Dz8LtCJe0f8WjABX9xjLChg1hNg=
-			</data>
-			<key>hash2</key>
-			<data>
-			kjDc4M8Wy1TEn0h8RaL3dZnZ5huWPVKoXmhbSMxv9Bo=
-			</data>
-		</dict>
-		<key>Frameworks/RongChatRoom.framework/_CodeSignature/CodeResources</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			Gp6uHU871VFw5PDlfwnSJDE16bQ=
-			</data>
-			<key>hash2</key>
-			<data>
-			16KZj4rkU3GdhMZDVEljwirgsbZIzLjLgvpfk2HKJJI=
-			</data>
-		</dict>
-		<key>Frameworks/RongIMLibCore.framework/Info.plist</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			01HgrfC2/P0GzbWZ3l1b+FxFdDE=
-			</data>
-			<key>hash2</key>
-			<data>
-			VmsfTbeBuUnG24nbR6oOZfN43PjQ4FwORFN2EHkZgk0=
-			</data>
-		</dict>
-		<key>Frameworks/RongIMLibCore.framework/RongIMLibCore</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			a6OoGBzfJ0bGmTNMJacasUVgnJI=
-			</data>
-			<key>hash2</key>
-			<data>
-			OWgC0WRaVX0GwGPSt1IOsSd+l4d8BcDnLqclK2GqRI4=
-			</data>
-		</dict>
-		<key>Frameworks/RongIMLibCore.framework/_CodeSignature/CodeResources</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			vDMM1lFEZWiclGCw9kNZuJOnV8w=
-			</data>
-			<key>hash2</key>
-			<data>
-			rShXm27gvoz/2HncV8+ociujzjymLK5iudTarw6toEU=
-			</data>
-		</dict>
 		<key>Headers/RCIMIWBlockedMessageInfo.h</key>
 		<dict>
 			<key>hash</key>
@@ -289,22 +199,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			kotlVNmQcy/j/Zoz6H5HQgGznNQ=
+			xHum9csO4h31oM4ThiqfGWmExVE=
 			</data>
 			<key>hash2</key>
 			<data>
-			ObwqcQBueFqespksvxO7PBOdk4uKVLrPaTvyjpNsiDk=
+			Xb4YsZJJ9PUPGBvsmbDufy2NBIti11o4QSQQFC4fUZo=
 			</data>
 		</dict>
 		<key>Headers/RCIMIWConversation.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			ZH6ABdEk03s6PcOCXWSbqLofwlE=
+			5HmJNKO+mJeVymn0CSsPWVKq/jA=
 			</data>
 			<key>hash2</key>
 			<data>
-			dAwxj/xnVQ96GA8fi7uqptlRgFfHHeBLM7PzegNbcPw=
+			C0B+BE0eUEJb+nOTgprfelymk2lwfe5EsU/Er2ArWyg=
 			</data>
 		</dict>
 		<key>Headers/RCIMIWConversationTagInfo.h</key>
@@ -333,33 +243,33 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			GKDqAP9qDOGz6F/3can+lHEtnW0=
+			+JWc06puF8Qlfmz1pt0EbAYFjIA=
 			</data>
 			<key>hash2</key>
 			<data>
-			4R1+Nb30uOmaxGqJZVCTsEUFwjVB4vxNR7oEOtL3odA=
+			O/t3A0JNIsPYYmH0GI2qAeN1d06IUQoWbF4uNey1wa4=
 			</data>
 		</dict>
 		<key>Headers/RCIMIWEngine.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			FaJe5sdn3WGj7ij6EjozyzE7n1g=
+			k8IEgSApwg+z+Y3d6O3rL+mj16s=
 			</data>
 			<key>hash2</key>
 			<data>
-			5iB08CMLl+vJkrrFiOfDv4xLW2DWx4EegQbmmHk9aEs=
+			UU2y9EeFOQnbySBIjfqRSDh4HjvSRrZZKUicuLmk5S8=
 			</data>
 		</dict>
 		<key>Headers/RCIMIWEngineDelegate.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			TW6yihgTN+CX3JtoSx2e/BOlRWY=
+			ztC8v72cSBa9CkUlpPuKqjC3RQs=
 			</data>
 			<key>hash2</key>
 			<data>
-			6EnJj5dTZldoebdhlSstyVOXkcjC5WAd6fpUrvBy/pk=
+			ajmDjUclvxl1BmtxV/MGZYh9YS5lmD9G3mpo//4q6BM=
 			</data>
 		</dict>
 		<key>Headers/RCIMIWEngineOptions.h</key>
@@ -417,6 +327,17 @@
 			9vSrnft9SHddZuUKxnqwi3dqhwEcDSeDqpGrXGPjWy4=
 			</data>
 		</dict>
+		<key>Headers/RCIMIWLocationMessage.h</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			5mU4FWewcdpZyIUwjF8GOXihTmQ=
+			</data>
+			<key>hash2</key>
+			<data>
+			4aN0WFOisK9iWsIfPYpaiemEqSkLKjSBHp0AKzwFDbI=
+			</data>
+		</dict>
 		<key>Headers/RCIMIWMediaMessage.h</key>
 		<dict>
 			<key>hash</key>
@@ -454,22 +375,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			UYwASfcs6YWqE1BvHLcc5TGfoj8=
+			XOaw4OwHz4xjyd9FmWNudkw3hoQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			ZIFPUdc0jAdV5gRB83CFJvT+WWJwNdTQJhYm5+SPlBI=
+			auvQvLw4/BwZ4YHoeV+8wC3p2z3eyt7Y5ningku+kts=
 			</data>
 		</dict>
 		<key>Headers/RCIMIWPlatformConverter.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			Yhf2WuWGK2kyDTHYdrr9ur5s4tA=
+			tbiQ0Hx+ziPxkDiGRQYMx8apUmk=
 			</data>
 			<key>hash2</key>
 			<data>
-			lPeCdFND1RyNmKfDQjdfk2u9Y0Pi69mqVn1rw3Qkt/0=
+			aBbTgXD6sWDiTHn2zbfK4WalBwMRhozdzrUO987/mtM=
 			</data>
 		</dict>
 		<key>Headers/RCIMIWRecallNotificationMessage.h</key>
@@ -597,11 +518,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			2/0R2L6Uh66fqmfsDwXgo5tn+9k=
+			2VkE6IilLIthHdmKvEbqXjElsYA=
 			</data>
 			<key>hash2</key>
 			<data>
-			tePaf1mqB6hoGFbjXgSsaC7kWxxmjq8D3RLrTPwWQlY=
+			jxBK1ndjfttXXv+FZvfqvSpkL1XrlaBB+PwBsGbpe5I=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
@@ -613,17 +534,6 @@
 			<key>hash2</key>
 			<data>
 			36RjpvjhhFKiIU/yFLXix/9LoU9JtswsvCOB2uxmCKE=
-			</data>
-		</dict>
-		<key>RongIMWrapper.bundle.RDAUBD/bundle.xar</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			2jmj7l5rSw0yVb/vlWAYkK/YBwk=
-			</data>
-			<key>hash2</key>
-			<data>
-			47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
 			</data>
 		</dict>
 	</dict>

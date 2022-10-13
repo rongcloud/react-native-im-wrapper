@@ -55,7 +55,7 @@ repositories {
 
 dependencies {
   implementation fileTree(dir: "libs", include: ["*.jar", '*.aar'])
-  api 'cn.rongcloud.sdk:im_lib:5.2.4'
+  api 'cn.rongcloud.sdk:im_lib:5.2.5'
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"  // From node_modules
 }

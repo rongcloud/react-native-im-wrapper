@@ -115,21 +115,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - RCIMIWAndroidPushOptions
 
-/*!
- 华为推送消息级别
- */
-typedef NSString *RCIMIWImportanceHW NS_STRING_ENUM;
-
-/*!
- 华为推送消息级别 NORMAL
- */
-FOUNDATION_EXPORT RCIMIWImportanceHW const RCIMIWImportanceHWNormal;
-
-/*!
- 华为推送消息级别 LOW
-  */
-FOUNDATION_EXPORT RCIMIWImportanceHW const RCIMIWImportanceHWLow;
-
 @interface RCIMIWAndroidPushOptions : NSObject
 
 /*!
@@ -176,7 +161,7 @@ FOUNDATION_EXPORT RCIMIWImportanceHW const RCIMIWImportanceHWLow;
 /*!
  华为推送消息级别
  */
-@property (nonatomic, copy) RCIMIWImportanceHW importanceHW;
+@property (nonatomic, assign) RCIMIWImportanceHW importanceHW;
 
 /*!
  华为通知栏消息右侧大图标 URL

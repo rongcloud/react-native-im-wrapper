@@ -1,6 +1,6 @@
 import Main from "./Main";
 import React from "react";
-import { createAlertView, isEmpty, jsonFormat, showToast } from "./Util";
+import { createAlertView, isConversationType, isEmpty, jsonFormat, showToast } from "./Util";
 import { Text, TextInput, View } from "react-native";
 import { styles } from "./Style";
 import MyDateTimePicker from "./View/DateTimePicker";
@@ -55,7 +55,7 @@ export function loadUnreadCount(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -89,6 +89,10 @@ export function loadUnreadCount(main: Main) {
             </View>, () => {
                 if (isEmpty(useTypes)) {
                     showToast('请输入会话类型')
+                    return
+                }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
                     return
                 }
                 if (isEmpty(useTargetId)) {
@@ -152,7 +156,7 @@ export function loadUnreadCountByConversationTypes(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -188,6 +192,10 @@ export function loadUnreadCountByConversationTypes(main: Main) {
                     showToast('请输入会话类型')
                     return
                 }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
+                    return
+                }
                 if (isEmpty(useContain)) {
                     showToast('请输入Contain')
                     return
@@ -218,7 +226,7 @@ export function loadUnreadMentionedCount(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -254,6 +262,10 @@ export function loadUnreadMentionedCount(main: Main) {
                     showToast('请输入会话类型')
                     return
                 }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
+                    return
+                }
                 if (isEmpty(useTargetId)) {
                     showToast('请输入targetId')
                     return
@@ -285,7 +297,7 @@ export function clearUnreadCount(main: Main) {
                 <Text style={{ fontSize: 20 }}>请输入会话类型</Text>
                 <Text style={{ fontSize: 18 }}>1:单聊,2:群聊,3:聊天室,4:系统,5:超级群</Text>
                 <TextInput
-                    keyboardType='numbers-and-punctuation'
+                    keyboardType='number-pad'
                     placeholderTextColor='grey'
                     style={{ ...styles.input, marginTop: 10 }}
                     autoCapitalize='none'
@@ -324,6 +336,10 @@ export function clearUnreadCount(main: Main) {
             </View>, () => {
                 if (isEmpty(useTypes)) {
                     showToast('请输入会话类型')
+                    return
+                }
+                if (isConversationType(useTypes)) {
+                    showToast('您输入的会话类型有误')
                     return
                 }
                 if (isEmpty(useTargetId)) {

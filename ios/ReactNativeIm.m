@@ -8,7 +8,7 @@
 
 @end
 @implementation RCReactNativeIMVersion
-static NSString *const VER = @"5.2.4-release.3";
+static NSString *const VER = @"5.2.5";
 + (void)load {
   [RCUtilities setModuleName:@"imwrapperrn" version:VER];
 }
@@ -32,10 +32,12 @@ RCT_EXPORT_METHOD(create
                   : (NSDictionary *)options resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
-  RCIMIWEngineOptions *_options =
-      [RCIMIWPlatformConverter convertEngineOptionsFromDict:options];
-  engine = [RCIMIWEngine create:appKey options:_options];
-  [engine setEngineDelegate:self];
+  if (!engine) {
+    RCIMIWEngineOptions *_options =
+        [RCIMIWPlatformConverter convertEngineOptionsFromDict:options];
+    engine = [RCIMIWEngine create:appKey options:_options];
+    [engine setEngineDelegate:self];
+  }
   resolve(nil);
 }
 
@@ -113,7 +115,7 @@ RCT_EXPORT_METHOD(disconnect
 RCT_EXPORT_METHOD(createTextMessage
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId text
+                  : (nullable NSString *)channelId text
                   : (NSString *)text resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
@@ -130,7 +132,7 @@ RCT_EXPORT_METHOD(createTextMessage
 RCT_EXPORT_METHOD(createImageMessage
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId path
+                  : (nullable NSString *)channelId path
                   : (NSString *)path resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
@@ -147,7 +149,7 @@ RCT_EXPORT_METHOD(createImageMessage
 RCT_EXPORT_METHOD(createFileMessage
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId path
+                  : (nullable NSString *)channelId path
                   : (NSString *)path resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
@@ -164,7 +166,7 @@ RCT_EXPORT_METHOD(createFileMessage
 RCT_EXPORT_METHOD(createSightMessage
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId path
+                  : (nullable NSString *)channelId path
                   : (NSString *)path duration
                   : (nonnull NSNumber *)duration resolve
                   : (RCTPromiseResolveBlock)resolve reject
@@ -183,7 +185,7 @@ RCT_EXPORT_METHOD(createSightMessage
 RCT_EXPORT_METHOD(createVoiceMessage
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId path
+                  : (nullable NSString *)channelId path
                   : (NSString *)path duration
                   : (nonnull NSNumber *)duration resolve
                   : (RCTPromiseResolveBlock)resolve reject
@@ -202,7 +204,7 @@ RCT_EXPORT_METHOD(createVoiceMessage
 RCT_EXPORT_METHOD(createReferenceMessage
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId referenceMessage
+                  : (nullable NSString *)channelId referenceMessage
                   : (NSDictionary *)referenceMessage text
                   : (NSString *)text resolve
                   : (RCTPromiseResolveBlock)resolve reject
@@ -223,7 +225,7 @@ RCT_EXPORT_METHOD(createReferenceMessage
 RCT_EXPORT_METHOD(createGIFMessage
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId path
+                  : (nullable NSString *)channelId path
                   : (NSString *)path resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
@@ -240,7 +242,7 @@ RCT_EXPORT_METHOD(createGIFMessage
 RCT_EXPORT_METHOD(createCustomMessage
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId policy
+                  : (nullable NSString *)channelId policy
                   : (int)policy messageIdentifier
                   : (NSString *)messageIdentifier fields
                   : (NSDictionary *)fields resolve
@@ -255,6 +257,29 @@ RCT_EXPORT_METHOD(createCustomMessage
                                                 policy:_policy
                                      messageIdentifier:messageIdentifier
                                                 fields:fields];
+  NSDictionary *dict = [RCIMIWPlatformConverter convertMessageToDict:r];
+  resolve(dict);
+}
+
+RCT_EXPORT_METHOD(createLocationMessage
+                  : (int)type targetId
+                  : (NSString *)targetId channelId
+                  : (nullable NSString *)channelId longitude
+                  : (nonnull NSNumber *)longitude latitude
+                  : (nonnull NSNumber *)latitude poiName
+                  : (NSString *)poiName thumbnailPath
+                  : (NSString *)thumbnailPath resolve
+                  : (RCTPromiseResolveBlock)resolve reject
+                  : (RCTPromiseRejectBlock)reject) {
+  ENGINEASSERT
+  RCIMIWConversationType _type = toConversationType(type);
+  RCIMIWLocationMessage *r = [engine createLocationMessage:_type
+                                                  targetId:targetId
+                                                 channelId:channelId
+                                                 longitude:longitude.doubleValue
+                                                  latitude:latitude.doubleValue
+                                                   poiName:poiName
+                                             thumbnailPath:thumbnailPath];
   NSDictionary *dict = [RCIMIWPlatformConverter convertMessageToDict:r];
   resolve(dict);
 }
@@ -317,7 +342,7 @@ RCT_EXPORT_METHOD(cancelDownloadingMediaMessage
 RCT_EXPORT_METHOD(loadConversation
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId resolve
+                  : (nullable NSString *)channelId resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
@@ -329,16 +354,16 @@ RCT_EXPORT_METHOD(loadConversation
 }
 
 RCT_EXPORT_METHOD(loadConversations
-                  : (NSArray<NSNumber *> *)types channelId
-                  : (NSString *)channelId startTime
+                  : (NSArray<NSNumber *> *)conversationTypes channelId
+                  : (nullable NSString *)channelId startTime
                   : (nonnull NSNumber *)startTime count
                   : (nonnull NSNumber *)count resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
-  NSInteger r = [engine loadConversations:types
+  NSInteger r = [engine loadConversations:conversationTypes
                                 channelId:channelId
-                                startTime:startTime.longLongValue
+                                startTime:startTime.longValue
                                     count:count.intValue];
   resolve(@(r));
 }
@@ -346,7 +371,7 @@ RCT_EXPORT_METHOD(loadConversations
 RCT_EXPORT_METHOD(removeConversation
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId resolve
+                  : (nullable NSString *)channelId resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
@@ -359,7 +384,7 @@ RCT_EXPORT_METHOD(removeConversation
 
 RCT_EXPORT_METHOD(removeConversations
                   : (NSArray<NSNumber *> *)conversationTypes channelId
-                  : (NSString *)channelId resolve
+                  : (nullable NSString *)channelId resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
@@ -371,7 +396,7 @@ RCT_EXPORT_METHOD(removeConversations
 RCT_EXPORT_METHOD(loadUnreadCount
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId resolve
+                  : (nullable NSString *)channelId resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
@@ -394,7 +419,7 @@ RCT_EXPORT_METHOD(loadTotalUnreadCount
 RCT_EXPORT_METHOD(loadUnreadMentionedCount
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId resolve
+                  : (nullable NSString *)channelId resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
@@ -441,7 +466,7 @@ RCT_EXPORT_METHOD(loadUltraGroupUnreadMentionedCount
 
 RCT_EXPORT_METHOD(loadUnreadCountByConversationTypes
                   : (NSArray<NSNumber *> *)conversationTypes channelId
-                  : (NSString *)channelId contain
+                  : (nullable NSString *)channelId contain
                   : (BOOL)contain resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
@@ -455,7 +480,7 @@ RCT_EXPORT_METHOD(loadUnreadCountByConversationTypes
 RCT_EXPORT_METHOD(clearUnreadCount
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId timestamp
+                  : (nullable NSString *)channelId timestamp
                   : (nonnull NSNumber *)timestamp resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
@@ -464,14 +489,14 @@ RCT_EXPORT_METHOD(clearUnreadCount
   NSInteger r = [engine clearUnreadCount:_type
                                 targetId:targetId
                                channelId:channelId
-                               timestamp:timestamp.longLongValue];
+                               timestamp:timestamp.longValue];
   resolve(@(r));
 }
 
 RCT_EXPORT_METHOD(saveDraftMessage
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId draft
+                  : (nullable NSString *)channelId draft
                   : (NSString *)draft resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
@@ -487,7 +512,7 @@ RCT_EXPORT_METHOD(saveDraftMessage
 RCT_EXPORT_METHOD(loadDraftMessage
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId resolve
+                  : (nullable NSString *)channelId resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
@@ -501,7 +526,7 @@ RCT_EXPORT_METHOD(loadDraftMessage
 RCT_EXPORT_METHOD(clearDraftMessage
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId resolve
+                  : (nullable NSString *)channelId resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
@@ -514,7 +539,7 @@ RCT_EXPORT_METHOD(clearDraftMessage
 
 RCT_EXPORT_METHOD(loadBlockedConversations
                   : (NSArray<NSNumber *> *)conversationTypes channelId
-                  : (NSString *)channelId resolve
+                  : (nullable NSString *)channelId resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
@@ -526,7 +551,7 @@ RCT_EXPORT_METHOD(loadBlockedConversations
 RCT_EXPORT_METHOD(changeConversationTopStatus
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId top
+                  : (nullable NSString *)channelId top
                   : (BOOL)top resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
@@ -542,7 +567,7 @@ RCT_EXPORT_METHOD(changeConversationTopStatus
 RCT_EXPORT_METHOD(loadConversationTopStatus
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId resolve
+                  : (nullable NSString *)channelId resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
@@ -556,7 +581,7 @@ RCT_EXPORT_METHOD(loadConversationTopStatus
 RCT_EXPORT_METHOD(syncConversationReadStatus
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId timestamp
+                  : (nullable NSString *)channelId timestamp
                   : (nonnull NSNumber *)timestamp resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
@@ -565,14 +590,14 @@ RCT_EXPORT_METHOD(syncConversationReadStatus
   NSInteger r = [engine syncConversationReadStatus:_type
                                           targetId:targetId
                                          channelId:channelId
-                                         timestamp:timestamp.longLongValue];
+                                         timestamp:timestamp.longValue];
   resolve(@(r));
 }
 
 RCT_EXPORT_METHOD(sendTypingStatus
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId currentType
+                  : (nullable NSString *)channelId currentType
                   : (NSString *)currentType resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
@@ -588,7 +613,7 @@ RCT_EXPORT_METHOD(sendTypingStatus
 RCT_EXPORT_METHOD(loadMessages
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId sentTime
+                  : (nullable NSString *)channelId sentTime
                   : (nonnull NSNumber *)sentTime order
                   : (int)order policy
                   : (int)policy count
@@ -602,7 +627,7 @@ RCT_EXPORT_METHOD(loadMessages
   NSInteger r = [engine loadMessages:_type
                             targetId:targetId
                            channelId:channelId
-                            sentTime:sentTime.longLongValue
+                            sentTime:sentTime.longValue
                                order:_order
                               policy:_policy
                                count:count.intValue];
@@ -612,7 +637,7 @@ RCT_EXPORT_METHOD(loadMessages
 RCT_EXPORT_METHOD(loadFirstUnreadMessage
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId resolve
+                  : (nullable NSString *)channelId resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
@@ -626,7 +651,7 @@ RCT_EXPORT_METHOD(loadFirstUnreadMessage
 RCT_EXPORT_METHOD(loadUnreadMentionedMessages
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId resolve
+                  : (nullable NSString *)channelId resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
@@ -665,7 +690,7 @@ RCT_EXPORT_METHOD(insertMessages
 RCT_EXPORT_METHOD(clearMessages
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId timestamp
+                  : (nullable NSString *)channelId timestamp
                   : (nonnull NSNumber *)timestamp policy
                   : (int)policy resolve
                   : (RCTPromiseResolveBlock)resolve reject
@@ -676,7 +701,7 @@ RCT_EXPORT_METHOD(clearMessages
   NSInteger r = [engine clearMessages:_type
                              targetId:targetId
                             channelId:channelId
-                            timestamp:timestamp.longLongValue
+                            timestamp:timestamp.longValue
                                policy:_policy];
   resolve(@(r));
 }
@@ -698,7 +723,7 @@ RCT_EXPORT_METHOD(deleteLocalMessages
 RCT_EXPORT_METHOD(deleteMessages
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId messages
+                  : (nullable NSString *)channelId messages
                   : (NSArray<NSDictionary *> *)messages resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
@@ -729,14 +754,14 @@ RCT_EXPORT_METHOD(recallMessage
 
 RCT_EXPORT_METHOD(sendPrivateReadReceiptMessage
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId timestamp
+                  : (nullable NSString *)channelId timestamp
                   : (nonnull NSNumber *)timestamp resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
   NSInteger r = [engine sendPrivateReadReceiptMessage:targetId
                                             channelId:channelId
-                                            timestamp:timestamp.longLongValue];
+                                            timestamp:timestamp.longValue];
   resolve(@(r));
 }
 
@@ -753,7 +778,7 @@ RCT_EXPORT_METHOD(sendGroupReadReceiptRequest
 
 RCT_EXPORT_METHOD(sendGroupReadReceiptResponse
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId messages
+                  : (nullable NSString *)channelId messages
                   : (NSArray<NSDictionary *> *)messages resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
@@ -845,7 +870,7 @@ RCT_EXPORT_METHOD(loadChatRoomMessages
   ENGINEASSERT
   RCIMIWTimeOrder _order = toTimeOrder(order);
   NSInteger r = [engine loadChatRoomMessages:targetId
-                                   timestamp:timestamp.longLongValue
+                                   timestamp:timestamp.longValue
                                        order:_order
                                        count:count.intValue];
   resolve(@(r));
@@ -962,7 +987,7 @@ RCT_EXPORT_METHOD(loadBlacklist
 RCT_EXPORT_METHOD(searchMessages
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId keyword
+                  : (nullable NSString *)channelId keyword
                   : (NSString *)keyword startTime
                   : (nonnull NSNumber *)startTime count
                   : (nonnull NSNumber *)count resolve
@@ -974,7 +999,7 @@ RCT_EXPORT_METHOD(searchMessages
                               targetId:targetId
                              channelId:channelId
                                keyword:keyword
-                             startTime:startTime.longLongValue
+                             startTime:startTime.longValue
                                  count:count.intValue];
   resolve(@(r));
 }
@@ -982,7 +1007,7 @@ RCT_EXPORT_METHOD(searchMessages
 RCT_EXPORT_METHOD(searchMessagesByTimeRange
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId keyword
+                  : (nullable NSString *)channelId keyword
                   : (NSString *)keyword startTime
                   : (nonnull NSNumber *)startTime endTime
                   : (nonnull NSNumber *)endTime offset
@@ -996,8 +1021,8 @@ RCT_EXPORT_METHOD(searchMessagesByTimeRange
                                          targetId:targetId
                                         channelId:channelId
                                           keyword:keyword
-                                        startTime:startTime.longLongValue
-                                          endTime:endTime.longLongValue
+                                        startTime:startTime.longValue
+                                          endTime:endTime.longValue
                                            offset:offset.intValue
                                             count:count.intValue];
   resolve(@(r));
@@ -1007,7 +1032,7 @@ RCT_EXPORT_METHOD(searchMessagesByUserId
                   : (NSString *)userId type
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId startTime
+                  : (nullable NSString *)channelId startTime
                   : (nonnull NSNumber *)startTime count
                   : (nonnull NSNumber *)count resolve
                   : (RCTPromiseResolveBlock)resolve reject
@@ -1018,14 +1043,14 @@ RCT_EXPORT_METHOD(searchMessagesByUserId
                                           type:_type
                                       targetId:targetId
                                      channelId:channelId
-                                     startTime:startTime.longLongValue
+                                     startTime:startTime.longValue
                                          count:count.intValue];
   resolve(@(r));
 }
 
 RCT_EXPORT_METHOD(searchConversations
                   : (NSArray<NSNumber *> *)conversationTypes channelId
-                  : (NSString *)channelId messageTypes
+                  : (nullable NSString *)channelId messageTypes
                   : (NSArray<NSNumber *> *)messageTypes keyword
                   : (NSString *)keyword resolve
                   : (RCTPromiseResolveBlock)resolve reject
@@ -1072,7 +1097,7 @@ RCT_EXPORT_METHOD(loadNotificationQuietHours
 RCT_EXPORT_METHOD(changeConversationNotificationLevel
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId level
+                  : (nullable NSString *)channelId level
                   : (int)level resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
@@ -1089,7 +1114,7 @@ RCT_EXPORT_METHOD(changeConversationNotificationLevel
 RCT_EXPORT_METHOD(loadConversationNotificationLevel
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId resolve
+                  : (nullable NSString *)channelId resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
@@ -1146,7 +1171,7 @@ RCT_EXPORT_METHOD(loadUltraGroupDefaultNotificationLevel
 
 RCT_EXPORT_METHOD(changeUltraGroupChannelDefaultNotificationLevel
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId level
+                  : (nullable NSString *)channelId level
                   : (int)level resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
@@ -1161,7 +1186,7 @@ RCT_EXPORT_METHOD(changeUltraGroupChannelDefaultNotificationLevel
 
 RCT_EXPORT_METHOD(loadUltraGroupChannelDefaultNotificationLevel
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId resolve
+                  : (nullable NSString *)channelId resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
@@ -1214,7 +1239,7 @@ RCT_EXPORT_METHOD(sendGroupMessageToDesignatedUsers
 RCT_EXPORT_METHOD(loadMessageCount
                   : (int)type targetId
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId resolve
+                  : (nullable NSString *)channelId resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
@@ -1227,7 +1252,7 @@ RCT_EXPORT_METHOD(loadMessageCount
 
 RCT_EXPORT_METHOD(loadTopConversations
                   : (NSArray<NSNumber *> *)conversationTypes channelId
-                  : (NSString *)channelId resolve
+                  : (nullable NSString *)channelId resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
@@ -1238,14 +1263,14 @@ RCT_EXPORT_METHOD(loadTopConversations
 
 RCT_EXPORT_METHOD(syncUltraGroupReadStatus
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId timestamp
+                  : (nullable NSString *)channelId timestamp
                   : (nonnull NSNumber *)timestamp resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
   NSInteger r = [engine syncUltraGroupReadStatus:targetId
                                        channelId:channelId
-                                       timestamp:timestamp.longLongValue];
+                                       timestamp:timestamp.longValue];
   resolve(@(r));
 }
 
@@ -1287,7 +1312,7 @@ RCT_EXPORT_METHOD(recallUltraGroupMessage
 
 RCT_EXPORT_METHOD(clearUltraGroupMessages
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId timestamp
+                  : (nullable NSString *)channelId timestamp
                   : (nonnull NSNumber *)timestamp policy
                   : (int)policy resolve
                   : (RCTPromiseResolveBlock)resolve reject
@@ -1296,14 +1321,14 @@ RCT_EXPORT_METHOD(clearUltraGroupMessages
   RCIMIWMessageOperationPolicy _policy = toMessageOperationPolicy(policy);
   NSInteger r = [engine clearUltraGroupMessages:targetId
                                       channelId:channelId
-                                      timestamp:timestamp.longLongValue
+                                      timestamp:timestamp.longValue
                                          policy:_policy];
   resolve(@(r));
 }
 
 RCT_EXPORT_METHOD(sendUltraGroupTypingStatus
                   : (NSString *)targetId channelId
-                  : (NSString *)channelId typingStatus
+                  : (nullable NSString *)channelId typingStatus
                   : (int)typingStatus resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject) {
@@ -1324,7 +1349,7 @@ RCT_EXPORT_METHOD(clearUltraGroupMessagesForAllChannel
   ENGINEASSERT
   NSInteger r =
       [engine clearUltraGroupMessagesForAllChannel:targetId
-                                         timestamp:timestamp.longLongValue];
+                                         timestamp:timestamp.longValue];
   resolve(@(r));
 }
 
@@ -1692,16 +1717,17 @@ RCT_EXPORT_METHOD(changeLogLevel
 }
 
 - (void)onConversationsRemoved:(NSInteger)code
-                         types:(NSArray<NSNumber *> *)types
+             conversationTypes:(NSArray<NSNumber *> *)conversationTypes
                      channelId:(NSString *)channelId {
   NSString *eventName = @"IRCIMIWListener:onConversationsRemoved";
   NSMutableDictionary *arguments = [NSMutableDictionary dictionary];
   [arguments setObject:@(code) forKey:@"code"];
-  NSMutableArray<NSNumber *> *_types = [NSMutableArray new];
-  for (int i = 0; types && i < types.count; i++)
-    [_types
-        addObject:@(ConversationTypeToNum([types objectAtIndex:i].intValue))];
-  [arguments setObject:_types forKey:@"types"];
+  NSMutableArray<NSNumber *> *_conversationTypes = [NSMutableArray new];
+  for (int i = 0; conversationTypes && i < conversationTypes.count; i++)
+    [_conversationTypes
+        addObject:@(ConversationTypeToNum(
+                      [conversationTypes objectAtIndex:i].intValue))];
+  [arguments setObject:_conversationTypes forKey:@"conversationTypes"];
   [arguments setObject:channelId ? channelId : @"" forKey:@"channelId"];
   [self sendEventWithName:eventName body:arguments];
 }
@@ -1733,7 +1759,8 @@ RCT_EXPORT_METHOD(changeLogLevel
 }
 
 - (void)onUnreadCountByConversationTypesLoaded:(NSInteger)code
-                                         types:(NSArray<NSNumber *> *)types
+                             conversationTypes:
+                                 (NSArray<NSNumber *> *)conversationTypes
                                      channelId:(NSString *)channelId
                                        contain:(BOOL)contain
                                          count:(NSInteger)count {
@@ -1741,11 +1768,12 @@ RCT_EXPORT_METHOD(changeLogLevel
       @"IRCIMIWListener:onUnreadCountByConversationTypesLoaded";
   NSMutableDictionary *arguments = [NSMutableDictionary dictionary];
   [arguments setObject:@(code) forKey:@"code"];
-  NSMutableArray<NSNumber *> *_types = [NSMutableArray new];
-  for (int i = 0; types && i < types.count; i++)
-    [_types
-        addObject:@(ConversationTypeToNum([types objectAtIndex:i].intValue))];
-  [arguments setObject:_types forKey:@"types"];
+  NSMutableArray<NSNumber *> *_conversationTypes = [NSMutableArray new];
+  for (int i = 0; conversationTypes && i < conversationTypes.count; i++)
+    [_conversationTypes
+        addObject:@(ConversationTypeToNum(
+                      [conversationTypes objectAtIndex:i].intValue))];
+  [arguments setObject:_conversationTypes forKey:@"conversationTypes"];
   [arguments setObject:channelId ? channelId : @"" forKey:@"channelId"];
   [arguments setObject:@(contain) forKey:@"contain"];
   [arguments setObject:@(count) forKey:@"count"];
@@ -1845,18 +1873,19 @@ RCT_EXPORT_METHOD(changeLogLevel
 }
 
 - (void)onBlockedConversationsLoaded:(NSInteger)code
-                               types:(NSArray<NSNumber *> *)types
+                   conversationTypes:(NSArray<NSNumber *> *)conversationTypes
                            channelId:(NSString *)channelId
                        conversations:(nullable NSArray<RCIMIWConversation *> *)
                                          conversations {
   NSString *eventName = @"IRCIMIWListener:onBlockedConversationsLoaded";
   NSMutableDictionary *arguments = [NSMutableDictionary dictionary];
   [arguments setObject:@(code) forKey:@"code"];
-  NSMutableArray<NSNumber *> *_types = [NSMutableArray new];
-  for (int i = 0; types && i < types.count; i++)
-    [_types
-        addObject:@(ConversationTypeToNum([types objectAtIndex:i].intValue))];
-  [arguments setObject:_types forKey:@"types"];
+  NSMutableArray<NSNumber *> *_conversationTypes = [NSMutableArray new];
+  for (int i = 0; conversationTypes && i < conversationTypes.count; i++)
+    [_conversationTypes
+        addObject:@(ConversationTypeToNum(
+                      [conversationTypes objectAtIndex:i].intValue))];
+  [arguments setObject:_conversationTypes forKey:@"conversationTypes"];
   [arguments setObject:channelId ? channelId : @"" forKey:@"channelId"];
   NSMutableArray<NSDictionary *> *_conversations = [NSMutableArray new];
   for (int i = 0; conversations && i < conversations.count; i++)
@@ -2889,6 +2918,7 @@ RCT_EXPORT_METHOD(changeLogLevel
   [arguments setObject:keys ? keys : @[] forKey:@"keys"];
   [self sendEventWithName:eventName body:arguments];
 }
+
 - (NSArray<NSString *> *)supportedEvents {
   return @[
     @"IRCIMIWListener:onMessageReceived",
@@ -3005,6 +3035,8 @@ RCT_EXPORT_METHOD(changeLogLevel
     @"IRCIMIWListener:onBatchRemoteUltraGroupMessagesLoaded",
     @"IRCIMIWListener:onUltraGroupMessageExpansionUpdated",
     @"IRCIMIWListener:onUltraGroupMessageExpansionRemoved"
+
   ];
 }
+
 @end

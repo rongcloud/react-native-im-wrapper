@@ -5,11 +5,13 @@ import {
     Platform,
 } from 'react-native';
 
-const {RCReactNativeIM} = NativeModules;
+const { RCReactNativeIM } = NativeModules;
 
 const RCReactNativeEventEmitter = Platform.OS === 'ios' ? new NativeEventEmitter(RCReactNativeIM) : DeviceEventEmitter;
 
-import {RCIMIWEngineOptions} from './RCIMDefines';
+import {
+    RCIMIWEngineOptions
+} from './RCIMDefines';
 
 import {logger} from './Logger';
 
@@ -27,6 +29,7 @@ import {
     RCIMIWFileMessage,
     RCIMIWGIFMessage,
     RCIMIWImageMessage,
+    RCIMIWLocationMessage,
     RCIMIWLogLevel,
     RCIMIWMediaMessage,
     RCIMIWMessage,
@@ -48,7 +51,7 @@ import {
 } from './RCIMDefines';
 
 export class RCIMIWEngine {
-    static _instance: RCIMIWEngine;
+    static _instance: RCIMIWEngine|null;
 
     /**
      * 创建接口引擎
@@ -58,9 +61,11 @@ export class RCIMIWEngine {
      * @param options 引擎配置项
      * @return 引擎实例
      */
-    static create(appKey: string, options: RCIMIWEngineOptions = {}): RCIMIWEngine {
-        logger.logObject('create', {appKey, options})
-        if (!RCIMIWEngine._instance) {
+    static create(appKey: string, options: RCIMIWEngineOptions = {}): RCIMIWEngine
+    {
+        logger.logObject('create', { appKey, options })
+        if (!RCIMIWEngine._instance)
+        {
             RCReactNativeIM.create(appKey, options)
             RCIMIWEngine._instance = new RCIMIWEngine()
         }
@@ -71,8 +76,10 @@ export class RCIMIWEngine {
      * 销毁引擎
      * 引擎销毁后如果当前未退出登录，SDK 会自动退出，且仍接受 push
      */
-    destroy(): Promise<number> {
+    destroy(): Promise<number>
+    {
         logger.logObject('destroy', {})
+        RCIMIWEngine._instance = null;
         return RCReactNativeIM.destroy();
     }
 
@@ -81,8 +88,9 @@ export class RCIMIWEngine {
      *
      * @param messageId 消息的 messageId，可在消息对象中获取
      */
-    getMessageById(messageId: number): Promise<RCIMIWMessage> {
-        logger.logObject('getMessageById', {messageId})
+    getMessageById(messageId: number): Promise<RCIMIWMessage>
+    {
+        logger.logObject('getMessageById', { messageId })
         return RCReactNativeIM.getMessageById(messageId);
     }
 
@@ -91,35 +99,39 @@ export class RCIMIWEngine {
      *
      * @param messageUId 消息的 messageUid，可在消息对象中获取，且只有发送成功的消息才会有值。
      */
-    getMessageByUId(messageUId: string): Promise<RCIMIWMessage> {
-        logger.logObject('getMessageByUId', {messageUId})
+    getMessageByUId(messageUId: string): Promise<RCIMIWMessage>
+    {
+        logger.logObject('getMessageByUId', { messageUId })
         return RCReactNativeIM.getMessageByUId(messageUId);
     }
 
-    setDeviceToken(deviceToken: string): Promise<number> {
-        logger.logObject('setDeviceToken', {deviceToken})
-        if (Platform.OS === "ios") {
+    setDeviceToken(deviceToken: string): Promise<number>
+    {
+        logger.logObject('setDeviceToken', { deviceToken })
+        if (Platform.OS === "ios")
+        {
             return RCReactNativeIM.setDeviceToken(deviceToken);
         }
-        else {
-            return new Promise<number>((resolve, reject) => {resolve(0)})
+        else
+        {
+            return new Promise<number>((resolve, reject) => {
+                                           resolve(0) })
         }
     }
 
     /**
-     *连接融云服务器，在整个应用程序全局，只需要调用一次。调用此接口返回非业务错误码时，SDK
-     *会启动重连机制进行重连；如果仍没有连接成功，会在设备网络状态变化时再次进行重连。
+     *连接融云服务器，在整个应用程序全局，只需要调用一次。调用此接口返回非业务错误码时，SDK 会启动重连机制进行重连；如果仍没有连接成功，会在设备网络状态变化时再次进行重连。
      *@param token   调用 server api 获取到的 token
      *@param timeout 连接超时时间，单位：秒。
      *timeLimit <= 0，则 IM 将一直连接，直到连接成功或者无法连接（如 token 非法）
      *timeLimit > 0，则 IM 将最多连接 timeLimit 秒
-     *如果在 timeLimit 秒内连接成功，后面再发生了网络变化或前后台切换，SDK 会自动重连； 如果在 timeLimit 秒无法连接成功则不再进行重连，通过 listener
-     *告知连接超时，您需要再自行调用 connect 接口
+     *如果在 timeLimit 秒内连接成功，后面再发生了网络变化或前后台切换，SDK 会自动重连； 如果在 timeLimit 秒无法连接成功则不再进行重连，通过 listener 告知连接超时，您需要再自行调用 connect 接口
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener 接口回调可以监听 {@link setOnConnectedListener}
      */
-    connect(token: string, timeout: number): Promise<number> {
-        logger.logObject('connect', {token, timeout})
+    connect(token: string, timeout: number): Promise<number>
+    {
+        logger.logObject('connect', { token, timeout })
         return RCReactNativeIM.connect(token, timeout);
     }
 
@@ -129,8 +141,9 @@ export class RCIMIWEngine {
      *@param receivePush 退出后是否接收 push，true:断开后接收远程推送，false:断开后不再接收远程推送
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      */
-    disconnect(receivePush: boolean): Promise<number> {
-        logger.logObject('disconnect', {receivePush})
+    disconnect(receivePush: boolean): Promise<number>
+    {
+        logger.logObject('disconnect', { receivePush })
         return RCReactNativeIM.disconnect(receivePush);
     }
 
@@ -142,8 +155,9 @@ export class RCIMIWEngine {
      *@param text      文本内容
      *@return 文本消息实体
      */
-    createTextMessage(type: RCIMIWConversationType, targetId: string, channelId: string, text: string): Promise<RCIMIWTextMessage> {
-        logger.logObject('createTextMessage', {type, targetId, channelId, text})
+    createTextMessage(type: RCIMIWConversationType, targetId: string, channelId: string, text: string): Promise<RCIMIWTextMessage>
+    {
+        logger.logObject('createTextMessage', { type, targetId, channelId, text })
         return RCReactNativeIM.createTextMessage(type, targetId, channelId, text);
     }
 
@@ -152,11 +166,12 @@ export class RCIMIWEngine {
      *@param type      会话类型
      *@param targetId  会话 ID
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
-     *@param path      图片消息的本地路径
+     *@param path      图片消息的本地路径，必须为有效路径
      *@return 图片消息实体
      */
-    createImageMessage(type: RCIMIWConversationType, targetId: string, channelId: string, path: string): Promise<RCIMIWImageMessage> {
-        logger.logObject('createImageMessage', {type, targetId, channelId, path})
+    createImageMessage(type: RCIMIWConversationType, targetId: string, channelId: string, path: string): Promise<RCIMIWImageMessage>
+    {
+        logger.logObject('createImageMessage', { type, targetId, channelId, path })
         return RCReactNativeIM.createImageMessage(type, targetId, channelId, path);
     }
 
@@ -165,11 +180,12 @@ export class RCIMIWEngine {
      *@param type      会话类型
      *@param targetId  会话 ID
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
-     *@param path      文件消息的本地路径
+     *@param path      文件消息的本地路径，必须为有效路径
      *@return 文件消息实体
      */
-    createFileMessage(type: RCIMIWConversationType, targetId: string, channelId: string, path: string): Promise<RCIMIWFileMessage> {
-        logger.logObject('createFileMessage', {type, targetId, channelId, path})
+    createFileMessage(type: RCIMIWConversationType, targetId: string, channelId: string, path: string): Promise<RCIMIWFileMessage>
+    {
+        logger.logObject('createFileMessage', { type, targetId, channelId, path })
         return RCReactNativeIM.createFileMessage(type, targetId, channelId, path);
     }
 
@@ -178,13 +194,13 @@ export class RCIMIWEngine {
      *@param type      会话类型
      *@param targetId  会话 ID
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
-     *@param path      小视频消息的本地路径
+     *@param path      小视频消息的本地路径，必须为有效路径
      *@param duration  小视频消息的视频时长
      *@return 视频消息实体
      */
-    createSightMessage(type: RCIMIWConversationType, targetId: string, channelId: string, path: string,
-                       duration: number): Promise<RCIMIWSightMessage> {
-        logger.logObject('createSightMessage', {type, targetId, channelId, path, duration})
+    createSightMessage(type: RCIMIWConversationType, targetId: string, channelId: string, path: string, duration: number): Promise<RCIMIWSightMessage>
+    {
+        logger.logObject('createSightMessage', { type, targetId, channelId, path, duration })
         return RCReactNativeIM.createSightMessage(type, targetId, channelId, path, duration);
     }
 
@@ -193,13 +209,13 @@ export class RCIMIWEngine {
      *@param type      会话类型
      *@param targetId  会话 ID
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
-     *@param path      语音消息的本地路径
+     *@param path      语音消息的本地路径，必须为有效路径
      *@param duration  语音消息的消息时长
      *@return 语音消息的实体
      */
-    createVoiceMessage(type: RCIMIWConversationType, targetId: string, channelId: string, path: string,
-                       duration: number): Promise<RCIMIWVoiceMessage> {
-        logger.logObject('createVoiceMessage', {type, targetId, channelId, path, duration})
+    createVoiceMessage(type: RCIMIWConversationType, targetId: string, channelId: string, path: string, duration: number): Promise<RCIMIWVoiceMessage>
+    {
+        logger.logObject('createVoiceMessage', { type, targetId, channelId, path, duration })
         return RCReactNativeIM.createVoiceMessage(type, targetId, channelId, path, duration);
     }
 
@@ -212,9 +228,9 @@ export class RCIMIWEngine {
      *@param text             引用的文本内容
      *@return 引用消息实体
      */
-    createReferenceMessage(type: RCIMIWConversationType, targetId: string, channelId: string, referenceMessage: RCIMIWMessage,
-                           text: string): Promise<RCIMIWReferenceMessage> {
-        logger.logObject('createReferenceMessage', {type, targetId, channelId, referenceMessage, text})
+    createReferenceMessage(type: RCIMIWConversationType, targetId: string, channelId: string, referenceMessage: RCIMIWMessage, text: string): Promise<RCIMIWReferenceMessage>
+    {
+        logger.logObject('createReferenceMessage', { type, targetId, channelId, referenceMessage, text })
         return RCReactNativeIM.createReferenceMessage(type, targetId, channelId, referenceMessage, text);
     }
 
@@ -226,8 +242,9 @@ export class RCIMIWEngine {
      *@param path      GIF 消息的本地路径
      *@return GIF 消息实体
      */
-    createGIFMessage(type: RCIMIWConversationType, targetId: string, channelId: string, path: string): Promise<RCIMIWGIFMessage> {
-        logger.logObject('createGIFMessage', {type, targetId, channelId, path})
+    createGIFMessage(type: RCIMIWConversationType, targetId: string, channelId: string, path: string): Promise<RCIMIWGIFMessage>
+    {
+        logger.logObject('createGIFMessage', { type, targetId, channelId, path })
         return RCReactNativeIM.createGIFMessage(type, targetId, channelId, path);
     }
 
@@ -241,11 +258,28 @@ export class RCIMIWEngine {
      *@param fields            消息的内容键值对
      *@return 自定义消息实体
      */
-    createCustomMessage(type: RCIMIWConversationType, targetId: string, channelId: string, policy: RCIMIWCustomMessagePolicy,
-                        messageIdentifier: string, fields: Map<string, string>): Promise<RCIMIWCustomMessage> {
+    createCustomMessage(type: RCIMIWConversationType, targetId: string, channelId: string, policy: RCIMIWCustomMessagePolicy, messageIdentifier: string, fields: Map<string, string>): Promise<RCIMIWCustomMessage>
+    {
         let _fields: any = Object.fromEntries(fields)
-        logger.logObject('createCustomMessage', {type, targetId, channelId, policy, messageIdentifier, fields})
+        logger.logObject('createCustomMessage', { type, targetId, channelId, policy, messageIdentifier, fields })
         return RCReactNativeIM.createCustomMessage(type, targetId, channelId, policy, messageIdentifier, _fields);
+    }
+
+    /**
+     *构建位置消息
+     *@param type          会话类型
+     *@param targetId      会话 ID
+     *@param channelId     频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param longitude     经度
+     *@param latitude      纬度
+     *@param poiName       POI 信息
+     *@param thumbnailPath 缩略图本地路径，必须为有效路径
+     *@return 位置消息实体
+     */
+    createLocationMessage(type: RCIMIWConversationType, targetId: string, channelId: string, longitude: number, latitude: number, poiName: string, thumbnailPath: string): Promise<RCIMIWLocationMessage>
+    {
+        logger.logObject('createLocationMessage', { type, targetId, channelId, longitude, latitude, poiName, thumbnailPath })
+        return RCReactNativeIM.createLocationMessage(type, targetId, channelId, longitude, latitude, poiName, thumbnailPath);
     }
 
     /**
@@ -254,8 +288,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener 接口回调可以监听 {@link setOnMessageAttachedListener},{@link setOnMessageSentListener}
      */
-    sendMessage(message: RCIMIWMessage): Promise<number> {
-        logger.logObject('sendMessage', {message})
+    sendMessage(message: RCIMIWMessage): Promise<number>
+    {
+        logger.logObject('sendMessage', { message })
         return RCReactNativeIM.sendMessage(message);
     }
 
@@ -263,11 +298,11 @@ export class RCIMIWEngine {
      *发送媒体消息
      *@param message 发送的媒体消息实体
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
-     *@listener 接口回调可以监听 {@link setOnMediaMessageSendingListener},{@link setOnMediaMessageAttachedListener},{@link
-     *setOnMediaMessageAttachedListener},{@link setOnMediaMessageSentListener}
+     *@listener 接口回调可以监听 {@link setOnMediaMessageSendingListener},{@link setOnMediaMessageAttachedListener},{@link setOnMediaMessageSentListener}
      */
-    sendMediaMessage(message: RCIMIWMediaMessage): Promise<number> {
-        logger.logObject('sendMediaMessage', {message})
+    sendMediaMessage(message: RCIMIWMediaMessage): Promise<number>
+    {
+        logger.logObject('sendMediaMessage', { message })
         return RCReactNativeIM.sendMediaMessage(message);
     }
 
@@ -277,8 +312,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener 接口回调可以监听 {@link setOnSendingMediaMessageCanceledListener}
      */
-    cancelSendingMediaMessage(message: RCIMIWMediaMessage): Promise<number> {
-        logger.logObject('cancelSendingMediaMessage', {message})
+    cancelSendingMediaMessage(message: RCIMIWMediaMessage): Promise<number>
+    {
+        logger.logObject('cancelSendingMediaMessage', { message })
         return RCReactNativeIM.cancelSendingMediaMessage(message);
     }
 
@@ -288,8 +324,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnMediaMessageDownloadedListener}, {@link setOnMediaMessageDownloadingListener}
      */
-    downloadMediaMessage(message: RCIMIWMediaMessage): Promise<number> {
-        logger.logObject('downloadMediaMessage', {message})
+    downloadMediaMessage(message: RCIMIWMediaMessage): Promise<number>
+    {
+        logger.logObject('downloadMediaMessage', { message })
         return RCReactNativeIM.downloadMediaMessage(message);
     }
 
@@ -299,8 +336,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnDownloadingMediaMessageCanceledListener}
      */
-    cancelDownloadingMediaMessage(message: RCIMIWMediaMessage): Promise<number> {
-        logger.logObject('cancelDownloadingMediaMessage', {message})
+    cancelDownloadingMediaMessage(message: RCIMIWMediaMessage): Promise<number>
+    {
+        logger.logObject('cancelDownloadingMediaMessage', { message })
         return RCReactNativeIM.cancelDownloadingMediaMessage(message);
     }
 
@@ -312,24 +350,26 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnConversationLoadedListener}
      */
-    loadConversation(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number> {
-        logger.logObject('loadConversation', {type, targetId, channelId})
+    loadConversation(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number>
+    {
+        logger.logObject('loadConversation', { type, targetId, channelId })
         return RCReactNativeIM.loadConversation(type, targetId, channelId);
     }
 
     /**
      *加载某些会话
-     *@param types     会话类型
-     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
-     *@param startTime 时间戳（毫秒），获取小于此时间戳的会话，传 0 为查询最新数据
-     *@param count     查询的数量， 0 < count <= 50
+     *@param conversationTypes 会话类型
+     *@param channelId         频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param startTime         时间戳（毫秒），获取小于此时间戳的会话，传 0 为查询最新数据
+     *@param count             查询的数量， 0 < count <= 50
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnConversationsLoadedListener}
      */
-    loadConversations(types: Array<RCIMIWConversationType>, channelId: string, startTime: number, count: number): Promise<number> {
-        types = types.filter(v => (v != null && v != undefined))
-        logger.logObject('loadConversations', {types, channelId, startTime, count})
-        return RCReactNativeIM.loadConversations(types, channelId, startTime, count);
+    loadConversations(conversationTypes: Array<RCIMIWConversationType>, channelId: string, startTime: number, count: number): Promise<number>
+    {
+        conversationTypes = conversationTypes.filter(v => (v != null && v != undefined))
+        logger.logObject('loadConversations', { conversationTypes, channelId, startTime, count })
+        return RCReactNativeIM.loadConversations(conversationTypes, channelId, startTime, count);
     }
 
     /**
@@ -340,8 +380,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnConversationRemovedListener}
      */
-    removeConversation(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number> {
-        logger.logObject('removeConversation', {type, targetId, channelId})
+    removeConversation(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number>
+    {
+        logger.logObject('removeConversation', { type, targetId, channelId })
         return RCReactNativeIM.removeConversation(type, targetId, channelId);
     }
 
@@ -352,9 +393,10 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnConversationsRemovedListener}
      */
-    removeConversations(conversationTypes: Array<RCIMIWConversationType>, channelId: string): Promise<number> {
+    removeConversations(conversationTypes: Array<RCIMIWConversationType>, channelId: string): Promise<number>
+    {
         conversationTypes = conversationTypes.filter(v => (v != null && v != undefined))
-        logger.logObject('removeConversations', {conversationTypes, channelId})
+        logger.logObject('removeConversations', { conversationTypes, channelId })
         return RCReactNativeIM.removeConversations(conversationTypes, channelId);
     }
 
@@ -367,8 +409,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUnreadCountLoadedListener}
      */
-    loadUnreadCount(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number> {
-        logger.logObject('loadUnreadCount', {type, targetId, channelId})
+    loadUnreadCount(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number>
+    {
+        logger.logObject('loadUnreadCount', { type, targetId, channelId })
         return RCReactNativeIM.loadUnreadCount(type, targetId, channelId);
     }
 
@@ -378,8 +421,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnTotalUnreadCountLoadedListener}
      */
-    loadTotalUnreadCount(channelId: string): Promise<number> {
-        logger.logObject('loadTotalUnreadCount', {channelId})
+    loadTotalUnreadCount(channelId: string): Promise<number>
+    {
+        logger.logObject('loadTotalUnreadCount', { channelId })
         return RCReactNativeIM.loadTotalUnreadCount(channelId);
     }
 
@@ -392,8 +436,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUnreadMentionedCountLoadedListener}
      */
-    loadUnreadMentionedCount(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number> {
-        logger.logObject('loadUnreadMentionedCount', {type, targetId, channelId})
+    loadUnreadMentionedCount(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number>
+    {
+        logger.logObject('loadUnreadMentionedCount', { type, targetId, channelId })
         return RCReactNativeIM.loadUnreadMentionedCount(type, targetId, channelId);
     }
 
@@ -402,7 +447,8 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUltraGroupAllUnreadCountLoadedListener}
      */
-    loadUltraGroupAllUnreadCount(): Promise<number> {
+    loadUltraGroupAllUnreadCount(): Promise<number>
+    {
         logger.logObject('loadUltraGroupAllUnreadCount', {})
         return RCReactNativeIM.loadUltraGroupAllUnreadCount();
     }
@@ -412,7 +458,8 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUltraGroupAllUnreadMentionedCountLoadedListener}
      */
-    loadUltraGroupAllUnreadMentionedCount(): Promise<number> {
+    loadUltraGroupAllUnreadMentionedCount(): Promise<number>
+    {
         logger.logObject('loadUltraGroupAllUnreadMentionedCount', {})
         return RCReactNativeIM.loadUltraGroupAllUnreadMentionedCount();
     }
@@ -423,8 +470,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUltraGroupUnreadCountLoadedListener}
      */
-    loadUltraGroupUnreadCount(targetId: string): Promise<number> {
-        logger.logObject('loadUltraGroupUnreadCount', {targetId})
+    loadUltraGroupUnreadCount(targetId: string): Promise<number>
+    {
+        logger.logObject('loadUltraGroupUnreadCount', { targetId })
         return RCReactNativeIM.loadUltraGroupUnreadCount(targetId);
     }
 
@@ -434,8 +482,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUltraGroupUnreadMentionedCountLoadedListener}
      */
-    loadUltraGroupUnreadMentionedCount(targetId: string): Promise<number> {
-        logger.logObject('loadUltraGroupUnreadMentionedCount', {targetId})
+    loadUltraGroupUnreadMentionedCount(targetId: string): Promise<number>
+    {
+        logger.logObject('loadUltraGroupUnreadMentionedCount', { targetId })
         return RCReactNativeIM.loadUltraGroupUnreadMentionedCount(targetId);
     }
 
@@ -448,9 +497,10 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUnreadCountByConversationTypesLoadedListener}
      */
-    loadUnreadCountByConversationTypes(conversationTypes: Array<RCIMIWConversationType>, channelId: string, contain: boolean): Promise<number> {
+    loadUnreadCountByConversationTypes(conversationTypes: Array<RCIMIWConversationType>, channelId: string, contain: boolean): Promise<number>
+    {
         conversationTypes = conversationTypes.filter(v => (v != null && v != undefined))
-        logger.logObject('loadUnreadCountByConversationTypes', {conversationTypes, channelId, contain})
+        logger.logObject('loadUnreadCountByConversationTypes', { conversationTypes, channelId, contain })
         return RCReactNativeIM.loadUnreadCountByConversationTypes(conversationTypes, channelId, contain);
     }
 
@@ -460,12 +510,13 @@ export class RCIMIWEngine {
      *@param type      会话类型
      *@param targetId  会话 ID
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
-     *@param timestamp 该会话已阅读的最后一条消息的发送时间戳
+     *@param timestamp 该会话已阅读的最后一条消息的发送时间戳，传 0 代表清除所有未读。
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUnreadCountClearedListener}
      */
-    clearUnreadCount(type: RCIMIWConversationType, targetId: string, channelId: string, timestamp: number): Promise<number> {
-        logger.logObject('clearUnreadCount', {type, targetId, channelId, timestamp})
+    clearUnreadCount(type: RCIMIWConversationType, targetId: string, channelId: string, timestamp: number): Promise<number>
+    {
+        logger.logObject('clearUnreadCount', { type, targetId, channelId, timestamp })
         return RCReactNativeIM.clearUnreadCount(type, targetId, channelId, timestamp);
     }
 
@@ -478,8 +529,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnDraftMessageSavedListener}
      */
-    saveDraftMessage(type: RCIMIWConversationType, targetId: string, channelId: string, draft: string): Promise<number> {
-        logger.logObject('saveDraftMessage', {type, targetId, channelId, draft})
+    saveDraftMessage(type: RCIMIWConversationType, targetId: string, channelId: string, draft: string): Promise<number>
+    {
+        logger.logObject('saveDraftMessage', { type, targetId, channelId, draft })
         return RCReactNativeIM.saveDraftMessage(type, targetId, channelId, draft);
     }
 
@@ -491,8 +543,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnDraftMessageLoadedListener}
      */
-    loadDraftMessage(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number> {
-        logger.logObject('loadDraftMessage', {type, targetId, channelId})
+    loadDraftMessage(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number>
+    {
+        logger.logObject('loadDraftMessage', { type, targetId, channelId })
         return RCReactNativeIM.loadDraftMessage(type, targetId, channelId);
     }
 
@@ -504,8 +557,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnDraftMessageClearedListener}
      */
-    clearDraftMessage(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number> {
-        logger.logObject('clearDraftMessage', {type, targetId, channelId})
+    clearDraftMessage(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number>
+    {
+        logger.logObject('clearDraftMessage', { type, targetId, channelId })
         return RCReactNativeIM.clearDraftMessage(type, targetId, channelId);
     }
 
@@ -516,9 +570,10 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnBlockedConversationsLoadedListener}
      */
-    loadBlockedConversations(conversationTypes: Array<RCIMIWConversationType>, channelId: string): Promise<number> {
+    loadBlockedConversations(conversationTypes: Array<RCIMIWConversationType>, channelId: string): Promise<number>
+    {
         conversationTypes = conversationTypes.filter(v => (v != null && v != undefined))
-        logger.logObject('loadBlockedConversations', {conversationTypes, channelId})
+        logger.logObject('loadBlockedConversations', { conversationTypes, channelId })
         return RCReactNativeIM.loadBlockedConversations(conversationTypes, channelId);
     }
 
@@ -531,8 +586,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnConversationTopStatusChangedListener}
      */
-    changeConversationTopStatus(type: RCIMIWConversationType, targetId: string, channelId: string, top: boolean): Promise<number> {
-        logger.logObject('changeConversationTopStatus', {type, targetId, channelId, top})
+    changeConversationTopStatus(type: RCIMIWConversationType, targetId: string, channelId: string, top: boolean): Promise<number>
+    {
+        logger.logObject('changeConversationTopStatus', { type, targetId, channelId, top })
         return RCReactNativeIM.changeConversationTopStatus(type, targetId, channelId, top);
     }
 
@@ -544,8 +600,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnConversationTopStatusLoadedListener}
      */
-    loadConversationTopStatus(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number> {
-        logger.logObject('loadConversationTopStatus', {type, targetId, channelId})
+    loadConversationTopStatus(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number>
+    {
+        logger.logObject('loadConversationTopStatus', { type, targetId, channelId })
         return RCReactNativeIM.loadConversationTopStatus(type, targetId, channelId);
     }
 
@@ -558,8 +615,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnConversationReadStatusSyncedListener}
      */
-    syncConversationReadStatus(type: RCIMIWConversationType, targetId: string, channelId: string, timestamp: number): Promise<number> {
-        logger.logObject('syncConversationReadStatus', {type, targetId, channelId, timestamp})
+    syncConversationReadStatus(type: RCIMIWConversationType, targetId: string, channelId: string, timestamp: number): Promise<number>
+    {
+        logger.logObject('syncConversationReadStatus', { type, targetId, channelId, timestamp })
         return RCReactNativeIM.syncConversationReadStatus(type, targetId, channelId, timestamp);
     }
 
@@ -571,8 +629,9 @@ export class RCIMIWEngine {
      *@param currentType 当前的状态
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      */
-    sendTypingStatus(type: RCIMIWConversationType, targetId: string, channelId: string, currentType: string): Promise<number> {
-        logger.logObject('sendTypingStatus', {type, targetId, channelId, currentType})
+    sendTypingStatus(type: RCIMIWConversationType, targetId: string, channelId: string, currentType: string): Promise<number>
+    {
+        logger.logObject('sendTypingStatus', { type, targetId, channelId, currentType })
         return RCReactNativeIM.sendTypingStatus(type, targetId, channelId, currentType);
     }
 
@@ -588,9 +647,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnMessagesLoadedListener}
      */
-    loadMessages(type: RCIMIWConversationType, targetId: string, channelId: string, sentTime: number, order: RCIMIWTimeOrder,
-                 policy: RCIMIWMessageOperationPolicy, count: number): Promise<number> {
-        logger.logObject('loadMessages', {type, targetId, channelId, sentTime, order, policy, count})
+    loadMessages(type: RCIMIWConversationType, targetId: string, channelId: string, sentTime: number, order: RCIMIWTimeOrder, policy: RCIMIWMessageOperationPolicy, count: number): Promise<number>
+    {
+        logger.logObject('loadMessages', { type, targetId, channelId, sentTime, order, policy, count })
         return RCReactNativeIM.loadMessages(type, targetId, channelId, sentTime, order, policy, count);
     }
 
@@ -602,8 +661,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnFirstUnreadMessageLoadedListener}
      */
-    loadFirstUnreadMessage(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number> {
-        logger.logObject('loadFirstUnreadMessage', {type, targetId, channelId})
+    loadFirstUnreadMessage(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number>
+    {
+        logger.logObject('loadFirstUnreadMessage', { type, targetId, channelId })
         return RCReactNativeIM.loadFirstUnreadMessage(type, targetId, channelId);
     }
 
@@ -615,8 +675,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUnreadMentionedMessagesLoadedListener}
      */
-    loadUnreadMentionedMessages(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number> {
-        logger.logObject('loadUnreadMentionedMessages', {type, targetId, channelId})
+    loadUnreadMentionedMessages(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number>
+    {
+        logger.logObject('loadUnreadMentionedMessages', { type, targetId, channelId })
         return RCReactNativeIM.loadUnreadMentionedMessages(type, targetId, channelId);
     }
 
@@ -626,20 +687,22 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnMessageInsertedListener}
      */
-    insertMessage(message: RCIMIWMessage): Promise<number> {
-        logger.logObject('insertMessage', {message})
+    insertMessage(message: RCIMIWMessage): Promise<number>
+    {
+        logger.logObject('insertMessage', { message })
         return RCReactNativeIM.insertMessage(message);
     }
 
     /**
-     *插入多条消息
+     *插入多条消息，不支持超级群
      *@param messages 插入的消息集合
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnMessagesInsertedListener}
      */
-    insertMessages(messages: Array<RCIMIWMessage>): Promise<number> {
+    insertMessages(messages: Array<RCIMIWMessage>): Promise<number>
+    {
         messages = messages.filter(v => (v != null && v != undefined))
-        logger.logObject('insertMessages', {messages})
+        logger.logObject('insertMessages', { messages })
         return RCReactNativeIM.insertMessages(messages);
     }
 
@@ -652,9 +715,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnMessageClearedListener}
      */
-    clearMessages(type: RCIMIWConversationType, targetId: string, channelId: string, timestamp: number,
-                  policy: RCIMIWMessageOperationPolicy): Promise<number> {
-        logger.logObject('clearMessages', {type, targetId, channelId, timestamp, policy})
+    clearMessages(type: RCIMIWConversationType, targetId: string, channelId: string, timestamp: number, policy: RCIMIWMessageOperationPolicy): Promise<number>
+    {
+        logger.logObject('clearMessages', { type, targetId, channelId, timestamp, policy })
         return RCReactNativeIM.clearMessages(type, targetId, channelId, timestamp, policy);
     }
 
@@ -663,9 +726,10 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnLocalMessagesDeletedListener}
      */
-    deleteLocalMessages(messages: Array<RCIMIWMessage>): Promise<number> {
+    deleteLocalMessages(messages: Array<RCIMIWMessage>): Promise<number>
+    {
         messages = messages.filter(v => (v != null && v != undefined))
-        logger.logObject('deleteLocalMessages', {messages})
+        logger.logObject('deleteLocalMessages', { messages })
         return RCReactNativeIM.deleteLocalMessages(messages);
     }
 
@@ -677,9 +741,10 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnMessagesDeletedListener}
      */
-    deleteMessages(type: RCIMIWConversationType, targetId: string, channelId: string, messages: Array<RCIMIWMessage>): Promise<number> {
+    deleteMessages(type: RCIMIWConversationType, targetId: string, channelId: string, messages: Array<RCIMIWMessage>): Promise<number>
+    {
         messages = messages.filter(v => (v != null && v != undefined))
-        logger.logObject('deleteMessages', {type, targetId, channelId, messages})
+        logger.logObject('deleteMessages', { type, targetId, channelId, messages })
         return RCReactNativeIM.deleteMessages(type, targetId, channelId, messages);
     }
 
@@ -688,8 +753,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnMessageRecalledListener}
      */
-    recallMessage(message: RCIMIWMessage): Promise<number> {
-        logger.logObject('recallMessage', {message})
+    recallMessage(message: RCIMIWMessage): Promise<number>
+    {
+        logger.logObject('recallMessage', { message })
         return RCReactNativeIM.recallMessage(message);
     }
 
@@ -701,8 +767,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnPrivateReadReceiptMessageSentListener}
      */
-    sendPrivateReadReceiptMessage(targetId: string, channelId: string, timestamp: number): Promise<number> {
-        logger.logObject('sendPrivateReadReceiptMessage', {targetId, channelId, timestamp})
+    sendPrivateReadReceiptMessage(targetId: string, channelId: string, timestamp: number): Promise<number>
+    {
+        logger.logObject('sendPrivateReadReceiptMessage', { targetId, channelId, timestamp })
         return RCReactNativeIM.sendPrivateReadReceiptMessage(targetId, channelId, timestamp);
     }
 
@@ -712,8 +779,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnGroupReadReceiptRequestSentListener}
      */
-    sendGroupReadReceiptRequest(message: RCIMIWMessage): Promise<number> {
-        logger.logObject('sendGroupReadReceiptRequest', {message})
+    sendGroupReadReceiptRequest(message: RCIMIWMessage): Promise<number>
+    {
+        logger.logObject('sendGroupReadReceiptRequest', { message })
         return RCReactNativeIM.sendGroupReadReceiptRequest(message);
     }
 
@@ -725,9 +793,10 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnGroupReadReceiptResponseSentListener}
      */
-    sendGroupReadReceiptResponse(targetId: string, channelId: string, messages: Array<RCIMIWMessage>): Promise<number> {
+    sendGroupReadReceiptResponse(targetId: string, channelId: string, messages: Array<RCIMIWMessage>): Promise<number>
+    {
         messages = messages.filter(v => (v != null && v != undefined))
-        logger.logObject('sendGroupReadReceiptResponse', {targetId, channelId, messages})
+        logger.logObject('sendGroupReadReceiptResponse', { targetId, channelId, messages })
         return RCReactNativeIM.sendGroupReadReceiptResponse(targetId, channelId, messages);
     }
 
@@ -735,14 +804,14 @@ export class RCIMIWEngine {
      *更新消息扩展信息
      *每条消息携带扩展信息键值对最大值 300个，单次设置扩展信息键值对最大值 20个
      *@param messageUId 消息的 messageUid，可在消息对象中获取，且只有发送成功的消息才会有值
-     *@param expansion  要更新的消息扩展信息键值对，类型是 HashMap；Key 支持大小写英文字母、数字、部分特殊符号 + = - _ 的组合方式，不支持汉字。Value
-     *    可以输入空格
+     *@param expansion  要更新的消息扩展信息键值对，类型是 HashMap；Key 支持大小写英文字母、数字、部分特殊符号 + = - _ 的组合方式，不支持汉字。Value 可以输入空格
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnMessageExpansionUpdatedListener}
      */
-    updateMessageExpansion(messageUId: string, expansion: Map<string, string>): Promise<number> {
+    updateMessageExpansion(messageUId: string, expansion: Map<string, string>): Promise<number>
+    {
         let _expansion: any = Object.fromEntries(expansion)
-        logger.logObject('updateMessageExpansion', {messageUId, expansion})
+        logger.logObject('updateMessageExpansion', { messageUId, expansion })
         return RCReactNativeIM.updateMessageExpansion(messageUId, _expansion);
     }
 
@@ -753,9 +822,10 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnMessageExpansionForKeysRemovedListener}
      */
-    removeMessageExpansionForKeys(messageUId: string, keys: Array<string>): Promise<number> {
+    removeMessageExpansionForKeys(messageUId: string, keys: Array<string>): Promise<number>
+    {
         keys = keys.filter(v => (v != null && v != undefined))
-        logger.logObject('removeMessageExpansionForKeys', {messageUId, keys})
+        logger.logObject('removeMessageExpansionForKeys', { messageUId, keys })
         return RCReactNativeIM.removeMessageExpansionForKeys(messageUId, keys);
     }
 
@@ -766,8 +836,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnMessageSentStatusChangedListener}
      */
-    changeMessageSentStatus(messageId: number, sentStatus: RCIMIWSentStatus): Promise<number> {
-        logger.logObject('changeMessageSentStatus', {messageId, sentStatus})
+    changeMessageSentStatus(messageId: number, sentStatus: RCIMIWSentStatus): Promise<number>
+    {
+        logger.logObject('changeMessageSentStatus', { messageId, sentStatus })
         return RCReactNativeIM.changeMessageSentStatus(messageId, sentStatus);
     }
 
@@ -777,8 +848,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnMessageReceiveStatusChangedListener}
      */
-    changeMessageReceiveStatus(messageId: number, receivedStatus: RCIMIWReceivedStatus): Promise<number> {
-        logger.logObject('changeMessageReceiveStatus', {messageId, receivedStatus})
+    changeMessageReceiveStatus(messageId: number, receivedStatus: RCIMIWReceivedStatus): Promise<number>
+    {
+        logger.logObject('changeMessageReceiveStatus', { messageId, receivedStatus })
         return RCReactNativeIM.changeMessageReceiveStatus(messageId, receivedStatus);
     }
 
@@ -790,8 +862,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnChatRoomJoinedListener}
      */
-    joinChatRoom(targetId: string, messageCount: number, autoCreate: boolean): Promise<number> {
-        logger.logObject('joinChatRoom', {targetId, messageCount, autoCreate})
+    joinChatRoom(targetId: string, messageCount: number, autoCreate: boolean): Promise<number>
+    {
+        logger.logObject('joinChatRoom', { targetId, messageCount, autoCreate })
         return RCReactNativeIM.joinChatRoom(targetId, messageCount, autoCreate);
     }
 
@@ -801,8 +874,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnChatRoomLeftListener}
      */
-    leaveChatRoom(targetId: string): Promise<number> {
-        logger.logObject('leaveChatRoom', {targetId})
+    leaveChatRoom(targetId: string): Promise<number>
+    {
+        logger.logObject('leaveChatRoom', { targetId })
         return RCReactNativeIM.leaveChatRoom(targetId);
     }
 
@@ -816,8 +890,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnChatRoomMessagesLoadedListener}
      */
-    loadChatRoomMessages(targetId: string, timestamp: number, order: RCIMIWTimeOrder, count: number): Promise<number> {
-        logger.logObject('loadChatRoomMessages', {targetId, timestamp, order, count})
+    loadChatRoomMessages(targetId: string, timestamp: number, order: RCIMIWTimeOrder, count: number): Promise<number>
+    {
+        logger.logObject('loadChatRoomMessages', { targetId, timestamp, order, count })
         return RCReactNativeIM.loadChatRoomMessages(targetId, timestamp, order, count);
     }
 
@@ -831,8 +906,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnChatRoomEntryAddedListener}
      */
-    addChatRoomEntry(targetId: string, key: string, value: string, deleteWhenLeft: boolean, overwrite: boolean): Promise<number> {
-        logger.logObject('addChatRoomEntry', {targetId, key, value, deleteWhenLeft, overwrite})
+    addChatRoomEntry(targetId: string, key: string, value: string, deleteWhenLeft: boolean, overwrite: boolean): Promise<number>
+    {
+        logger.logObject('addChatRoomEntry', { targetId, key, value, deleteWhenLeft, overwrite })
         return RCReactNativeIM.addChatRoomEntry(targetId, key, value, deleteWhenLeft, overwrite);
     }
 
@@ -845,9 +921,10 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnChatRoomEntriesAddedListener}
      */
-    addChatRoomEntries(targetId: string, entries: Map<string, string>, deleteWhenLeft: boolean, overwrite: boolean): Promise<number> {
+    addChatRoomEntries(targetId: string, entries: Map<string, string>, deleteWhenLeft: boolean, overwrite: boolean): Promise<number>
+    {
         let _entries: any = Object.fromEntries(entries)
-        logger.logObject('addChatRoomEntries', {targetId, entries, deleteWhenLeft, overwrite})
+        logger.logObject('addChatRoomEntries', { targetId, entries, deleteWhenLeft, overwrite })
         return RCReactNativeIM.addChatRoomEntries(targetId, _entries, deleteWhenLeft, overwrite);
     }
 
@@ -858,8 +935,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnChatRoomEntryLoadedListener}
      */
-    loadChatRoomEntry(targetId: string, key: string): Promise<number> {
-        logger.logObject('loadChatRoomEntry', {targetId, key})
+    loadChatRoomEntry(targetId: string, key: string): Promise<number>
+    {
+        logger.logObject('loadChatRoomEntry', { targetId, key })
         return RCReactNativeIM.loadChatRoomEntry(targetId, key);
     }
 
@@ -869,8 +947,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnAllChatRoomEntriesLoadedListener}
      */
-    loadAllChatRoomEntries(targetId: string): Promise<number> {
-        logger.logObject('loadAllChatRoomEntries', {targetId})
+    loadAllChatRoomEntries(targetId: string): Promise<number>
+    {
+        logger.logObject('loadAllChatRoomEntries', { targetId })
         return RCReactNativeIM.loadAllChatRoomEntries(targetId);
     }
 
@@ -882,8 +961,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnChatRoomEntryRemovedListener}
      */
-    removeChatRoomEntry(targetId: string, key: string, force: boolean): Promise<number> {
-        logger.logObject('removeChatRoomEntry', {targetId, key, force})
+    removeChatRoomEntry(targetId: string, key: string, force: boolean): Promise<number>
+    {
+        logger.logObject('removeChatRoomEntry', { targetId, key, force })
         return RCReactNativeIM.removeChatRoomEntry(targetId, key, force);
     }
 
@@ -895,9 +975,10 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnChatRoomEntriesRemovedListener}
      */
-    removeChatRoomEntries(targetId: string, keys: Array<string>, force: boolean): Promise<number> {
+    removeChatRoomEntries(targetId: string, keys: Array<string>, force: boolean): Promise<number>
+    {
         keys = keys.filter(v => (v != null && v != undefined))
-        logger.logObject('removeChatRoomEntries', {targetId, keys, force})
+        logger.logObject('removeChatRoomEntries', { targetId, keys, force })
         return RCReactNativeIM.removeChatRoomEntries(targetId, keys, force);
     }
 
@@ -908,8 +989,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnBlacklistAddedListener}
      */
-    addToBlacklist(userId: string): Promise<number> {
-        logger.logObject('addToBlacklist', {userId})
+    addToBlacklist(userId: string): Promise<number>
+    {
+        logger.logObject('addToBlacklist', { userId })
         return RCReactNativeIM.addToBlacklist(userId);
     }
 
@@ -919,8 +1001,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnBlacklistRemovedListener}
      */
-    removeFromBlacklist(userId: string): Promise<number> {
-        logger.logObject('removeFromBlacklist', {userId})
+    removeFromBlacklist(userId: string): Promise<number>
+    {
+        logger.logObject('removeFromBlacklist', { userId })
         return RCReactNativeIM.removeFromBlacklist(userId);
     }
 
@@ -930,8 +1013,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnBlacklistStatusLoadedListener}
      */
-    loadBlacklistStatus(userId: string): Promise<number> {
-        logger.logObject('loadBlacklistStatus', {userId})
+    loadBlacklistStatus(userId: string): Promise<number>
+    {
+        logger.logObject('loadBlacklistStatus', { userId })
         return RCReactNativeIM.loadBlacklistStatus(userId);
     }
 
@@ -940,7 +1024,8 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnBlacklistLoadedListener}
      */
-    loadBlacklist(): Promise<number> {
+    loadBlacklist(): Promise<number>
+    {
         logger.logObject('loadBlacklist', {})
         return RCReactNativeIM.loadBlacklist();
     }
@@ -956,9 +1041,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnMessagesSearchedListener}
      */
-    searchMessages(type: RCIMIWConversationType, targetId: string, channelId: string, keyword: string, startTime: number,
-                   count: number): Promise<number> {
-        logger.logObject('searchMessages', {type, targetId, channelId, keyword, startTime, count})
+    searchMessages(type: RCIMIWConversationType, targetId: string, channelId: string, keyword: string, startTime: number, count: number): Promise<number>
+    {
+        logger.logObject('searchMessages', { type, targetId, channelId, keyword, startTime, count })
         return RCReactNativeIM.searchMessages(type, targetId, channelId, keyword, startTime, count);
     }
 
@@ -975,9 +1060,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnMessagesSearchedByTimeRangeListener}
      */
-    searchMessagesByTimeRange(type: RCIMIWConversationType, targetId: string, channelId: string, keyword: string, startTime: number, endTime: number,
-                              offset: number, count: number): Promise<number> {
-        logger.logObject('searchMessagesByTimeRange', {type, targetId, channelId, keyword, startTime, endTime, offset, count})
+    searchMessagesByTimeRange(type: RCIMIWConversationType, targetId: string, channelId: string, keyword: string, startTime: number, endTime: number, offset: number, count: number): Promise<number>
+    {
+        logger.logObject('searchMessagesByTimeRange', { type, targetId, channelId, keyword, startTime, endTime, offset, count })
         return RCReactNativeIM.searchMessagesByTimeRange(type, targetId, channelId, keyword, startTime, endTime, offset, count);
     }
 
@@ -992,9 +1077,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnMessagesSearchedByUserIdListener}
      */
-    searchMessagesByUserId(userId: string, type: RCIMIWConversationType, targetId: string, channelId: string, startTime: number,
-                           count: number): Promise<number> {
-        logger.logObject('searchMessagesByUserId', {userId, type, targetId, channelId, startTime, count})
+    searchMessagesByUserId(userId: string, type: RCIMIWConversationType, targetId: string, channelId: string, startTime: number, count: number): Promise<number>
+    {
+        logger.logObject('searchMessagesByUserId', { userId, type, targetId, channelId, startTime, count })
         return RCReactNativeIM.searchMessagesByUserId(userId, type, targetId, channelId, startTime, count);
     }
 
@@ -1007,25 +1092,25 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnConversationsSearchedListener}
      */
-    searchConversations(conversationTypes: Array<RCIMIWConversationType>, channelId: string, messageTypes: Array<RCIMIWMessageType>,
-                        keyword: string): Promise<number> {
+    searchConversations(conversationTypes: Array<RCIMIWConversationType>, channelId: string, messageTypes: Array<RCIMIWMessageType>, keyword: string): Promise<number>
+    {
         conversationTypes = conversationTypes.filter(v => (v != null && v != undefined))
         messageTypes = messageTypes.filter(v => (v != null && v != undefined))
-        logger.logObject('searchConversations', {conversationTypes, channelId, messageTypes, keyword})
+        logger.logObject('searchConversations', { conversationTypes, channelId, messageTypes, keyword })
         return RCReactNativeIM.searchConversations(conversationTypes, channelId, messageTypes, keyword);
     }
 
     /**
      *屏蔽某个时间段的消息提醒
      *@param startTime 开始消息免打扰时间，格式为 HH:MM:SS
-     *@param spanMins  需要消息免打扰分钟数，0 < spanMins < 1440（ 比如，您设置的起始时间是 00：00， 结束时间为 01:00，则 spanMins 为 60 分钟。设置为
-     *    1439 代表全天免打扰 （23  60 + 59 = 1439 ））
+     *@param spanMins  需要消息免打扰分钟数，0 < spanMins < 1440（ 比如，您设置的起始时间是 00：00， 结束时间为 01:00，则 spanMins 为 60 分钟。设置为 1439 代表全天免打扰 （23  60 + 59 = 1439 ））
      *@param level     消息通知级别
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnNotificationQuietHoursChangedListener}
      */
-    changeNotificationQuietHours(startTime: string, spanMins: number, level: RCIMIWPushNotificationQuietHoursLevel): Promise<number> {
-        logger.logObject('changeNotificationQuietHours', {startTime, spanMins, level})
+    changeNotificationQuietHours(startTime: string, spanMins: number, level: RCIMIWPushNotificationQuietHoursLevel): Promise<number>
+    {
+        logger.logObject('changeNotificationQuietHours', { startTime, spanMins, level })
         return RCReactNativeIM.changeNotificationQuietHours(startTime, spanMins, level);
     }
 
@@ -1033,7 +1118,8 @@ export class RCIMIWEngine {
      *删除已设置的全局时间段消息提醒屏蔽
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      */
-    removeNotificationQuietHours(): Promise<number> {
+    removeNotificationQuietHours(): Promise<number>
+    {
         logger.logObject('removeNotificationQuietHours', {})
         return RCReactNativeIM.removeNotificationQuietHours();
     }
@@ -1042,7 +1128,8 @@ export class RCIMIWEngine {
      *查询已设置的时间段消息提醒屏蔽
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      */
-    loadNotificationQuietHours(): Promise<number> {
+    loadNotificationQuietHours(): Promise<number>
+    {
         logger.logObject('loadNotificationQuietHours', {})
         return RCReactNativeIM.loadNotificationQuietHours();
     }
@@ -1057,9 +1144,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnConversationNotificationLevelChangedListener}
      */
-    changeConversationNotificationLevel(type: RCIMIWConversationType, targetId: string, channelId: string,
-                                        level: RCIMIWPushNotificationLevel): Promise<number> {
-        logger.logObject('changeConversationNotificationLevel', {type, targetId, channelId, level})
+    changeConversationNotificationLevel(type: RCIMIWConversationType, targetId: string, channelId: string, level: RCIMIWPushNotificationLevel): Promise<number>
+    {
+        logger.logObject('changeConversationNotificationLevel', { type, targetId, channelId, level })
         return RCReactNativeIM.changeConversationNotificationLevel(type, targetId, channelId, level);
     }
 
@@ -1071,8 +1158,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnConversationNotificationLevelLoadedListener}
      */
-    loadConversationNotificationLevel(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number> {
-        logger.logObject('loadConversationNotificationLevel', {type, targetId, channelId})
+    loadConversationNotificationLevel(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number>
+    {
+        logger.logObject('loadConversationNotificationLevel', { type, targetId, channelId })
         return RCReactNativeIM.loadConversationNotificationLevel(type, targetId, channelId);
     }
 
@@ -1084,8 +1172,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnConversationTypeNotificationLevelChangedListener}
      */
-    changeConversationTypeNotificationLevel(type: RCIMIWConversationType, level: RCIMIWPushNotificationLevel): Promise<number> {
-        logger.logObject('changeConversationTypeNotificationLevel', {type, level})
+    changeConversationTypeNotificationLevel(type: RCIMIWConversationType, level: RCIMIWPushNotificationLevel): Promise<number>
+    {
+        logger.logObject('changeConversationTypeNotificationLevel', { type, level })
         return RCReactNativeIM.changeConversationTypeNotificationLevel(type, level);
     }
 
@@ -1094,8 +1183,9 @@ export class RCIMIWEngine {
      *@param type 会话类型
      *@return {@link setOnConversationTypeNotificationLevelLoadedListener}
      */
-    loadConversationTypeNotificationLevel(type: RCIMIWConversationType): Promise<number> {
-        logger.logObject('loadConversationTypeNotificationLevel', {type})
+    loadConversationTypeNotificationLevel(type: RCIMIWConversationType): Promise<number>
+    {
+        logger.logObject('loadConversationTypeNotificationLevel', { type })
         return RCReactNativeIM.loadConversationTypeNotificationLevel(type);
     }
 
@@ -1107,8 +1197,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUltraGroupDefaultNotificationLevelChangedListener}
      */
-    changeUltraGroupDefaultNotificationLevel(targetId: string, level: RCIMIWPushNotificationLevel): Promise<number> {
-        logger.logObject('changeUltraGroupDefaultNotificationLevel', {targetId, level})
+    changeUltraGroupDefaultNotificationLevel(targetId: string, level: RCIMIWPushNotificationLevel): Promise<number>
+    {
+        logger.logObject('changeUltraGroupDefaultNotificationLevel', { targetId, level })
         return RCReactNativeIM.changeUltraGroupDefaultNotificationLevel(targetId, level);
     }
 
@@ -1118,8 +1209,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUltraGroupDefaultNotificationLevelLoadedListener}
      */
-    loadUltraGroupDefaultNotificationLevel(targetId: string): Promise<number> {
-        logger.logObject('loadUltraGroupDefaultNotificationLevel', {targetId})
+    loadUltraGroupDefaultNotificationLevel(targetId: string): Promise<number>
+    {
+        logger.logObject('loadUltraGroupDefaultNotificationLevel', { targetId })
         return RCReactNativeIM.loadUltraGroupDefaultNotificationLevel(targetId);
     }
 
@@ -1131,8 +1223,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUltraGroupChannelDefaultNotificationLevelChangedListener}
      */
-    changeUltraGroupChannelDefaultNotificationLevel(targetId: string, channelId: string, level: RCIMIWPushNotificationLevel): Promise<number> {
-        logger.logObject('changeUltraGroupChannelDefaultNotificationLevel', {targetId, channelId, level})
+    changeUltraGroupChannelDefaultNotificationLevel(targetId: string, channelId: string, level: RCIMIWPushNotificationLevel): Promise<number>
+    {
+        logger.logObject('changeUltraGroupChannelDefaultNotificationLevel', { targetId, channelId, level })
         return RCReactNativeIM.changeUltraGroupChannelDefaultNotificationLevel(targetId, channelId, level);
     }
 
@@ -1143,8 +1236,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUltraGroupChannelDefaultNotificationLevelLoadedListener}
      */
-    loadUltraGroupChannelDefaultNotificationLevel(targetId: string, channelId: string): Promise<number> {
-        logger.logObject('loadUltraGroupChannelDefaultNotificationLevel', {targetId, channelId})
+    loadUltraGroupChannelDefaultNotificationLevel(targetId: string, channelId: string): Promise<number>
+    {
+        logger.logObject('loadUltraGroupChannelDefaultNotificationLevel', { targetId, channelId })
         return RCReactNativeIM.loadUltraGroupChannelDefaultNotificationLevel(targetId, channelId);
     }
 
@@ -1154,8 +1248,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnPushContentShowStatusChangedListener}
      */
-    changePushContentShowStatus(showContent: boolean): Promise<number> {
-        logger.logObject('changePushContentShowStatus', {showContent})
+    changePushContentShowStatus(showContent: boolean): Promise<number>
+    {
+        logger.logObject('changePushContentShowStatus', { showContent })
         return RCReactNativeIM.changePushContentShowStatus(showContent);
     }
 
@@ -1165,8 +1260,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnPushLanguageChangedListener}
      */
-    changePushLanguage(language: string): Promise<number> {
-        logger.logObject('changePushLanguage', {language})
+    changePushLanguage(language: string): Promise<number>
+    {
+        logger.logObject('changePushLanguage', { language })
         return RCReactNativeIM.changePushLanguage(language);
     }
 
@@ -1178,8 +1274,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnPushReceiveStatusChangedListener}
      */
-    changePushReceiveStatus(receive: boolean): Promise<number> {
-        logger.logObject('changePushReceiveStatus', {receive})
+    changePushReceiveStatus(receive: boolean): Promise<number>
+    {
+        logger.logObject('changePushReceiveStatus', { receive })
         return RCReactNativeIM.changePushReceiveStatus(receive);
     }
 
@@ -1190,9 +1287,10 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnGroupMessageToDesignatedUsersAttachedListener}, {@link setOnGroupMessageToDesignatedUsersSentListener}
      */
-    sendGroupMessageToDesignatedUsers(message: RCIMIWMessage, userIds: Array<string>): Promise<number> {
+    sendGroupMessageToDesignatedUsers(message: RCIMIWMessage, userIds: Array<string>): Promise<number>
+    {
         userIds = userIds.filter(v => (v != null && v != undefined))
-        logger.logObject('sendGroupMessageToDesignatedUsers', {message, userIds})
+        logger.logObject('sendGroupMessageToDesignatedUsers', { message, userIds })
         return RCReactNativeIM.sendGroupMessageToDesignatedUsers(message, userIds);
     }
 
@@ -1204,8 +1302,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnMessageCountLoadedListener}
      */
-    loadMessageCount(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number> {
-        logger.logObject('loadMessageCount', {type, targetId, channelId})
+    loadMessageCount(type: RCIMIWConversationType, targetId: string, channelId: string): Promise<number>
+    {
+        logger.logObject('loadMessageCount', { type, targetId, channelId })
         return RCReactNativeIM.loadMessageCount(type, targetId, channelId);
     }
 
@@ -1216,9 +1315,10 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnTopConversationsLoadedListener}
      */
-    loadTopConversations(conversationTypes: Array<RCIMIWConversationType>, channelId: string): Promise<number> {
+    loadTopConversations(conversationTypes: Array<RCIMIWConversationType>, channelId: string): Promise<number>
+    {
         conversationTypes = conversationTypes.filter(v => (v != null && v != undefined))
-        logger.logObject('loadTopConversations', {conversationTypes, channelId})
+        logger.logObject('loadTopConversations', { conversationTypes, channelId })
         return RCReactNativeIM.loadTopConversations(conversationTypes, channelId);
     }
 
@@ -1230,8 +1330,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUltraGroupReadStatusSyncedListener}
      */
-    syncUltraGroupReadStatus(targetId: string, channelId: string, timestamp: number): Promise<number> {
-        logger.logObject('syncUltraGroupReadStatus', {targetId, channelId, timestamp})
+    syncUltraGroupReadStatus(targetId: string, channelId: string, timestamp: number): Promise<number>
+    {
+        logger.logObject('syncUltraGroupReadStatus', { targetId, channelId, timestamp })
         return RCReactNativeIM.syncUltraGroupReadStatus(targetId, channelId, timestamp);
     }
 
@@ -1242,8 +1343,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnConversationsLoadedForAllChannelListener}
      */
-    loadConversationsForAllChannel(type: RCIMIWConversationType, targetId: string): Promise<number> {
-        logger.logObject('loadConversationsForAllChannel', {type, targetId})
+    loadConversationsForAllChannel(type: RCIMIWConversationType, targetId: string): Promise<number>
+    {
+        logger.logObject('loadConversationsForAllChannel', { type, targetId })
         return RCReactNativeIM.loadConversationsForAllChannel(type, targetId);
     }
 
@@ -1254,8 +1356,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUltraGroupMessageModifiedListener}
      */
-    modifyUltraGroupMessage(messageUId: string, message: RCIMIWMessage): Promise<number> {
-        logger.logObject('modifyUltraGroupMessage', {messageUId, message})
+    modifyUltraGroupMessage(messageUId: string, message: RCIMIWMessage): Promise<number>
+    {
+        logger.logObject('modifyUltraGroupMessage', { messageUId, message })
         return RCReactNativeIM.modifyUltraGroupMessage(messageUId, message);
     }
 
@@ -1266,8 +1369,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUltraGroupMessageRecalledListener}
      */
-    recallUltraGroupMessage(message: RCIMIWMessage, deleteRemote: boolean): Promise<number> {
-        logger.logObject('recallUltraGroupMessage', {message, deleteRemote})
+    recallUltraGroupMessage(message: RCIMIWMessage, deleteRemote: boolean): Promise<number>
+    {
+        logger.logObject('recallUltraGroupMessage', { message, deleteRemote })
         return RCReactNativeIM.recallUltraGroupMessage(message, deleteRemote);
     }
 
@@ -1280,8 +1384,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUltraGroupMessagesClearedListener}
      */
-    clearUltraGroupMessages(targetId: string, channelId: string, timestamp: number, policy: RCIMIWMessageOperationPolicy): Promise<number> {
-        logger.logObject('clearUltraGroupMessages', {targetId, channelId, timestamp, policy})
+    clearUltraGroupMessages(targetId: string, channelId: string, timestamp: number, policy: RCIMIWMessageOperationPolicy): Promise<number>
+    {
+        logger.logObject('clearUltraGroupMessages', { targetId, channelId, timestamp, policy })
         return RCReactNativeIM.clearUltraGroupMessages(targetId, channelId, timestamp, policy);
     }
 
@@ -1293,8 +1398,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUltraGroupTypingStatusSentListener}
      */
-    sendUltraGroupTypingStatus(targetId: string, channelId: string, typingStatus: RCIMIWUltraGroupTypingStatus): Promise<number> {
-        logger.logObject('sendUltraGroupTypingStatus', {targetId, channelId, typingStatus})
+    sendUltraGroupTypingStatus(targetId: string, channelId: string, typingStatus: RCIMIWUltraGroupTypingStatus): Promise<number>
+    {
+        logger.logObject('sendUltraGroupTypingStatus', { targetId, channelId, typingStatus })
         return RCReactNativeIM.sendUltraGroupTypingStatus(targetId, channelId, typingStatus);
     }
 
@@ -1305,8 +1411,9 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUltraGroupMessagesClearedForAllChannelListener}
      */
-    clearUltraGroupMessagesForAllChannel(targetId: string, timestamp: number): Promise<number> {
-        logger.logObject('clearUltraGroupMessagesForAllChannel', {targetId, timestamp})
+    clearUltraGroupMessagesForAllChannel(targetId: string, timestamp: number): Promise<number>
+    {
+        logger.logObject('clearUltraGroupMessagesForAllChannel', { targetId, timestamp })
         return RCReactNativeIM.clearUltraGroupMessagesForAllChannel(targetId, timestamp);
     }
 
@@ -1316,23 +1423,24 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnBatchRemoteUltraGroupMessagesLoadedListener}
      */
-    loadBatchRemoteUltraGroupMessages(messages: Array<RCIMIWMessage>): Promise<number> {
+    loadBatchRemoteUltraGroupMessages(messages: Array<RCIMIWMessage>): Promise<number>
+    {
         messages = messages.filter(v => (v != null && v != undefined))
-        logger.logObject('loadBatchRemoteUltraGroupMessages', {messages})
+        logger.logObject('loadBatchRemoteUltraGroupMessages', { messages })
         return RCReactNativeIM.loadBatchRemoteUltraGroupMessages(messages);
     }
 
     /**
      *更新超级群消息扩展信息
      *@param messageUId 消息的 messageUid，可在消息对象中获取，且只有发送成功的消息才会有值
-     *@param expansion  更新的消息扩展信息键值对，类型是 HashMap；Key 支持大小写英文字母、数字、部分特殊符号 + = - _ 的组合方式，不支持汉字。Value
-     *    可以输入空格。
+     *@param expansion  更新的消息扩展信息键值对，类型是 HashMap；Key 支持大小写英文字母、数字、部分特殊符号 + = - _ 的组合方式，不支持汉字。Value 可以输入空格。
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUltraGroupMessageExpansionUpdatedListener}
      */
-    updateUltraGroupMessageExpansion(messageUId: string, expansion: Map<string, string>): Promise<number> {
+    updateUltraGroupMessageExpansion(messageUId: string, expansion: Map<string, string>): Promise<number>
+    {
         let _expansion: any = Object.fromEntries(expansion)
-        logger.logObject('updateUltraGroupMessageExpansion', {messageUId, expansion})
+        logger.logObject('updateUltraGroupMessageExpansion', { messageUId, expansion })
         return RCReactNativeIM.updateUltraGroupMessageExpansion(messageUId, _expansion);
     }
 
@@ -1343,9 +1451,10 @@ export class RCIMIWEngine {
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      *@listener {@link setOnUltraGroupMessageExpansionRemovedListener}
      */
-    removeUltraGroupMessageExpansion(messageUId: string, keys: Array<string>): Promise<number> {
+    removeUltraGroupMessageExpansion(messageUId: string, keys: Array<string>): Promise<number>
+    {
         keys = keys.filter(v => (v != null && v != undefined))
-        logger.logObject('removeUltraGroupMessageExpansion', {messageUId, keys})
+        logger.logObject('removeUltraGroupMessageExpansion', { messageUId, keys })
         return RCReactNativeIM.removeUltraGroupMessageExpansion(messageUId, keys);
     }
 
@@ -1354,28 +1463,29 @@ export class RCIMIWEngine {
      *@param level 日志级别
      *@return 当次接口操作的状态码。0 代表调用成功 具体结果需要实现接口回调，非 0 代表当前接口调用操作失败，不会触发接口回调，详细错误参考错误码
      */
-    changeLogLevel(level: RCIMIWLogLevel): Promise<number> {
-        logger.logObject('changeLogLevel', {level})
+    changeLogLevel(level: RCIMIWLogLevel): Promise<number>
+    {
+        logger.logObject('changeLogLevel', { level })
         return RCReactNativeIM.changeLogLevel(level);
     }
 
     /**
      *收到消息的监听
      *@param message    接收到的消息对象
-     *@param left       当客户端连接成功后，服务端会将所有补偿消息以消息包的形式下发给客户端，最多每 200 条消息为一个消息包，即一个 Package,
-     *    客户端接受到消息包后，会逐条解析并通知应用。left 为当前消息包（Package）里还剩余的消息条数
+     *@param left       当客户端连接成功后，服务端会将所有补偿消息以消息包的形式下发给客户端，最多每 200 条消息为一个消息包，即一个 Package, 客户端接受到消息包后，会逐条解析并通知应用。left 为当前消息包（Package）里还剩余的消息条数
      *@param offline    消息是否离线消息
      *@param hasPackage 是否在服务端还存在未下发的消息包
      */
-    setOnMessageReceivedListener(listener?: (message: RCIMIWMessage, left: number, offline: boolean, hasPackage: boolean) => void): void {
+    setOnMessageReceivedListener(listener?: (message: RCIMIWMessage, left: number, offline: boolean, hasPackage: boolean) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMessageReceived'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName,
-                                                  (data: {message: RCIMIWMessage, left: number, offline: boolean, hasPackage: boolean}) => {
-                                                      logger.logObject('onMessageReceived', data);
-                                                      listener(data.message, data.left, data.offline, data.hasPackage)
-                                                  })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { message: RCIMIWMessage, left: number, offline: boolean, hasPackage: boolean }) => {
+                logger.logObject('onMessageReceived', data);
+                listener(data.message, data.left, data.offline, data.hasPackage)
+            })
         }
     }
 
@@ -1383,11 +1493,13 @@ export class RCIMIWEngine {
      *网络状态变化
      *@param status SDK 与融云服务器的连接状态
      */
-    setOnConnectionStatusChangedListener(listener?: (status: RCIMIWConnectionStatus) => void): void {
+    setOnConnectionStatusChangedListener(listener?: (status: RCIMIWConnectionStatus) => void): void
+    {
         const eventName = 'IRCIMIWListener:onConnectionStatusChanged'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {status: RCIMIWConnectionStatus}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { status: RCIMIWConnectionStatus }) => {
                 logger.logObject('onConnectionStatusChanged', data);
                 listener(data.status)
             })
@@ -1401,16 +1513,16 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param top       是否置顶
      */
-    setOnConversationTopStatusSyncedListener(listener
-                                             ?: (type: RCIMIWConversationType, targetId: string, channelId: string, top: boolean) => void): void {
+    setOnConversationTopStatusSyncedListener(listener?: (type: RCIMIWConversationType, targetId: string, channelId: string, top: boolean) => void): void
+    {
         const eventName = 'IRCIMIWListener:onConversationTopStatusSynced'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName,
-                                                  (data: {type: RCIMIWConversationType, targetId: string, channelId: string, top: boolean}) => {
-                                                      logger.logObject('onConversationTopStatusSynced', data);
-                                                      listener(data.type, data.targetId, data.channelId, data.top)
-                                                  })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { type: RCIMIWConversationType, targetId: string, channelId: string, top: boolean }) => {
+                logger.logObject('onConversationTopStatusSynced', data);
+                listener(data.type, data.targetId, data.channelId, data.top)
+            })
         }
     }
 
@@ -1418,11 +1530,13 @@ export class RCIMIWEngine {
      *撤回消息监听器
      *@param message 原本的消息会变为撤回消息
      */
-    setOnRemoteMessageRecalledListener(listener?: (message: RCIMIWMessage) => void): void {
+    setOnRemoteMessageRecalledListener(listener?: (message: RCIMIWMessage) => void): void
+    {
         const eventName = 'IRCIMIWListener:onRemoteMessageRecalled'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {message: RCIMIWMessage}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { message: RCIMIWMessage }) => {
                 logger.logObject('onRemoteMessageRecalled', data);
                 listener(data.message)
             })
@@ -1435,11 +1549,13 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param timestamp 已阅读的最后一条消息的 sendTime
      */
-    setOnPrivateReadReceiptReceivedListener(listener?: (targetId: string, channelId: string, timestamp: number) => void): void {
+    setOnPrivateReadReceiptReceivedListener(listener?: (targetId: string, channelId: string, timestamp: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onPrivateReadReceiptReceived'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {targetId: string, channelId: string, timestamp: number}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { targetId: string, channelId: string, timestamp: number }) => {
                 logger.logObject('onPrivateReadReceiptReceived', data);
                 listener(data.targetId, data.channelId, data.timestamp)
             })
@@ -1451,11 +1567,13 @@ export class RCIMIWEngine {
      *@param expansion 消息扩展信息中更新的键值对，只包含更新的键值对，不是全部的数据。如果想获取全部的键值对，请使用 message 的 expansion 属性。
      *@param message   发生变化的消息
      */
-    setOnRemoteMessageExpansionUpdatedListener(listener?: (expansion: Map<string, string>, message: RCIMIWMessage) => void): void {
+    setOnRemoteMessageExpansionUpdatedListener(listener?: (expansion: Map<string, string>, message: RCIMIWMessage) => void): void
+    {
         const eventName = 'IRCIMIWListener:onRemoteMessageExpansionUpdated'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {expansion: any, message: RCIMIWMessage}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { expansion: any, message: RCIMIWMessage }) => {
                 logger.logObject('onRemoteMessageExpansionUpdated', data);
                 let _expansion = new Map<string, string>(Object.entries(data.expansion))
                 listener(_expansion, data.message)
@@ -1468,11 +1586,13 @@ export class RCIMIWEngine {
      *@param message 发生变化的消息
      *@param keys    消息扩展信息中删除的键值对 key 列表
      */
-    setOnRemoteMessageExpansionForKeyRemovedListener(listener?: (message: RCIMIWMessage, keys: Array<string>) => void): void {
+    setOnRemoteMessageExpansionForKeyRemovedListener(listener?: (message: RCIMIWMessage, keys: Array<string>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onRemoteMessageExpansionForKeyRemoved'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {message: RCIMIWMessage, keys: Array<string>}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { message: RCIMIWMessage, keys: Array<string>}) => {
                 logger.logObject('onRemoteMessageExpansionForKeyRemoved', data);
                 listener(data.message, data.keys)
             })
@@ -1484,11 +1604,13 @@ export class RCIMIWEngine {
      *@param targetId 会话 ID
      *@param actions  发生的事件
      */
-    setOnChatRoomMemberChangedListener(listener?: (targetId: string, actions: Array<RCIMIWChatRoomMemberAction>) => void): void {
+    setOnChatRoomMemberChangedListener(listener?: (targetId: string, actions: Array<RCIMIWChatRoomMemberAction>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onChatRoomMemberChanged'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {targetId: string, actions: Array<RCIMIWChatRoomMemberAction>}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { targetId: string, actions: Array<RCIMIWChatRoomMemberAction>}) => {
                 logger.logObject('onChatRoomMemberChanged', data);
                 listener(data.targetId, data.actions)
             })
@@ -1502,17 +1624,16 @@ export class RCIMIWEngine {
      *@param channelId        频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param userTypingStatus 发生状态变化的集合
      */
-    setOnTypingStatusChangedListener(listener?: (type: RCIMIWConversationType, targetId: string, channelId: string,
-                                                 userTypingStatus: Array<RCIMIWTypingStatus>) => void): void {
+    setOnTypingStatusChangedListener(listener?: (type: RCIMIWConversationType, targetId: string, channelId: string, userTypingStatus: Array<RCIMIWTypingStatus>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onTypingStatusChanged'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName,
-                (data: {type: RCIMIWConversationType, targetId: string, channelId: string, userTypingStatus: Array<RCIMIWTypingStatus>}) => {
-                    logger.logObject('onTypingStatusChanged', data);
-                    listener(data.type, data.targetId, data.channelId, data.userTypingStatus)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { type: RCIMIWConversationType, targetId: string, channelId: string, userTypingStatus: Array<RCIMIWTypingStatus>}) => {
+                logger.logObject('onTypingStatusChanged', data);
+                listener(data.type, data.targetId, data.channelId, data.userTypingStatus)
+            })
         }
     }
 
@@ -1520,13 +1641,15 @@ export class RCIMIWEngine {
      *同步消息未读状态监听接口。多端登录，收到其它端清除某一会话未读数通知的时候
      *@param type     会话类型
      *@param targetId 会话 ID
+     *@param timestamp 时间戳
      */
-    setOnConversationReadStatusSyncMessageReceivedListener(listener
-                                                           ?: (type: RCIMIWConversationType, targetId: string, timestamp: number) => void): void {
+    setOnConversationReadStatusSyncMessageReceivedListener(listener?: (type: RCIMIWConversationType, targetId: string, timestamp: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onConversationReadStatusSyncMessageReceived'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {type: RCIMIWConversationType, targetId: string, timestamp: number}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { type: RCIMIWConversationType, targetId: string, timestamp: number }) => {
                 logger.logObject('onConversationReadStatusSyncMessageReceived', data);
                 listener(data.type, data.targetId, data.timestamp)
             })
@@ -1537,11 +1660,13 @@ export class RCIMIWEngine {
      *聊天室 KV 同步完成的回调
      *@param roomId 聊天室 ID
      */
-    setOnChatRoomEntriesSyncedListener(listener?: (roomId: string) => void): void {
+    setOnChatRoomEntriesSyncedListener(listener?: (roomId: string) => void): void
+    {
         const eventName = 'IRCIMIWListener:onChatRoomEntriesSynced'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {roomId: string}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { roomId: string }) => {
                 logger.logObject('onChatRoomEntriesSynced', data);
                 listener(data.roomId)
             })
@@ -1554,17 +1679,17 @@ export class RCIMIWEngine {
      *@param roomId        聊天室 ID
      *@param entries       发送变化的 KV
      */
-    setOnChatRoomEntriesChangedListener(listener?: (operationType: RCIMIWChatRoomEntriesOperationType, roomId: string,
-                                                    entries: Map<string, string>) => void): void {
+    setOnChatRoomEntriesChangedListener(listener?: (operationType: RCIMIWChatRoomEntriesOperationType, roomId: string, entries: Map<string, string>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onChatRoomEntriesChanged'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName,
-                                                  (data: {operationType: RCIMIWChatRoomEntriesOperationType, roomId: string, entries: any}) => {
-                                                      logger.logObject('onChatRoomEntriesChanged', data);
-                                                      let _entries = new Map<string, string>(Object.entries(data.entries))
-                                                      listener(data.operationType, data.roomId, _entries)
-                                                  })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { operationType: RCIMIWChatRoomEntriesOperationType, roomId: string, entries: any }) => {
+                logger.logObject('onChatRoomEntriesChanged', data);
+                let _entries = new Map<string, string>(Object.entries(data.entries))
+                listener(data.operationType, data.roomId, _entries)
+            })
         }
     }
 
@@ -1572,11 +1697,13 @@ export class RCIMIWEngine {
      *超级群消息 kv 被更新
      *@param messages 被更新的消息集合
      */
-    setOnRemoteUltraGroupMessageExpansionUpdatedListener(listener?: (messages: Array<RCIMIWMessage>) => void): void {
+    setOnRemoteUltraGroupMessageExpansionUpdatedListener(listener?: (messages: Array<RCIMIWMessage>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onRemoteUltraGroupMessageExpansionUpdated'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {messages: Array<RCIMIWMessage>}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { messages: Array<RCIMIWMessage>}) => {
                 logger.logObject('onRemoteUltraGroupMessageExpansionUpdated', data);
                 listener(data.messages)
             })
@@ -1587,11 +1714,13 @@ export class RCIMIWEngine {
      *超级群消息被更改
      *@param messages 被更新的消息集合
      */
-    setOnRemoteUltraGroupMessageModifiedListener(listener?: (messages: Array<RCIMIWMessage>) => void): void {
+    setOnRemoteUltraGroupMessageModifiedListener(listener?: (messages: Array<RCIMIWMessage>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onRemoteUltraGroupMessageModified'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {messages: Array<RCIMIWMessage>}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { messages: Array<RCIMIWMessage>}) => {
                 logger.logObject('onRemoteUltraGroupMessageModified', data);
                 listener(data.messages)
             })
@@ -1602,11 +1731,13 @@ export class RCIMIWEngine {
      *超级群消息被撤回
      *@param messages 撤回的消息集合
      */
-    setOnRemoteUltraGroupMessageRecalledListener(listener?: (messages: Array<RCIMIWMessage>) => void): void {
+    setOnRemoteUltraGroupMessageRecalledListener(listener?: (messages: Array<RCIMIWMessage>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onRemoteUltraGroupMessageRecalled'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {messages: Array<RCIMIWMessage>}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { messages: Array<RCIMIWMessage>}) => {
                 logger.logObject('onRemoteUltraGroupMessageRecalled', data);
                 listener(data.messages)
             })
@@ -1619,11 +1750,13 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param timestamp
      */
-    setOnUltraGroupReadTimeReceivedListener(listener?: (targetId: string, channelId: string, timestamp: number) => void): void {
+    setOnUltraGroupReadTimeReceivedListener(listener?: (targetId: string, channelId: string, timestamp: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUltraGroupReadTimeReceived'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {targetId: string, channelId: string, timestamp: number}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { targetId: string, channelId: string, timestamp: number }) => {
                 logger.logObject('onUltraGroupReadTimeReceived', data);
                 listener(data.targetId, data.channelId, data.timestamp)
             })
@@ -1635,11 +1768,13 @@ export class RCIMIWEngine {
      *当客户端收到用户输入状态的变化时，会回调此接口，通知发生变化的会话以及当前正在输入的RCUltraGroupTypingStatusInfo列表
      *@param info 正在输入的RCUltraGroupTypingStatusInfo列表（nil标示当前没有用户正在输入）
      */
-    setOnUltraGroupTypingStatusChangedListener(listener?: (info: Array<RCIMIWUltraGroupTypingStatusInfo>) => void): void {
+    setOnUltraGroupTypingStatusChangedListener(listener?: (info: Array<RCIMIWUltraGroupTypingStatusInfo>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUltraGroupTypingStatusChanged'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {info: Array<RCIMIWUltraGroupTypingStatusInfo>}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { info: Array<RCIMIWUltraGroupTypingStatusInfo>}) => {
                 logger.logObject('onUltraGroupTypingStatusChanged', data);
                 listener(data.info)
             })
@@ -1650,11 +1785,13 @@ export class RCIMIWEngine {
      *发送含有敏感词消息被拦截的回调
      *@param info 被拦截消息的相关信息
      */
-    setOnMessageBlockedListener(listener?: (info: RCIMIWBlockedMessageInfo) => void): void {
+    setOnMessageBlockedListener(listener?: (info: RCIMIWBlockedMessageInfo) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMessageBlocked'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {info: RCIMIWBlockedMessageInfo}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { info: RCIMIWBlockedMessageInfo }) => {
                 logger.logObject('onMessageBlocked', data);
                 listener(data.info)
             })
@@ -1666,11 +1803,13 @@ export class RCIMIWEngine {
      *@param targetId 会话 ID
      *@param status   聊天室变化的状态
      */
-    setOnChatRoomStatusChangedListener(listener?: (targetId: string, status: RCIMIWChatRoomStatus) => void): void {
+    setOnChatRoomStatusChangedListener(listener?: (targetId: string, status: RCIMIWChatRoomStatus) => void): void
+    {
         const eventName = 'IRCIMIWListener:onChatRoomStatusChanged'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {targetId: string, status: RCIMIWChatRoomStatus}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { targetId: string, status: RCIMIWChatRoomStatus }) => {
                 logger.logObject('onChatRoomStatusChanged', data);
                 listener(data.targetId, data.status)
             })
@@ -1682,11 +1821,13 @@ export class RCIMIWEngine {
      *@param targetId   会话 ID
      *@param messageUId 消息的 messageUid
      */
-    setOnGroupMessageReadReceiptRequestReceivedListener(listener?: (targetId: string, messageUId: string) => void): void {
+    setOnGroupMessageReadReceiptRequestReceivedListener(listener?: (targetId: string, messageUId: string) => void): void
+    {
         const eventName = 'IRCIMIWListener:onGroupMessageReadReceiptRequestReceived'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {targetId: string, messageUId: string}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { targetId: string, messageUId: string }) => {
                 logger.logObject('onGroupMessageReadReceiptRequestReceived', data);
                 listener(data.targetId, data.messageUId)
             })
@@ -1699,12 +1840,13 @@ export class RCIMIWEngine {
      *@param messageUId     收到回执响应的消息的 messageUId
      *@param respondUserIds 会话中响应了此消息的用户列表。其中 key： 用户 id ； value： 响应时间。
      */
-    setOnGroupMessageReadReceiptResponseReceivedListener(listener?: (targetId: string, messageUId: string,
-                                                                     respondUserIds: Map<string, number>) => void): void {
+    setOnGroupMessageReadReceiptResponseReceivedListener(listener?: (targetId: string, messageUId: string, respondUserIds: Map<string, number>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onGroupMessageReadReceiptResponseReceived'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {targetId: string, messageUId: string, respondUserIds: any}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { targetId: string, messageUId: string, respondUserIds: any }) => {
                 logger.logObject('onGroupMessageReadReceiptResponseReceived', data);
                 let _respondUserIds = new Map<string, number>(Object.entries(data.respondUserIds))
                 listener(data.targetId, data.messageUId, _respondUserIds)
@@ -1717,11 +1859,13 @@ export class RCIMIWEngine {
      *@param code   接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param userId 链接成功的用户 ID
      */
-    setOnConnectedListener(listener?: (code: number, userId: string) => void): void {
+    setOnConnectedListener(listener?: (code: number, userId: string) => void): void
+    {
         const eventName = 'IRCIMIWListener:onConnected'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, userId: string}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, userId: string }) => {
                 logger.logObject('onConnected', data);
                 listener(data.code, data.userId)
             })
@@ -1732,11 +1876,13 @@ export class RCIMIWEngine {
      *{@link connect} 的接口监听，数据库打开时发生的回调
      *@param code 接口回调的状态码，0 代表成功，非 0 代表出现异常
      */
-    setOnDatabaseOpenedListener(listener?: (code: number) => void): void {
+    setOnDatabaseOpenedListener(listener?: (code: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onDatabaseOpened'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number }) => {
                 logger.logObject('onDatabaseOpened', data);
                 listener(data.code)
             })
@@ -1751,17 +1897,16 @@ export class RCIMIWEngine {
      *@param channelId    频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param conversation 获取到的会话
      */
-    setOnConversationLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string,
-                                                conversation: RCIMIWConversation) => void): void {
+    setOnConversationLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, conversation: RCIMIWConversation) => void): void
+    {
         const eventName = 'IRCIMIWListener:onConversationLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName,
-                (data: {code: number, type: RCIMIWConversationType, targetId: string, channelId: string, conversation: RCIMIWConversation}) => {
-                    logger.logObject('onConversationLoaded', data);
-                    listener(data.code, data.type, data.targetId, data.channelId, data.conversation)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, conversation: RCIMIWConversation }) => {
+                logger.logObject('onConversationLoaded', data);
+                listener(data.code, data.type, data.targetId, data.channelId, data.conversation)
+            })
         }
     }
 
@@ -1774,19 +1919,13 @@ export class RCIMIWEngine {
      *@param count             查询的数量
      *@param conversations     查询到的会话集合
      */
-    setOnConversationsLoadedListener(listener?: (code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string, startTime: number,
-                                                 count: number, conversations: Array<RCIMIWConversation>) => void): void {
+    setOnConversationsLoadedListener(listener?: (code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string, startTime: number, count: number, conversations: Array<RCIMIWConversation>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onConversationsLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {
-                                                                 code: number,
-                                                                 conversationTypes: Array<RCIMIWConversationType>,
-                                                                 channelId: string,
-                                                                 startTime: number,
-                                                                 count: number,
-                                                                 conversations: Array<RCIMIWConversation>
-                                                             }) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string, startTime: number, count: number, conversations: Array<RCIMIWConversation>}) => {
                 logger.logObject('onConversationsLoaded', data);
                 listener(data.code, data.conversationTypes, data.channelId, data.startTime, data.count, data.conversations)
             })
@@ -1800,31 +1939,34 @@ export class RCIMIWEngine {
      *@param targetId  会话 ID
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      */
-    setOnConversationRemovedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string) => void): void {
+    setOnConversationRemovedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string) => void): void
+    {
         const eventName = 'IRCIMIWListener:onConversationRemoved'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName,
-                                                  (data: {code: number, type: RCIMIWConversationType, targetId: string, channelId: string}) => {
-                                                      logger.logObject('onConversationRemoved', data);
-                                                      listener(data.code, data.type, data.targetId, data.channelId)
-                                                  })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string }) => {
+                logger.logObject('onConversationRemoved', data);
+                listener(data.code, data.type, data.targetId, data.channelId)
+            })
         }
     }
 
     /**
      *{@link removeConversations} 的接口监听
-     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
-     *@param types     会话类型集合
-     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param code              接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param conversationTypes 会话类型集合
+     *@param channelId         频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      */
-    setOnConversationsRemovedListener(listener?: (code: number, types: Array<RCIMIWConversationType>, channelId: string) => void): void {
+    setOnConversationsRemovedListener(listener?: (code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string) => void): void
+    {
         const eventName = 'IRCIMIWListener:onConversationsRemoved'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, types: Array<RCIMIWConversationType>, channelId: string}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string }) => {
                 logger.logObject('onConversationsRemoved', data);
-                listener(data.code, data.types, data.channelId)
+                listener(data.code, data.conversationTypes, data.channelId)
             })
         }
     }
@@ -1835,11 +1977,13 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param count     未读数量
      */
-    setOnTotalUnreadCountLoadedListener(listener?: (code: number, channelId: string, count: number) => void): void {
+    setOnTotalUnreadCountLoadedListener(listener?: (code: number, channelId: string, count: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onTotalUnreadCountLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, channelId: string, count: number}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, channelId: string, count: number }) => {
                 logger.logObject('onTotalUnreadCountLoaded', data);
                 listener(data.code, data.channelId, data.count)
             })
@@ -1854,37 +1998,37 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param count     未读数量
      */
-    setOnUnreadCountLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string,
-                                               count: number) => void): void {
+    setOnUnreadCountLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, count: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUnreadCountLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName, (data: {code: number, type: RCIMIWConversationType, targetId: string, channelId: string, count: number}) => {
-                    logger.logObject('onUnreadCountLoaded', data);
-                    listener(data.code, data.type, data.targetId, data.channelId, data.count)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, count: number }) => {
+                logger.logObject('onUnreadCountLoaded', data);
+                listener(data.code, data.type, data.targetId, data.channelId, data.count)
+            })
         }
     }
 
     /**
      *{@link loadUnreadCountByConversationTypes} 的接口监听
-     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
-     *@param types     会话类型集合
-     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
-     *@param contain   是否包含免打扰消息的未读消息数。
-     *@param count     未读数量
+     *@param code              接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param conversationTypes 会话类型集合
+     *@param channelId         频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param contain           是否包含免打扰消息的未读消息数。
+     *@param count             未读数量
      */
-    setOnUnreadCountByConversationTypesLoadedListener(listener?: (code: number, types: Array<RCIMIWConversationType>, channelId: string,
-                                                                  contain: boolean, count: number) => void): void {
+    setOnUnreadCountByConversationTypesLoadedListener(listener?: (code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string, contain: boolean, count: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUnreadCountByConversationTypesLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName, (data: {code: number, types: Array<RCIMIWConversationType>, channelId: string, contain: boolean, count: number}) => {
-                    logger.logObject('onUnreadCountByConversationTypesLoaded', data);
-                    listener(data.code, data.types, data.channelId, data.contain, data.count)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string, contain: boolean, count: number }) => {
+                logger.logObject('onUnreadCountByConversationTypesLoaded', data);
+                listener(data.code, data.conversationTypes, data.channelId, data.contain, data.count)
+            })
         }
     }
 
@@ -1896,16 +2040,16 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param count     未读数量
      */
-    setOnUnreadMentionedCountLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string,
-                                                        count: number) => void): void {
+    setOnUnreadMentionedCountLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, count: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUnreadMentionedCountLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName, (data: {code: number, type: RCIMIWConversationType, targetId: string, channelId: string, count: number}) => {
-                    logger.logObject('onUnreadMentionedCountLoaded', data);
-                    listener(data.code, data.type, data.targetId, data.channelId, data.count)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, count: number }) => {
+                logger.logObject('onUnreadMentionedCountLoaded', data);
+                listener(data.code, data.type, data.targetId, data.channelId, data.count)
+            })
         }
     }
 
@@ -1914,11 +2058,13 @@ export class RCIMIWEngine {
      *@param code  接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param count 未读数量
      */
-    setOnUltraGroupAllUnreadCountLoadedListener(listener?: (code: number, count: number) => void): void {
+    setOnUltraGroupAllUnreadCountLoadedListener(listener?: (code: number, count: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUltraGroupAllUnreadCountLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, count: number}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, count: number }) => {
                 logger.logObject('onUltraGroupAllUnreadCountLoaded', data);
                 listener(data.code, data.count)
             })
@@ -1930,11 +2076,13 @@ export class RCIMIWEngine {
      *@param code  接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param count 未读数量
      */
-    setOnUltraGroupAllUnreadMentionedCountLoadedListener(listener?: (code: number, count: number) => void): void {
+    setOnUltraGroupAllUnreadMentionedCountLoadedListener(listener?: (code: number, count: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUltraGroupAllUnreadMentionedCountLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, count: number}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, count: number }) => {
                 logger.logObject('onUltraGroupAllUnreadMentionedCountLoaded', data);
                 listener(data.code, data.count)
             })
@@ -1949,16 +2097,16 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param timestamp 该会话已阅读的最后一条消息的发送时间戳
      */
-    setOnUnreadCountClearedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string,
-                                                timestamp: number) => void): void {
+    setOnUnreadCountClearedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, timestamp: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUnreadCountCleared'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName, (data: {code: number, type: RCIMIWConversationType, targetId: string, channelId: string, timestamp: number}) => {
-                    logger.logObject('onUnreadCountCleared', data);
-                    listener(data.code, data.type, data.targetId, data.channelId, data.timestamp)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, timestamp: number }) => {
+                logger.logObject('onUnreadCountCleared', data);
+                listener(data.code, data.type, data.targetId, data.channelId, data.timestamp)
+            })
         }
     }
 
@@ -1970,16 +2118,16 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param draft     草稿信息
      */
-    setOnDraftMessageSavedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string,
-                                               draft: string) => void): void {
+    setOnDraftMessageSavedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, draft: string) => void): void
+    {
         const eventName = 'IRCIMIWListener:onDraftMessageSaved'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName, (data: {code: number, type: RCIMIWConversationType, targetId: string, channelId: string, draft: string}) => {
-                    logger.logObject('onDraftMessageSaved', data);
-                    listener(data.code, data.type, data.targetId, data.channelId, data.draft)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, draft: string }) => {
+                logger.logObject('onDraftMessageSaved', data);
+                listener(data.code, data.type, data.targetId, data.channelId, data.draft)
+            })
         }
     }
 
@@ -1990,15 +2138,16 @@ export class RCIMIWEngine {
      *@param targetId  会话 ID
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      */
-    setOnDraftMessageClearedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string) => void): void {
+    setOnDraftMessageClearedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string) => void): void
+    {
         const eventName = 'IRCIMIWListener:onDraftMessageCleared'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName,
-                                                  (data: {code: number, type: RCIMIWConversationType, targetId: string, channelId: string}) => {
-                                                      logger.logObject('onDraftMessageCleared', data);
-                                                      listener(data.code, data.type, data.targetId, data.channelId)
-                                                  })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string }) => {
+                logger.logObject('onDraftMessageCleared', data);
+                listener(data.code, data.type, data.targetId, data.channelId)
+            })
         }
     }
 
@@ -2010,37 +2159,36 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param draft     草稿信息
      */
-    setOnDraftMessageLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string,
-                                                draft: string) => void): void {
+    setOnDraftMessageLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, draft: string) => void): void
+    {
         const eventName = 'IRCIMIWListener:onDraftMessageLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName, (data: {code: number, type: RCIMIWConversationType, targetId: string, channelId: string, draft: string}) => {
-                    logger.logObject('onDraftMessageLoaded', data);
-                    listener(data.code, data.type, data.targetId, data.channelId, data.draft)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, draft: string }) => {
+                logger.logObject('onDraftMessageLoaded', data);
+                listener(data.code, data.type, data.targetId, data.channelId, data.draft)
+            })
         }
     }
 
     /**
      *{@link loadBlockedConversations} 的接口监听
-     *@param code          接口回调的状态码，0 代表成功，非 0 代表出现异常
-     *@param types         会话类型集合
-     *@param channelId     频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
-     *@param conversations 获取到的会话集合
+     *@param code              接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param conversationTypes 会话类型集合
+     *@param channelId         频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param conversations     获取到的会话集合
      */
-    setOnBlockedConversationsLoadedListener(listener?: (code: number, types: Array<RCIMIWConversationType>, channelId: string,
-                                                        conversations: Array<RCIMIWConversation>) => void): void {
+    setOnBlockedConversationsLoadedListener(listener?: (code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string, conversations: Array<RCIMIWConversation>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onBlockedConversationsLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName,
-                (data: {code: number, types: Array<RCIMIWConversationType>, channelId: string, conversations: Array<RCIMIWConversation>}) => {
-                    logger.logObject('onBlockedConversationsLoaded', data);
-                    listener(data.code, data.types, data.channelId, data.conversations)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string, conversations: Array<RCIMIWConversation>}) => {
+                logger.logObject('onBlockedConversationsLoaded', data);
+                listener(data.code, data.conversationTypes, data.channelId, data.conversations)
+            })
         }
     }
 
@@ -2052,16 +2200,16 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param top       是否置顶
      */
-    setOnConversationTopStatusChangedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string,
-                                                          top: boolean) => void): void {
+    setOnConversationTopStatusChangedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, top: boolean) => void): void
+    {
         const eventName = 'IRCIMIWListener:onConversationTopStatusChanged'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName, (data: {code: number, type: RCIMIWConversationType, targetId: string, channelId: string, top: boolean}) => {
-                    logger.logObject('onConversationTopStatusChanged', data);
-                    listener(data.code, data.type, data.targetId, data.channelId, data.top)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, top: boolean }) => {
+                logger.logObject('onConversationTopStatusChanged', data);
+                listener(data.code, data.type, data.targetId, data.channelId, data.top)
+            })
         }
     }
 
@@ -2073,16 +2221,16 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param top       是否置顶
      */
-    setOnConversationTopStatusLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string,
-                                                         top: boolean) => void): void {
+    setOnConversationTopStatusLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, top: boolean) => void): void
+    {
         const eventName = 'IRCIMIWListener:onConversationTopStatusLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName, (data: {code: number, type: RCIMIWConversationType, targetId: string, channelId: string, top: boolean}) => {
-                    logger.logObject('onConversationTopStatusLoaded', data);
-                    listener(data.code, data.type, data.targetId, data.channelId, data.top)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, top: boolean }) => {
+                logger.logObject('onConversationTopStatusLoaded', data);
+                listener(data.code, data.type, data.targetId, data.channelId, data.top)
+            })
         }
     }
 
@@ -2094,16 +2242,16 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param timestamp 会话中已读的最后一条消息的发送时间戳
      */
-    setOnConversationReadStatusSyncedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string,
-                                                          timestamp: number) => void): void {
+    setOnConversationReadStatusSyncedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, timestamp: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onConversationReadStatusSynced'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName, (data: {code: number, type: RCIMIWConversationType, targetId: string, channelId: string, timestamp: number}) => {
-                    logger.logObject('onConversationReadStatusSynced', data);
-                    listener(data.code, data.type, data.targetId, data.channelId, data.timestamp)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, timestamp: number }) => {
+                logger.logObject('onConversationReadStatusSynced', data);
+                listener(data.code, data.type, data.targetId, data.channelId, data.timestamp)
+            })
         }
     }
 
@@ -2111,11 +2259,13 @@ export class RCIMIWEngine {
      *{@link sendMessage} 的接口监听
      *@param message 发送的消息
      */
-    setOnMessageAttachedListener(listener?: (message: RCIMIWMessage) => void): void {
+    setOnMessageAttachedListener(listener?: (message: RCIMIWMessage) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMessageAttached'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {message: RCIMIWMessage}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { message: RCIMIWMessage }) => {
                 logger.logObject('onMessageAttached', data);
                 listener(data.message)
             })
@@ -2127,11 +2277,13 @@ export class RCIMIWEngine {
      *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param message 发送的消息
      */
-    setOnMessageSentListener(listener?: (code: number, message: RCIMIWMessage) => void): void {
+    setOnMessageSentListener(listener?: (code: number, message: RCIMIWMessage) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMessageSent'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, message: RCIMIWMessage}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, message: RCIMIWMessage }) => {
                 logger.logObject('onMessageSent', data);
                 listener(data.code, data.message)
             })
@@ -2142,11 +2294,13 @@ export class RCIMIWEngine {
      *{@link sendMediaMessage} 的接口监听
      *@param message 发送的消息
      */
-    setOnMediaMessageAttachedListener(listener?: (message: RCIMIWMediaMessage) => void): void {
+    setOnMediaMessageAttachedListener(listener?: (message: RCIMIWMediaMessage) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMediaMessageAttached'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {message: RCIMIWMediaMessage}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { message: RCIMIWMediaMessage }) => {
                 logger.logObject('onMediaMessageAttached', data);
                 listener(data.message)
             })
@@ -2158,11 +2312,13 @@ export class RCIMIWEngine {
      *@param message  发送的消息
      *@param progress 发送的进度
      */
-    setOnMediaMessageSendingListener(listener?: (message: RCIMIWMediaMessage, progress: number) => void): void {
+    setOnMediaMessageSendingListener(listener?: (message: RCIMIWMediaMessage, progress: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMediaMessageSending'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {message: RCIMIWMediaMessage, progress: number}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { message: RCIMIWMediaMessage, progress: number }) => {
                 logger.logObject('onMediaMessageSending', data);
                 listener(data.message, data.progress)
             })
@@ -2174,11 +2330,13 @@ export class RCIMIWEngine {
      *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param message 发送的消息
      */
-    setOnSendingMediaMessageCanceledListener(listener?: (code: number, message: RCIMIWMediaMessage) => void): void {
+    setOnSendingMediaMessageCanceledListener(listener?: (code: number, message: RCIMIWMediaMessage) => void): void
+    {
         const eventName = 'IRCIMIWListener:onSendingMediaMessageCanceled'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, message: RCIMIWMediaMessage}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, message: RCIMIWMediaMessage }) => {
                 logger.logObject('onSendingMediaMessageCanceled', data);
                 listener(data.code, data.message)
             })
@@ -2190,11 +2348,13 @@ export class RCIMIWEngine {
      *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param message 发送的消息
      */
-    setOnMediaMessageSentListener(listener?: (code: number, message: RCIMIWMediaMessage) => void): void {
+    setOnMediaMessageSentListener(listener?: (code: number, message: RCIMIWMediaMessage) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMediaMessageSent'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, message: RCIMIWMediaMessage}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, message: RCIMIWMediaMessage }) => {
                 logger.logObject('onMediaMessageSent', data);
                 listener(data.code, data.message)
             })
@@ -2206,11 +2366,13 @@ export class RCIMIWEngine {
      *@param message  下载的消息
      *@param progress 下载的进度
      */
-    setOnMediaMessageDownloadingListener(listener?: (message: RCIMIWMediaMessage, progress: number) => void): void {
+    setOnMediaMessageDownloadingListener(listener?: (message: RCIMIWMediaMessage, progress: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMediaMessageDownloading'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {message: RCIMIWMediaMessage, progress: number}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { message: RCIMIWMediaMessage, progress: number }) => {
                 logger.logObject('onMediaMessageDownloading', data);
                 listener(data.message, data.progress)
             })
@@ -2222,11 +2384,13 @@ export class RCIMIWEngine {
      *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param message 下载的消息
      */
-    setOnMediaMessageDownloadedListener(listener?: (code: number, message: RCIMIWMediaMessage) => void): void {
+    setOnMediaMessageDownloadedListener(listener?: (code: number, message: RCIMIWMediaMessage) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMediaMessageDownloaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, message: RCIMIWMediaMessage}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, message: RCIMIWMediaMessage }) => {
                 logger.logObject('onMediaMessageDownloaded', data);
                 listener(data.code, data.message)
             })
@@ -2238,11 +2402,13 @@ export class RCIMIWEngine {
      *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param message 取消下载的消息
      */
-    setOnDownloadingMediaMessageCanceledListener(listener?: (code: number, message: RCIMIWMediaMessage) => void): void {
+    setOnDownloadingMediaMessageCanceledListener(listener?: (code: number, message: RCIMIWMediaMessage) => void): void
+    {
         const eventName = 'IRCIMIWListener:onDownloadingMediaMessageCanceled'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, message: RCIMIWMediaMessage}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, message: RCIMIWMediaMessage }) => {
                 logger.logObject('onDownloadingMediaMessageCanceled', data);
                 listener(data.code, data.message)
             })
@@ -2259,20 +2425,13 @@ export class RCIMIWEngine {
      *@param order     获取消息的方向。BEFORE：获取 sentTime 之前的消息 （时间递减），AFTER：获取 sentTime 之后的消息 （时间递增）
      *@param messages  获取到的消息集合
      */
-    setOnMessagesLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, sentTime: number,
-                                            order: RCIMIWTimeOrder, messages: Array<RCIMIWMessage>) => void): void {
+    setOnMessagesLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, sentTime: number, order: RCIMIWTimeOrder, messages: Array<RCIMIWMessage>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMessagesLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {
-                                                                 code: number,
-                                                                 type: RCIMIWConversationType,
-                                                                 targetId: string,
-                                                                 channelId: string,
-                                                                 sentTime: number,
-                                                                 order: RCIMIWTimeOrder,
-                                                                 messages: Array<RCIMIWMessage>
-                                                             }) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, sentTime: number, order: RCIMIWTimeOrder, messages: Array<RCIMIWMessage>}) => {
                 logger.logObject('onMessagesLoaded', data);
                 listener(data.code, data.type, data.targetId, data.channelId, data.sentTime, data.order, data.messages)
             })
@@ -2287,17 +2446,16 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param messages  获取到的消息集合
      */
-    setOnUnreadMentionedMessagesLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string,
-                                                           messages: Array<RCIMIWMessage>) => void): void {
+    setOnUnreadMentionedMessagesLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, messages: Array<RCIMIWMessage>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUnreadMentionedMessagesLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName,
-                (data: {code: number, type: RCIMIWConversationType, targetId: string, channelId: string, messages: Array<RCIMIWMessage>}) => {
-                    logger.logObject('onUnreadMentionedMessagesLoaded', data);
-                    listener(data.code, data.type, data.targetId, data.channelId, data.messages)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, messages: Array<RCIMIWMessage>}) => {
+                logger.logObject('onUnreadMentionedMessagesLoaded', data);
+                listener(data.code, data.type, data.targetId, data.channelId, data.messages)
+            })
         }
     }
 
@@ -2309,16 +2467,16 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param message   获取到的消息
      */
-    setOnFirstUnreadMessageLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string,
-                                                      message: RCIMIWMessage) => void): void {
+    setOnFirstUnreadMessageLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, message: RCIMIWMessage) => void): void
+    {
         const eventName = 'IRCIMIWListener:onFirstUnreadMessageLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName, (data: {code: number, type: RCIMIWConversationType, targetId: string, channelId: string, message: RCIMIWMessage}) => {
-                    logger.logObject('onFirstUnreadMessageLoaded', data);
-                    listener(data.code, data.type, data.targetId, data.channelId, data.message)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, message: RCIMIWMessage }) => {
+                logger.logObject('onFirstUnreadMessageLoaded', data);
+                listener(data.code, data.type, data.targetId, data.channelId, data.message)
+            })
         }
     }
 
@@ -2327,11 +2485,13 @@ export class RCIMIWEngine {
      *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param message 插入的消息
      */
-    setOnMessageInsertedListener(listener?: (code: number, message: RCIMIWMessage) => void): void {
+    setOnMessageInsertedListener(listener?: (code: number, message: RCIMIWMessage) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMessageInserted'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, message: RCIMIWMessage}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, message: RCIMIWMessage }) => {
                 logger.logObject('onMessageInserted', data);
                 listener(data.code, data.message)
             })
@@ -2343,11 +2503,13 @@ export class RCIMIWEngine {
      *@param code     接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param messages 插入的消息集合
      */
-    setOnMessagesInsertedListener(listener?: (code: number, messages: Array<RCIMIWMessage>) => void): void {
+    setOnMessagesInsertedListener(listener?: (code: number, messages: Array<RCIMIWMessage>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMessagesInserted'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, messages: Array<RCIMIWMessage>}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, messages: Array<RCIMIWMessage>}) => {
                 logger.logObject('onMessagesInserted', data);
                 listener(data.code, data.messages)
             })
@@ -2362,16 +2524,16 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param timestamp 时间戳
      */
-    setOnMessageClearedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string,
-                                            timestamp: number) => void): void {
+    setOnMessageClearedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, timestamp: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMessageCleared'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName, (data: {code: number, type: RCIMIWConversationType, targetId: string, channelId: string, timestamp: number}) => {
-                    logger.logObject('onMessageCleared', data);
-                    listener(data.code, data.type, data.targetId, data.channelId, data.timestamp)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, timestamp: number }) => {
+                logger.logObject('onMessageCleared', data);
+                listener(data.code, data.type, data.targetId, data.channelId, data.timestamp)
+            })
         }
     }
 
@@ -2380,11 +2542,13 @@ export class RCIMIWEngine {
      *@param code     接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param messages 删除的消息集合
      */
-    setOnLocalMessagesDeletedListener(listener?: (code: number, messages: Array<RCIMIWMessage>) => void): void {
+    setOnLocalMessagesDeletedListener(listener?: (code: number, messages: Array<RCIMIWMessage>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onLocalMessagesDeleted'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, messages: Array<RCIMIWMessage>}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, messages: Array<RCIMIWMessage>}) => {
                 logger.logObject('onLocalMessagesDeleted', data);
                 listener(data.code, data.messages)
             })
@@ -2399,17 +2563,16 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param messages  删除的消息集合
      */
-    setOnMessagesDeletedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string,
-                                             messages: Array<RCIMIWMessage>) => void): void {
+    setOnMessagesDeletedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, messages: Array<RCIMIWMessage>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMessagesDeleted'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName,
-                (data: {code: number, type: RCIMIWConversationType, targetId: string, channelId: string, messages: Array<RCIMIWMessage>}) => {
-                    logger.logObject('onMessagesDeleted', data);
-                    listener(data.code, data.type, data.targetId, data.channelId, data.messages)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, messages: Array<RCIMIWMessage>}) => {
+                logger.logObject('onMessagesDeleted', data);
+                listener(data.code, data.type, data.targetId, data.channelId, data.messages)
+            })
         }
     }
 
@@ -2418,11 +2581,13 @@ export class RCIMIWEngine {
      *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param message 撤回的消息
      */
-    setOnMessageRecalledListener(listener?: (code: number, message: RCIMIWMessage) => void): void {
+    setOnMessageRecalledListener(listener?: (code: number, message: RCIMIWMessage) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMessageRecalled'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, message: RCIMIWMessage}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, message: RCIMIWMessage }) => {
                 logger.logObject('onMessageRecalled', data);
                 listener(data.code, data.message)
             })
@@ -2436,11 +2601,13 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param timestamp 时间戳
      */
-    setOnPrivateReadReceiptMessageSentListener(listener?: (code: number, targetId: string, channelId: string, timestamp: number) => void): void {
+    setOnPrivateReadReceiptMessageSentListener(listener?: (code: number, targetId: string, channelId: string, timestamp: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onPrivateReadReceiptMessageSent'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, targetId: string, channelId: string, timestamp: number}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, channelId: string, timestamp: number }) => {
                 logger.logObject('onPrivateReadReceiptMessageSent', data);
                 listener(data.code, data.targetId, data.channelId, data.timestamp)
             })
@@ -2453,11 +2620,13 @@ export class RCIMIWEngine {
      *@param messageUId 消息的 messageUid
      *@param expansion  要更新的消息扩展信息键值对，类型是 HashMap
      */
-    setOnMessageExpansionUpdatedListener(listener?: (code: number, messageUId: string, expansion: Map<string, string>) => void): void {
+    setOnMessageExpansionUpdatedListener(listener?: (code: number, messageUId: string, expansion: Map<string, string>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMessageExpansionUpdated'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, messageUId: string, expansion: any}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, messageUId: string, expansion: any }) => {
                 logger.logObject('onMessageExpansionUpdated', data);
                 let _expansion = new Map<string, string>(Object.entries(data.expansion))
                 listener(data.code, data.messageUId, _expansion)
@@ -2471,11 +2640,13 @@ export class RCIMIWEngine {
      *@param messageUId 消息的 messageUid
      *@param keys       消息扩展信息中待删除的 key 的列表，类型是 ArrayList
      */
-    setOnMessageExpansionForKeysRemovedListener(listener?: (code: number, messageUId: string, keys: Array<string>) => void): void {
+    setOnMessageExpansionForKeysRemovedListener(listener?: (code: number, messageUId: string, keys: Array<string>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMessageExpansionForKeysRemoved'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, messageUId: string, keys: Array<string>}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, messageUId: string, keys: Array<string>}) => {
                 logger.logObject('onMessageExpansionForKeysRemoved', data);
                 listener(data.code, data.messageUId, data.keys)
             })
@@ -2487,11 +2658,13 @@ export class RCIMIWEngine {
      *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param messageId 消息的 messageId
      */
-    setOnMessageReceiveStatusChangedListener(listener?: (code: number, messageId: number) => void): void {
+    setOnMessageReceiveStatusChangedListener(listener?: (code: number, messageId: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMessageReceiveStatusChanged'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, messageId: number}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, messageId: number }) => {
                 logger.logObject('onMessageReceiveStatusChanged', data);
                 listener(data.code, data.messageId)
             })
@@ -2503,11 +2676,13 @@ export class RCIMIWEngine {
      *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param messageId 消息的 messageId
      */
-    setOnMessageSentStatusChangedListener(listener?: (code: number, messageId: number) => void): void {
+    setOnMessageSentStatusChangedListener(listener?: (code: number, messageId: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMessageSentStatusChanged'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, messageId: number}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, messageId: number }) => {
                 logger.logObject('onMessageSentStatusChanged', data);
                 listener(data.code, data.messageId)
             })
@@ -2516,13 +2691,16 @@ export class RCIMIWEngine {
 
     /**
      *{@link joinChatRoom} 的接口监听
+     *@param code 接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param targetId 会话 ID
      */
-    setOnChatRoomJoinedListener(listener?: (code: number, targetId: string) => void): void {
+    setOnChatRoomJoinedListener(listener?: (code: number, targetId: string) => void): void
+    {
         const eventName = 'IRCIMIWListener:onChatRoomJoined'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, targetId: string}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string }) => {
                 logger.logObject('onChatRoomJoined', data);
                 listener(data.code, data.targetId)
             })
@@ -2533,11 +2711,13 @@ export class RCIMIWEngine {
      *正在加入聊天室的回调
      *@param targetId 聊天室 ID
      */
-    setOnChatRoomJoiningListener(listener?: (targetId: string) => void): void {
+    setOnChatRoomJoiningListener(listener?: (targetId: string) => void): void
+    {
         const eventName = 'IRCIMIWListener:onChatRoomJoining'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {targetId: string}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { targetId: string }) => {
                 logger.logObject('onChatRoomJoining', data);
                 listener(data.targetId)
             })
@@ -2546,13 +2726,16 @@ export class RCIMIWEngine {
 
     /**
      *{@link leaveChatRoom} 的接口监听
+     *@param code 接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param targetId 会话 ID
      */
-    setOnChatRoomLeftListener(listener?: (code: number, targetId: string) => void): void {
+    setOnChatRoomLeftListener(listener?: (code: number, targetId: string) => void): void
+    {
         const eventName = 'IRCIMIWListener:onChatRoomLeft'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, targetId: string}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string }) => {
                 logger.logObject('onChatRoomLeft', data);
                 listener(data.code, data.targetId)
             })
@@ -2566,15 +2749,16 @@ export class RCIMIWEngine {
      *@param messages 加载到的消息
      *@param syncTime 下次拉取的时间戳
      */
-    setOnChatRoomMessagesLoadedListener(listener?: (code: number, targetId: string, messages: Array<RCIMIWMessage>, syncTime: number) => void): void {
+    setOnChatRoomMessagesLoadedListener(listener?: (code: number, targetId: string, messages: Array<RCIMIWMessage>, syncTime: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onChatRoomMessagesLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName,
-                                                  (data: {code: number, targetId: string, messages: Array<RCIMIWMessage>, syncTime: number}) => {
-                                                      logger.logObject('onChatRoomMessagesLoaded', data);
-                                                      listener(data.code, data.targetId, data.messages, data.syncTime)
-                                                  })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, messages: Array<RCIMIWMessage>, syncTime: number }) => {
+                logger.logObject('onChatRoomMessagesLoaded', data);
+                listener(data.code, data.targetId, data.messages, data.syncTime)
+            })
         }
     }
 
@@ -2584,11 +2768,13 @@ export class RCIMIWEngine {
      *@param targetId 会话 ID
      *@param key      聊天室属性名称
      */
-    setOnChatRoomEntryAddedListener(listener?: (code: number, targetId: string, key: string) => void): void {
+    setOnChatRoomEntryAddedListener(listener?: (code: number, targetId: string, key: string) => void): void
+    {
         const eventName = 'IRCIMIWListener:onChatRoomEntryAdded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, targetId: string, key: string}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, key: string }) => {
                 logger.logObject('onChatRoomEntryAdded', data);
                 listener(data.code, data.targetId, data.key)
             })
@@ -2602,12 +2788,13 @@ export class RCIMIWEngine {
      *@param entries      聊天室属性
      *@param errorEntries 发生错误的属性
      */
-    setOnChatRoomEntriesAddedListener(listener?: (code: number, targetId: string, entries: Map<string, string>,
-                                                  errorEntries: Map<string, number>) => void): void {
+    setOnChatRoomEntriesAddedListener(listener?: (code: number, targetId: string, entries: Map<string, string>, errorEntries: Map<string, number>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onChatRoomEntriesAdded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, targetId: string, entries: any, errorEntries: any}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, entries: any, errorEntries: any }) => {
                 logger.logObject('onChatRoomEntriesAdded', data);
                 let _entries = new Map<string, string>(Object.entries(data.entries))
                 let _errorEntries = new Map<string, number>(Object.entries(data.errorEntries))
@@ -2622,11 +2809,13 @@ export class RCIMIWEngine {
      *@param targetId 会话 ID
      *@param entry    获取到的属性。
      */
-    setOnChatRoomEntryLoadedListener(listener?: (code: number, targetId: string, entry: Map<string, string>) => void): void {
+    setOnChatRoomEntryLoadedListener(listener?: (code: number, targetId: string, entry: Map<string, string>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onChatRoomEntryLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, targetId: string, entry: any}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, entry: any }) => {
                 logger.logObject('onChatRoomEntryLoaded', data);
                 let _entry = new Map<string, string>(Object.entries(data.entry))
                 listener(data.code, data.targetId, _entry)
@@ -2640,11 +2829,13 @@ export class RCIMIWEngine {
      *@param targetId 会话 ID
      *@param entries  获取到的属性集合。
      */
-    setOnAllChatRoomEntriesLoadedListener(listener?: (code: number, targetId: string, entries: Map<string, string>) => void): void {
+    setOnAllChatRoomEntriesLoadedListener(listener?: (code: number, targetId: string, entries: Map<string, string>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onAllChatRoomEntriesLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, targetId: string, entries: any}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, entries: any }) => {
                 logger.logObject('onAllChatRoomEntriesLoaded', data);
                 let _entries = new Map<string, string>(Object.entries(data.entries))
                 listener(data.code, data.targetId, _entries)
@@ -2658,11 +2849,13 @@ export class RCIMIWEngine {
      *@param targetId 会话 ID
      *@param key      聊天室属性键值
      */
-    setOnChatRoomEntryRemovedListener(listener?: (code: number, targetId: string, key: string) => void): void {
+    setOnChatRoomEntryRemovedListener(listener?: (code: number, targetId: string, key: string) => void): void
+    {
         const eventName = 'IRCIMIWListener:onChatRoomEntryRemoved'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, targetId: string, key: string}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, key: string }) => {
                 logger.logObject('onChatRoomEntryRemoved', data);
                 listener(data.code, data.targetId, data.key)
             })
@@ -2675,11 +2868,13 @@ export class RCIMIWEngine {
      *@param targetId 会话 ID
      *@param keys     聊天室属性键值集合
      */
-    setOnChatRoomEntriesRemovedListener(listener?: (code: number, targetId: string, keys: Array<string>) => void): void {
+    setOnChatRoomEntriesRemovedListener(listener?: (code: number, targetId: string, keys: Array<string>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onChatRoomEntriesRemoved'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, targetId: string, keys: Array<string>}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, keys: Array<string>}) => {
                 logger.logObject('onChatRoomEntriesRemoved', data);
                 listener(data.code, data.targetId, data.keys)
             })
@@ -2691,11 +2886,13 @@ export class RCIMIWEngine {
      *@param code   接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param userId 用户 ID
      */
-    setOnBlacklistAddedListener(listener?: (code: number, userId: string) => void): void {
+    setOnBlacklistAddedListener(listener?: (code: number, userId: string) => void): void
+    {
         const eventName = 'IRCIMIWListener:onBlacklistAdded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, userId: string}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, userId: string }) => {
                 logger.logObject('onBlacklistAdded', data);
                 listener(data.code, data.userId)
             })
@@ -2707,11 +2904,13 @@ export class RCIMIWEngine {
      *@param code   接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param userId 用户 ID
      */
-    setOnBlacklistRemovedListener(listener?: (code: number, userId: string) => void): void {
+    setOnBlacklistRemovedListener(listener?: (code: number, userId: string) => void): void
+    {
         const eventName = 'IRCIMIWListener:onBlacklistRemoved'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, userId: string}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, userId: string }) => {
                 logger.logObject('onBlacklistRemoved', data);
                 listener(data.code, data.userId)
             })
@@ -2724,11 +2923,13 @@ export class RCIMIWEngine {
      *@param userId 用户 ID
      *@param status 当前状态
      */
-    setOnBlacklistStatusLoadedListener(listener?: (code: number, userId: string, status: RCIMIWBlacklistStatus) => void): void {
+    setOnBlacklistStatusLoadedListener(listener?: (code: number, userId: string, status: RCIMIWBlacklistStatus) => void): void
+    {
         const eventName = 'IRCIMIWListener:onBlacklistStatusLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, userId: string, status: RCIMIWBlacklistStatus}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, userId: string, status: RCIMIWBlacklistStatus }) => {
                 logger.logObject('onBlacklistStatusLoaded', data);
                 listener(data.code, data.userId, data.status)
             })
@@ -2740,11 +2941,13 @@ export class RCIMIWEngine {
      *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param userIds 用户 ID 集合
      */
-    setOnBlacklistLoadedListener(listener?: (code: number, userIds: Array<string>) => void): void {
+    setOnBlacklistLoadedListener(listener?: (code: number, userIds: Array<string>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onBlacklistLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, userIds: Array<string>}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, userIds: Array<string>}) => {
                 logger.logObject('onBlacklistLoaded', data);
                 listener(data.code, data.userIds)
             })
@@ -2762,21 +2965,13 @@ export class RCIMIWEngine {
      *@param count     查询的数量
      *@param messages  查询到的消息集合
      */
-    setOnMessagesSearchedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, keyword: string,
-                                              startTime: number, count: number, messages: Array<RCIMIWMessage>) => void): void {
+    setOnMessagesSearchedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, keyword: string, startTime: number, count: number, messages: Array<RCIMIWMessage>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMessagesSearched'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {
-                                                                 code: number,
-                                                                 type: RCIMIWConversationType,
-                                                                 targetId: string,
-                                                                 channelId: string,
-                                                                 keyword: string,
-                                                                 startTime: number,
-                                                                 count: number,
-                                                                 messages: Array<RCIMIWMessage>
-                                                             }) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, keyword: string, startTime: number, count: number, messages: Array<RCIMIWMessage>}) => {
                 logger.logObject('onMessagesSearched', data);
                 listener(data.code, data.type, data.targetId, data.channelId, data.keyword, data.startTime, data.count, data.messages)
             })
@@ -2796,27 +2991,15 @@ export class RCIMIWEngine {
      *@param count     查询的数量
      *@param messages  查询到的消息集合
      */
-    setOnMessagesSearchedByTimeRangeListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string,
-                                                         keyword: string, startTime: number, endTime: number, offset: number, count: number,
-                                                         messages: Array<RCIMIWMessage>) => void): void {
+    setOnMessagesSearchedByTimeRangeListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, keyword: string, startTime: number, endTime: number, offset: number, count: number, messages: Array<RCIMIWMessage>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMessagesSearchedByTimeRange'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {
-                                                                 code: number,
-                                                                 type: RCIMIWConversationType,
-                                                                 targetId: string,
-                                                                 channelId: string,
-                                                                 keyword: string,
-                                                                 startTime: number,
-                                                                 endTime: number,
-                                                                 offset: number,
-                                                                 count: number,
-                                                                 messages: Array<RCIMIWMessage>
-                                                             }) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, keyword: string, startTime: number, endTime: number, offset: number, count: number, messages: Array<RCIMIWMessage>}) => {
                 logger.logObject('onMessagesSearchedByTimeRange', data);
-                listener(data.code, data.type, data.targetId, data.channelId, data.keyword, data.startTime, data.endTime, data.offset, data.count,
-                         data.messages)
+                listener(data.code, data.type, data.targetId, data.channelId, data.keyword, data.startTime, data.endTime, data.offset, data.count, data.messages)
             })
         }
     }
@@ -2832,21 +3015,13 @@ export class RCIMIWEngine {
      *@param count     查询的数量
      *@param messages  查询到的消息集合
      */
-    setOnMessagesSearchedByUserIdListener(listener?: (code: number, userId: string, type: RCIMIWConversationType, targetId: string, channelId: string,
-                                                      startTime: number, count: number, messages: Array<RCIMIWMessage>) => void): void {
+    setOnMessagesSearchedByUserIdListener(listener?: (code: number, userId: string, type: RCIMIWConversationType, targetId: string, channelId: string, startTime: number, count: number, messages: Array<RCIMIWMessage>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMessagesSearchedByUserId'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {
-                                                                 code: number,
-                                                                 userId: string,
-                                                                 type: RCIMIWConversationType,
-                                                                 targetId: string,
-                                                                 channelId: string,
-                                                                 startTime: number,
-                                                                 count: number,
-                                                                 messages: Array<RCIMIWMessage>
-                                                             }) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, userId: string, type: RCIMIWConversationType, targetId: string, channelId: string, startTime: number, count: number, messages: Array<RCIMIWMessage>}) => {
                 logger.logObject('onMessagesSearchedByUserId', data);
                 listener(data.code, data.userId, data.type, data.targetId, data.channelId, data.startTime, data.count, data.messages)
             })
@@ -2862,20 +3037,13 @@ export class RCIMIWEngine {
      *@param keyword           搜索的关键字
      *@param conversations     查询到的会话集合
      */
-    setOnConversationsSearchedListener(listener?: (code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string,
-                                                   messageTypes: Array<RCIMIWMessageType>, keyword: string,
-                                                   conversations: Array<RCIMIWSearchConversationResult>) => void): void {
+    setOnConversationsSearchedListener(listener?: (code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string, messageTypes: Array<RCIMIWMessageType>, keyword: string, conversations: Array<RCIMIWSearchConversationResult>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onConversationsSearched'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {
-                                                                 code: number,
-                                                                 conversationTypes: Array<RCIMIWConversationType>,
-                                                                 channelId: string,
-                                                                 messageTypes: Array<RCIMIWMessageType>,
-                                                                 keyword: string,
-                                                                 conversations: Array<RCIMIWSearchConversationResult>
-                                                             }) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string, messageTypes: Array<RCIMIWMessageType>, keyword: string, conversations: Array<RCIMIWSearchConversationResult>}) => {
                 logger.logObject('onConversationsSearched', data);
                 listener(data.code, data.conversationTypes, data.channelId, data.messageTypes, data.keyword, data.conversations)
             })
@@ -2887,11 +3055,13 @@ export class RCIMIWEngine {
      *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param message 需要请求已读回执的消息
      */
-    setOnGroupReadReceiptRequestSentListener(listener?: (code: number, message: RCIMIWMessage) => void): void {
+    setOnGroupReadReceiptRequestSentListener(listener?: (code: number, message: RCIMIWMessage) => void): void
+    {
         const eventName = 'IRCIMIWListener:onGroupReadReceiptRequestSent'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, message: RCIMIWMessage}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, message: RCIMIWMessage }) => {
                 logger.logObject('onGroupReadReceiptRequestSent', data);
                 listener(data.code, data.message)
             })
@@ -2905,16 +3075,16 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param messages  会话中需要发送已读回执的消息列表
      */
-    setOnGroupReadReceiptResponseSentListener(listener
-                                              ?: (code: number, targetId: string, channelId: string, messages: Array<RCIMIWMessage>) => void): void {
+    setOnGroupReadReceiptResponseSentListener(listener?: (code: number, targetId: string, channelId: string, messages: Array<RCIMIWMessage>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onGroupReadReceiptResponseSent'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName,
-                                                  (data: {code: number, targetId: string, channelId: string, messages: Array<RCIMIWMessage>}) => {
-                                                      logger.logObject('onGroupReadReceiptResponseSent', data);
-                                                      listener(data.code, data.targetId, data.channelId, data.messages)
-                                                  })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, channelId: string, messages: Array<RCIMIWMessage>}) => {
+                logger.logObject('onGroupReadReceiptResponseSent', data);
+                listener(data.code, data.targetId, data.channelId, data.messages)
+            })
         }
     }
 
@@ -2922,19 +3092,19 @@ export class RCIMIWEngine {
      *{@link changeNotificationQuietHours} 的接口回调
      *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param startTime 开始消息免打扰时间
-     *@param spanMins  需要消息免打扰分钟数，0 < spanMins < 1440（ 比如，您设置的起始时间是 00：00， 结束时间为 01:00，则 spanMins 为 60 分钟。设置为
-     *    1439 代表全天免打扰 （23  60 + 59 = 1439 ））
+     *@param spanMins  需要消息免打扰分钟数，0 < spanMins < 1440（ 比如，您设置的起始时间是 00：00， 结束时间为 01:00，则 spanMins 为 60 分钟。设置为 1439 代表全天免打扰 （23  60 + 59 = 1439 ））
+     *@param level 消息通知级别
      */
-    setOnNotificationQuietHoursChangedListener(listener?: (code: number, startTime: string, spanMins: number,
-                                                           level: RCIMIWPushNotificationQuietHoursLevel) => void): void {
+    setOnNotificationQuietHoursChangedListener(listener?: (code: number, startTime: string, spanMins: number, level: RCIMIWPushNotificationQuietHoursLevel) => void): void
+    {
         const eventName = 'IRCIMIWListener:onNotificationQuietHoursChanged'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName, (data: {code: number, startTime: string, spanMins: number, level: RCIMIWPushNotificationQuietHoursLevel}) => {
-                    logger.logObject('onNotificationQuietHoursChanged', data);
-                    listener(data.code, data.startTime, data.spanMins, data.level)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, startTime: string, spanMins: number, level: RCIMIWPushNotificationQuietHoursLevel }) => {
+                logger.logObject('onNotificationQuietHoursChanged', data);
+                listener(data.code, data.startTime, data.spanMins, data.level)
+            })
         }
     }
 
@@ -2942,11 +3112,13 @@ export class RCIMIWEngine {
      *{@link removeNotificationQuietHours} 的接口回调
      *@param code 接口回调的状态码，0 代表成功，非 0 代表出现异常
      */
-    setOnNotificationQuietHoursRemovedListener(listener?: (code: number) => void): void {
+    setOnNotificationQuietHoursRemovedListener(listener?: (code: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onNotificationQuietHoursRemoved'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number }) => {
                 logger.logObject('onNotificationQuietHoursRemoved', data);
                 listener(data.code)
             })
@@ -2958,17 +3130,18 @@ export class RCIMIWEngine {
      *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param startTime 开始消息免打扰时间
      *@param spanMins  已设置的屏蔽时间分钟数，0 < spanMins < 1440]
+     *@param level 消息通知级别
      */
-    setOnNotificationQuietHoursLoadedListener(listener?: (code: number, startTime: string, spanMins: number,
-                                                          level: RCIMIWPushNotificationQuietHoursLevel) => void): void {
+    setOnNotificationQuietHoursLoadedListener(listener?: (code: number, startTime: string, spanMins: number, level: RCIMIWPushNotificationQuietHoursLevel) => void): void
+    {
         const eventName = 'IRCIMIWListener:onNotificationQuietHoursLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName, (data: {code: number, startTime: string, spanMins: number, level: RCIMIWPushNotificationQuietHoursLevel}) => {
-                    logger.logObject('onNotificationQuietHoursLoaded', data);
-                    listener(data.code, data.startTime, data.spanMins, data.level)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, startTime: string, spanMins: number, level: RCIMIWPushNotificationQuietHoursLevel }) => {
+                logger.logObject('onNotificationQuietHoursLoaded', data);
+                listener(data.code, data.startTime, data.spanMins, data.level)
+            })
         }
     }
 
@@ -2980,17 +3153,16 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param level     消息通知级别
      */
-    setOnConversationNotificationLevelChangedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string,
-                                                                  level: RCIMIWPushNotificationLevel) => void): void {
+    setOnConversationNotificationLevelChangedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, level: RCIMIWPushNotificationLevel) => void): void
+    {
         const eventName = 'IRCIMIWListener:onConversationNotificationLevelChanged'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName,
-                (data: {code: number, type: RCIMIWConversationType, targetId: string, channelId: string, level: RCIMIWPushNotificationLevel}) => {
-                    logger.logObject('onConversationNotificationLevelChanged', data);
-                    listener(data.code, data.type, data.targetId, data.channelId, data.level)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, level: RCIMIWPushNotificationLevel }) => {
+                logger.logObject('onConversationNotificationLevelChanged', data);
+                listener(data.code, data.type, data.targetId, data.channelId, data.level)
+            })
         }
     }
 
@@ -3002,17 +3174,16 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param level     当前会话的消息通知级别
      */
-    setOnConversationNotificationLevelLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string,
-                                                                 level: RCIMIWPushNotificationLevel) => void): void {
+    setOnConversationNotificationLevelLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, level: RCIMIWPushNotificationLevel) => void): void
+    {
         const eventName = 'IRCIMIWListener:onConversationNotificationLevelLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName,
-                (data: {code: number, type: RCIMIWConversationType, targetId: string, channelId: string, level: RCIMIWPushNotificationLevel}) => {
-                    logger.logObject('onConversationNotificationLevelLoaded', data);
-                    listener(data.code, data.type, data.targetId, data.channelId, data.level)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, level: RCIMIWPushNotificationLevel }) => {
+                logger.logObject('onConversationNotificationLevelLoaded', data);
+                listener(data.code, data.type, data.targetId, data.channelId, data.level)
+            })
         }
     }
 
@@ -3022,16 +3193,16 @@ export class RCIMIWEngine {
      *@param type  会话类型
      *@param level 消息通知级别
      */
-    setOnConversationTypeNotificationLevelChangedListener(listener?: (code: number, type: RCIMIWConversationType,
-                                                                      level: RCIMIWPushNotificationLevel) => void): void {
+    setOnConversationTypeNotificationLevelChangedListener(listener?: (code: number, type: RCIMIWConversationType, level: RCIMIWPushNotificationLevel) => void): void
+    {
         const eventName = 'IRCIMIWListener:onConversationTypeNotificationLevelChanged'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName,
-                                                  (data: {code: number, type: RCIMIWConversationType, level: RCIMIWPushNotificationLevel}) => {
-                                                      logger.logObject('onConversationTypeNotificationLevelChanged', data);
-                                                      listener(data.code, data.type, data.level)
-                                                  })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, level: RCIMIWPushNotificationLevel }) => {
+                logger.logObject('onConversationTypeNotificationLevelChanged', data);
+                listener(data.code, data.type, data.level)
+            })
         }
     }
 
@@ -3041,16 +3212,16 @@ export class RCIMIWEngine {
      *@param type  会话类型
      *@param level 消息通知级别
      */
-    setOnConversationTypeNotificationLevelLoadedListener(listener?: (code: number, type: RCIMIWConversationType,
-                                                                     level: RCIMIWPushNotificationLevel) => void): void {
+    setOnConversationTypeNotificationLevelLoadedListener(listener?: (code: number, type: RCIMIWConversationType, level: RCIMIWPushNotificationLevel) => void): void
+    {
         const eventName = 'IRCIMIWListener:onConversationTypeNotificationLevelLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName,
-                                                  (data: {code: number, type: RCIMIWConversationType, level: RCIMIWPushNotificationLevel}) => {
-                                                      logger.logObject('onConversationTypeNotificationLevelLoaded', data);
-                                                      listener(data.code, data.type, data.level)
-                                                  })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, level: RCIMIWPushNotificationLevel }) => {
+                logger.logObject('onConversationTypeNotificationLevelLoaded', data);
+                listener(data.code, data.type, data.level)
+            })
         }
     }
 
@@ -3060,12 +3231,13 @@ export class RCIMIWEngine {
      *@param targetId 会话 ID
      *@param level    消息通知级别
      */
-    setOnUltraGroupDefaultNotificationLevelChangedListener(listener
-                                                           ?: (code: number, targetId: string, level: RCIMIWPushNotificationLevel) => void): void {
+    setOnUltraGroupDefaultNotificationLevelChangedListener(listener?: (code: number, targetId: string, level: RCIMIWPushNotificationLevel) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUltraGroupDefaultNotificationLevelChanged'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, targetId: string, level: RCIMIWPushNotificationLevel}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, level: RCIMIWPushNotificationLevel }) => {
                 logger.logObject('onUltraGroupDefaultNotificationLevelChanged', data);
                 listener(data.code, data.targetId, data.level)
             })
@@ -3078,12 +3250,13 @@ export class RCIMIWEngine {
      *@param targetId 会话 ID
      *@param level    消息通知级别
      */
-    setOnUltraGroupDefaultNotificationLevelLoadedListener(listener
-                                                          ?: (code: number, targetId: string, level: RCIMIWPushNotificationLevel) => void): void {
+    setOnUltraGroupDefaultNotificationLevelLoadedListener(listener?: (code: number, targetId: string, level: RCIMIWPushNotificationLevel) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUltraGroupDefaultNotificationLevelLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, targetId: string, level: RCIMIWPushNotificationLevel}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, level: RCIMIWPushNotificationLevel }) => {
                 logger.logObject('onUltraGroupDefaultNotificationLevelLoaded', data);
                 listener(data.code, data.targetId, data.level)
             })
@@ -3097,16 +3270,16 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用。
      *@param level     消息通知级别
      */
-    setOnUltraGroupChannelDefaultNotificationLevelChangedListener(listener?: (code: number, targetId: string, channelId: string,
-                                                                              level: RCIMIWPushNotificationLevel) => void): void {
+    setOnUltraGroupChannelDefaultNotificationLevelChangedListener(listener?: (code: number, targetId: string, channelId: string, level: RCIMIWPushNotificationLevel) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUltraGroupChannelDefaultNotificationLevelChanged'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName,
-                                                  (data: {code: number, targetId: string, channelId: string, level: RCIMIWPushNotificationLevel}) => {
-                                                      logger.logObject('onUltraGroupChannelDefaultNotificationLevelChanged', data);
-                                                      listener(data.code, data.targetId, data.channelId, data.level)
-                                                  })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, channelId: string, level: RCIMIWPushNotificationLevel }) => {
+                logger.logObject('onUltraGroupChannelDefaultNotificationLevelChanged', data);
+                listener(data.code, data.targetId, data.channelId, data.level)
+            })
         }
     }
 
@@ -3117,16 +3290,16 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用。
      *@param level     消息通知级别
      */
-    setOnUltraGroupChannelDefaultNotificationLevelLoadedListener(listener?: (code: number, targetId: string, channelId: string,
-                                                                             level: RCIMIWPushNotificationLevel) => void): void {
+    setOnUltraGroupChannelDefaultNotificationLevelLoadedListener(listener?: (code: number, targetId: string, channelId: string, level: RCIMIWPushNotificationLevel) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUltraGroupChannelDefaultNotificationLevelLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName,
-                                                  (data: {code: number, targetId: string, channelId: string, level: RCIMIWPushNotificationLevel}) => {
-                                                      logger.logObject('onUltraGroupChannelDefaultNotificationLevelLoaded', data);
-                                                      listener(data.code, data.targetId, data.channelId, data.level)
-                                                  })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, channelId: string, level: RCIMIWPushNotificationLevel }) => {
+                logger.logObject('onUltraGroupChannelDefaultNotificationLevelLoaded', data);
+                listener(data.code, data.targetId, data.channelId, data.level)
+            })
         }
     }
 
@@ -3135,11 +3308,13 @@ export class RCIMIWEngine {
      *@param code        接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param showContent 是否显示远程推送内容
      */
-    setOnPushContentShowStatusChangedListener(listener?: (code: number, showContent: boolean) => void): void {
+    setOnPushContentShowStatusChangedListener(listener?: (code: number, showContent: boolean) => void): void
+    {
         const eventName = 'IRCIMIWListener:onPushContentShowStatusChanged'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, showContent: boolean}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, showContent: boolean }) => {
                 logger.logObject('onPushContentShowStatusChanged', data);
                 listener(data.code, data.showContent)
             })
@@ -3151,11 +3326,13 @@ export class RCIMIWEngine {
      *@param code     接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param language 推送语言
      */
-    setOnPushLanguageChangedListener(listener?: (code: number, language: string) => void): void {
+    setOnPushLanguageChangedListener(listener?: (code: number, language: string) => void): void
+    {
         const eventName = 'IRCIMIWListener:onPushLanguageChanged'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, language: string}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, language: string }) => {
                 logger.logObject('onPushLanguageChanged', data);
                 listener(data.code, data.language)
             })
@@ -3167,11 +3344,13 @@ export class RCIMIWEngine {
      *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param receive 是否接收
      */
-    setOnPushReceiveStatusChangedListener(listener?: (code: number, receive: boolean) => void): void {
+    setOnPushReceiveStatusChangedListener(listener?: (code: number, receive: boolean) => void): void
+    {
         const eventName = 'IRCIMIWListener:onPushReceiveStatusChanged'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, receive: boolean}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, receive: boolean }) => {
                 logger.logObject('onPushReceiveStatusChanged', data);
                 listener(data.code, data.receive)
             })
@@ -3186,16 +3365,16 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param count     消息的数量
      */
-    setOnMessageCountLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string,
-                                                count: number) => void): void {
+    setOnMessageCountLoadedListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, count: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onMessageCountLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName, (data: {code: number, type: RCIMIWConversationType, targetId: string, channelId: string, count: number}) => {
-                    logger.logObject('onMessageCountLoaded', data);
-                    listener(data.code, data.type, data.targetId, data.channelId, data.count)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, channelId: string, count: number }) => {
+                logger.logObject('onMessageCountLoaded', data);
+                listener(data.code, data.type, data.targetId, data.channelId, data.count)
+            })
         }
     }
 
@@ -3205,17 +3384,13 @@ export class RCIMIWEngine {
      *@param channelId         频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param conversations     加载的会话集合
      */
-    setOnTopConversationsLoadedListener(listener?: (code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string,
-                                                    conversations: Array<RCIMIWConversation>) => void): void {
+    setOnTopConversationsLoadedListener(listener?: (code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string, conversations: Array<RCIMIWConversation>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onTopConversationsLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {
-                                                                 code: number,
-                                                                 conversationTypes: Array<RCIMIWConversationType>,
-                                                                 channelId: string,
-                                                                 conversations: Array<RCIMIWConversation>
-                                                             }) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string, conversations: Array<RCIMIWConversation>}) => {
                 logger.logObject('onTopConversationsLoaded', data);
                 listener(data.code, data.conversationTypes, data.channelId, data.conversations)
             })
@@ -3227,11 +3402,13 @@ export class RCIMIWEngine {
      *消息存入数据库的回调
      *@param message 发送的消息内容
      */
-    setOnGroupMessageToDesignatedUsersAttachedListener(listener?: (message: RCIMIWMessage) => void): void {
+    setOnGroupMessageToDesignatedUsersAttachedListener(listener?: (message: RCIMIWMessage) => void): void
+    {
         const eventName = 'IRCIMIWListener:onGroupMessageToDesignatedUsersAttached'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {message: RCIMIWMessage}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { message: RCIMIWMessage }) => {
                 logger.logObject('onGroupMessageToDesignatedUsersAttached', data);
                 listener(data.message)
             })
@@ -3244,11 +3421,13 @@ export class RCIMIWEngine {
      *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param message 发送的消息内容
      */
-    setOnGroupMessageToDesignatedUsersSentListener(listener?: (code: number, message: RCIMIWMessage) => void): void {
+    setOnGroupMessageToDesignatedUsersSentListener(listener?: (code: number, message: RCIMIWMessage) => void): void
+    {
         const eventName = 'IRCIMIWListener:onGroupMessageToDesignatedUsersSent'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, message: RCIMIWMessage}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, message: RCIMIWMessage }) => {
                 logger.logObject('onGroupMessageToDesignatedUsersSent', data);
                 listener(data.code, data.message)
             })
@@ -3262,11 +3441,13 @@ export class RCIMIWEngine {
      *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param timestamp 已读时间
      */
-    setOnUltraGroupReadStatusSyncedListener(listener?: (code: number, targetId: string, channelId: string, timestamp: number) => void): void {
+    setOnUltraGroupReadStatusSyncedListener(listener?: (code: number, targetId: string, channelId: string, timestamp: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUltraGroupReadStatusSynced'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, targetId: string, channelId: string, timestamp: number}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, channelId: string, timestamp: number }) => {
                 logger.logObject('onUltraGroupReadStatusSynced', data);
                 listener(data.code, data.targetId, data.channelId, data.timestamp)
             })
@@ -3280,16 +3461,16 @@ export class RCIMIWEngine {
      *@param targetId      会话 ID
      *@param conversations 获取到的会话集合
      */
-    setOnConversationsLoadedForAllChannelListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string,
-                                                              conversations: Array<RCIMIWConversation>) => void): void {
+    setOnConversationsLoadedForAllChannelListener(listener?: (code: number, type: RCIMIWConversationType, targetId: string, conversations: Array<RCIMIWConversation>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onConversationsLoadedForAllChannel'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName, (data: {code: number, type: RCIMIWConversationType, targetId: string, conversations: Array<RCIMIWConversation>}) => {
-                    logger.logObject('onConversationsLoadedForAllChannel', data);
-                    listener(data.code, data.type, data.targetId, data.conversations)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, type: RCIMIWConversationType, targetId: string, conversations: Array<RCIMIWConversation>}) => {
+                logger.logObject('onConversationsLoadedForAllChannel', data);
+                listener(data.code, data.type, data.targetId, data.conversations)
+            })
         }
     }
 
@@ -3299,11 +3480,13 @@ export class RCIMIWEngine {
      *@param targetId 会话 ID
      *@param count    未读数量
      */
-    setOnUltraGroupUnreadMentionedCountLoadedListener(listener?: (code: number, targetId: string, count: number) => void): void {
+    setOnUltraGroupUnreadMentionedCountLoadedListener(listener?: (code: number, targetId: string, count: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUltraGroupUnreadMentionedCountLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, targetId: string, count: number}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, count: number }) => {
                 logger.logObject('onUltraGroupUnreadMentionedCountLoaded', data);
                 listener(data.code, data.targetId, data.count)
             })
@@ -3313,11 +3496,13 @@ export class RCIMIWEngine {
     /**
      *
      */
-    setOnUltraGroupUnreadCountLoadedListener(listener?: (code: number, targetId: string, count: number) => void): void {
+    setOnUltraGroupUnreadCountLoadedListener(listener?: (code: number, targetId: string, count: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUltraGroupUnreadCountLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, targetId: string, count: number}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, count: number }) => {
                 logger.logObject('onUltraGroupUnreadCountLoaded', data);
                 listener(data.code, data.targetId, data.count)
             })
@@ -3329,11 +3514,13 @@ export class RCIMIWEngine {
      *@param code       接口回调的状态码，0 代表成功，非 0 代表出现异常
      *@param messageUId 消息的 messageUid
      */
-    setOnUltraGroupMessageModifiedListener(listener?: (code: number, messageUId: string) => void): void {
+    setOnUltraGroupMessageModifiedListener(listener?: (code: number, messageUId: string) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUltraGroupMessageModified'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, messageUId: string}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, messageUId: string }) => {
                 logger.logObject('onUltraGroupMessageModified', data);
                 listener(data.code, data.messageUId)
             })
@@ -3346,11 +3533,13 @@ export class RCIMIWEngine {
      *@param message      撤回的消息
      *@param deleteRemote 调用接口时传入的是否删除远端消息
      */
-    setOnUltraGroupMessageRecalledListener(listener?: (code: number, message: RCIMIWMessage, deleteRemote: boolean) => void): void {
+    setOnUltraGroupMessageRecalledListener(listener?: (code: number, message: RCIMIWMessage, deleteRemote: boolean) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUltraGroupMessageRecalled'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, message: RCIMIWMessage, deleteRemote: boolean}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, message: RCIMIWMessage, deleteRemote: boolean }) => {
                 logger.logObject('onUltraGroupMessageRecalled', data);
                 listener(data.code, data.message, data.deleteRemote)
             })
@@ -3365,16 +3554,16 @@ export class RCIMIWEngine {
      *@param timestamp 时间戳
      *@param policy    清除策略
      */
-    setOnUltraGroupMessagesClearedListener(listener?: (code: number, targetId: string, channelId: string, timestamp: number,
-                                                       policy: RCIMIWMessageOperationPolicy) => void): void {
+    setOnUltraGroupMessagesClearedListener(listener?: (code: number, targetId: string, channelId: string, timestamp: number, policy: RCIMIWMessageOperationPolicy) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUltraGroupMessagesCleared'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName, (data: {code: number, targetId: string, channelId: string, timestamp: number, policy: RCIMIWMessageOperationPolicy}) => {
-                    logger.logObject('onUltraGroupMessagesCleared', data);
-                    listener(data.code, data.targetId, data.channelId, data.timestamp, data.policy)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, channelId: string, timestamp: number, policy: RCIMIWMessageOperationPolicy }) => {
+                logger.logObject('onUltraGroupMessagesCleared', data);
+                listener(data.code, data.targetId, data.channelId, data.timestamp, data.policy)
+            })
         }
     }
 
@@ -3384,11 +3573,13 @@ export class RCIMIWEngine {
      *@param targetId  会话 ID
      *@param timestamp 时间戳
      */
-    setOnUltraGroupMessagesClearedForAllChannelListener(listener?: (code: number, targetId: string, timestamp: number) => void): void {
+    setOnUltraGroupMessagesClearedForAllChannelListener(listener?: (code: number, targetId: string, timestamp: number) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUltraGroupMessagesClearedForAllChannel'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, targetId: string, timestamp: number}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, timestamp: number }) => {
                 logger.logObject('onUltraGroupMessagesClearedForAllChannel', data);
                 listener(data.code, data.targetId, data.timestamp)
             })
@@ -3402,16 +3593,16 @@ export class RCIMIWEngine {
      *@param channelId    频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
      *@param typingStatus
      */
-    setOnUltraGroupTypingStatusSentListener(listener?: (code: number, targetId: string, channelId: string,
-                                                        typingStatus: RCIMIWUltraGroupTypingStatus) => void): void {
+    setOnUltraGroupTypingStatusSentListener(listener?: (code: number, targetId: string, channelId: string, typingStatus: RCIMIWUltraGroupTypingStatus) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUltraGroupTypingStatusSent'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName, (data: {code: number, targetId: string, channelId: string, typingStatus: RCIMIWUltraGroupTypingStatus}) => {
-                    logger.logObject('onUltraGroupTypingStatusSent', data);
-                    listener(data.code, data.targetId, data.channelId, data.typingStatus)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, targetId: string, channelId: string, typingStatus: RCIMIWUltraGroupTypingStatus }) => {
+                logger.logObject('onUltraGroupTypingStatusSent', data);
+                listener(data.code, data.targetId, data.channelId, data.typingStatus)
+            })
         }
     }
 
@@ -3421,16 +3612,16 @@ export class RCIMIWEngine {
      *@param matchedMessages    从服务获取的消息列表
      *@param notMatchedMessages 非法参数或者从服务没有拿到对应消息
      */
-    setOnBatchRemoteUltraGroupMessagesLoadedListener(listener?: (code: number, matchedMessages: Array<RCIMIWMessage>,
-                                                                 notMatchedMessages: Array<RCIMIWMessage>) => void): void {
+    setOnBatchRemoteUltraGroupMessagesLoadedListener(listener?: (code: number, matchedMessages: Array<RCIMIWMessage>, notMatchedMessages: Array<RCIMIWMessage>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onBatchRemoteUltraGroupMessagesLoaded'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(
-                eventName, (data: {code: number, matchedMessages: Array<RCIMIWMessage>, notMatchedMessages: Array<RCIMIWMessage>}) => {
-                    logger.logObject('onBatchRemoteUltraGroupMessagesLoaded', data);
-                    listener(data.code, data.matchedMessages, data.notMatchedMessages)
-                })
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, matchedMessages: Array<RCIMIWMessage>, notMatchedMessages: Array<RCIMIWMessage>}) => {
+                logger.logObject('onBatchRemoteUltraGroupMessagesLoaded', data);
+                listener(data.code, data.matchedMessages, data.notMatchedMessages)
+            })
         }
     }
 
@@ -3440,11 +3631,13 @@ export class RCIMIWEngine {
      *@param expansion  更新的消息扩展信息键值对
      *@param messageUId 消息的 messageUid
      */
-    setOnUltraGroupMessageExpansionUpdatedListener(listener?: (code: number, expansion: Map<string, string>, messageUId: string) => void): void {
+    setOnUltraGroupMessageExpansionUpdatedListener(listener?: (code: number, expansion: Map<string, string>, messageUId: string) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUltraGroupMessageExpansionUpdated'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, expansion: any, messageUId: string}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, expansion: any, messageUId: string }) => {
                 logger.logObject('onUltraGroupMessageExpansionUpdated', data);
                 let _expansion = new Map<string, string>(Object.entries(data.expansion))
                 listener(data.code, _expansion, data.messageUId)
@@ -3458,11 +3651,13 @@ export class RCIMIWEngine {
      *@param messageUId 消息的 messageUid
      *@param keys       消息扩展信息中待删除的 key 的列表
      */
-    setOnUltraGroupMessageExpansionRemovedListener(listener?: (code: number, messageUId: string, keys: Array<string>) => void): void {
+    setOnUltraGroupMessageExpansionRemovedListener(listener?: (code: number, messageUId: string, keys: Array<string>) => void): void
+    {
         const eventName = 'IRCIMIWListener:onUltraGroupMessageExpansionRemoved'
         RCReactNativeEventEmitter.removeAllListeners(eventName)
-        if (listener) {
-            RCReactNativeEventEmitter.addListener(eventName, (data: {code: number, messageUId: string, keys: Array<string>}) => {
+        if (listener)
+        {
+            RCReactNativeEventEmitter.addListener(eventName, (data: { code: number, messageUId: string, keys: Array<string>}) => {
                 logger.logObject('onUltraGroupMessageExpansionRemoved', data);
                 listener(data.code, data.messageUId, data.keys)
             })

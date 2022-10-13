@@ -164,6 +164,9 @@ object:(id)object 的使用，否则会出现重复操作的情形
 */
 - (void)onRemoteMessageExpansionUpdated:(NSDictionary<NSString *,NSString *> *)expansion message:(RCIMIWMessage *)message;
 
+/**
+ 远端删除消息扩展信息的回调
+ */
 - (void)onRemoteMessageExpansionForKeyRemoved:(RCIMIWMessage *)message keys:(NSArray<NSString *> *)keys;
 
 - (void)onMessageReceiveStatusChanged:(NSInteger)code messageId:(long)messageId;
@@ -193,7 +196,7 @@ object:(id)object 的使用，否则会出现重复操作的情形
                     channelId:(NSString *)channelId;
 
 - (void)onConversationsRemoved:(NSInteger)code
-                         types:(NSArray<NSNumber *> *)conversationTypes
+             conversationTypes:(NSArray<NSNumber *> *)conversationTypes
                      channelId:(NSString *)channelId;
 
 - (void)onMessageCountLoaded:(NSInteger)code
@@ -211,7 +214,7 @@ object:(id)object 的使用，否则会出现重复操作的情形
                       count:(NSInteger)count;
 
 - (void)onUnreadCountByConversationTypesLoaded:(NSInteger)code
-                                         types:(NSArray<NSNumber *> *)conversationTypes
+                             conversationTypes:(NSArray<NSNumber *> *)conversationTypes
                                      channelId:(NSString *)channelId
                                        contain:(BOOL)contain
                                          count:(NSInteger)count;
@@ -263,7 +266,7 @@ object:(id)object 的使用，否则会出现重复操作的情形
                                          level:(RCIMIWPushNotificationLevel)level;
 
 - (void)onBlockedConversationsLoaded:(NSInteger)code
-                               types:(NSArray<NSNumber *> *)conversationTypes
+                   conversationTypes:(NSArray<NSNumber *> *)conversationTypes
                            channelId:(NSString *)channelId
                        conversations:(nullable NSArray<RCIMIWConversation *> *)conversations;
 
@@ -446,7 +449,7 @@ object:(id)object 的使用，否则会出现重复操作的情形
                           messages:(NSArray<RCIMIWMessage *> *)messages;
 
 - (void)onConversationsSearched:(NSInteger)code
-              conversationTypes:(NSArray<NSNumber *> *)types
+              conversationTypes:(NSArray<NSNumber *> *)conversationTypes
                       channelId:(NSString *)channelId
                    messageTypes:(NSArray <NSNumber *>*)messageTypes
                         keyword:(NSString *)keyword
@@ -583,8 +586,14 @@ object:(id)object 的使用，否则会出现重复操作的情形
  */
 - (void)onUltraGroupReadTimeReceived:(NSString *)targetId channelId:(NSString *)channelId timestamp:(long long)timestamp;
 
+/**
+ 超级群远端更新消息扩展的回调
+ */
 - (void)onRemoteUltraGroupMessageExpansionUpdated:(NSArray<RCIMIWMessage *> *)messages;
 
+/**
+ 超级群远端修改消息的回调
+ */
 - (void)onRemoteUltraGroupMessageModified:(NSArray<RCIMIWMessage *> *)messages;
 
 - (void)onRemoteUltraGroupMessageRecalled:(NSArray<RCIMIWMessage *> *)messages;

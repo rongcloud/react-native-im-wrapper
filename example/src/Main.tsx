@@ -55,6 +55,7 @@ import {
   sendGroupReadReceiptRequest,
   sendGroupReadReceiptResponse,
   sendImageMessage,
+  sendLocationMessage,
   sendPrivateReadReceiptMessage,
   sendReferenceMessage,
   sendSightMessage,
@@ -194,7 +195,7 @@ export default class Main extends React.Component<NativeStackScreenProps<any>, {
         },
         {
           title: "改变会话的提醒状态",
-          func: () => { changeConversationNotificationLevel(this) }             
+          func: () => { changeConversationNotificationLevel(this) }
         },
         {
           title: "加载会话的提醒状态",
@@ -202,11 +203,11 @@ export default class Main extends React.Component<NativeStackScreenProps<any>, {
         },
         {
           title: "改变会话类型的提醒状态",
-          func: () => { changeConversationTypeNotificationLevel(this) }             
+          func: () => { changeConversationTypeNotificationLevel(this) }
         },
         {
           title: "加载会话类型的提醒状态",
-          func: () => { loadConversationTypeNotificationLevel(this) }             
+          func: () => { loadConversationTypeNotificationLevel(this) }
         },
         {
           title: "获取所有免打扰会话",
@@ -268,6 +269,10 @@ export default class Main extends React.Component<NativeStackScreenProps<any>, {
         {
           title: "发送GIF消息",
           func: () => { sendGifMessage(this) }
+        },
+        {
+          title: "发送位置消息",
+          func: () => { sendLocationMessage(this) }
         },
         {
           title: "发送自定义消息",

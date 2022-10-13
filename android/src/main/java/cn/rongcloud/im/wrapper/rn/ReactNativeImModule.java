@@ -31,6 +31,7 @@ import cn.rongcloud.im.wrapper.messages.RCIMIWCustomMessage;
 import cn.rongcloud.im.wrapper.messages.RCIMIWFileMessage;
 import cn.rongcloud.im.wrapper.messages.RCIMIWGIFMessage;
 import cn.rongcloud.im.wrapper.messages.RCIMIWImageMessage;
+import cn.rongcloud.im.wrapper.messages.RCIMIWLocationMessage;
 import cn.rongcloud.im.wrapper.messages.RCIMIWMediaMessage;
 import cn.rongcloud.im.wrapper.messages.RCIMIWMessage;
 import cn.rongcloud.im.wrapper.messages.RCIMIWReferenceMessage;
@@ -69,12 +70,23 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     return "RCReactNativeIM";
   }
 
+  private boolean check_engine(Promise promise) {
+    if (engine == null) {
+      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
+      return false;
+    }
+
+    return true;
+  }
+
   @ReactMethod
   public void create(String appKey, ReadableMap options) {
     RCIMIWEngineOptions rcimiwEngineOptions =
         RCIMIWPlatformConverter.convertEngineOptions(options.toHashMap());
-    engine = RCIMIWEngineImpl.create(this.context, appKey, rcimiwEngineOptions);
-    engine.setListener(new RCIMIWListenerImpl());
+    if (engine == null) {
+      engine = RCIMIWEngineImpl.create(this.context, appKey, rcimiwEngineOptions);
+      engine.setListener(new RCIMIWListenerImpl());
+    }
   }
 
   @ReactMethod
@@ -88,10 +100,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void getMessageById(int messageId, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+    if (!check_engine(promise)) return;
+
     engine.getMessageById(
         messageId,
         new IGetMessageCallback() {
@@ -112,10 +122,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void getMessageByUId(String messageUId, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+    if (!check_engine(promise)) return;
     engine.getMessageByUId(
         messageUId,
         new IGetMessageCallback() {
@@ -135,21 +142,17 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void connect(String token, int timeout, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
-    int r = engine.connect(token, timeout);
+  public void connect(String token, Double timeout, Promise promise) {
+
+    if (!check_engine(promise)) return;
+    int r = engine.connect(token, timeout.intValue());
     promise.resolve(r);
   }
 
   @ReactMethod
   public void disconnect(boolean receivePush, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.disconnect(receivePush);
     promise.resolve(r);
   }
@@ -158,10 +161,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void createTextMessage(
       int type, String targetId, String channelId, String text, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     RCIMIWTextMessage r = engine.createTextMessage(_type, targetId, channelId, text);
     WritableMap map = Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(r));
     promise.resolve(map);
@@ -171,10 +172,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void createImageMessage(
       int type, String targetId, String channelId, String path, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     RCIMIWImageMessage r = engine.createImageMessage(_type, targetId, channelId, path);
     WritableMap map = Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMediaMessage(r));
     promise.resolve(map);
@@ -184,10 +183,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void createFileMessage(
       int type, String targetId, String channelId, String path, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     RCIMIWFileMessage r = engine.createFileMessage(_type, targetId, channelId, path);
     WritableMap map = Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMediaMessage(r));
     promise.resolve(map);
@@ -195,26 +192,24 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void createSightMessage(
-      int type, String targetId, String channelId, String path, int duration, Promise promise) {
+      int type, String targetId, String channelId, String path, Double duration, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
-    RCIMIWSightMessage r = engine.createSightMessage(_type, targetId, channelId, path, duration);
+
+    if (!check_engine(promise)) return;
+    RCIMIWSightMessage r =
+        engine.createSightMessage(_type, targetId, channelId, path, duration.intValue());
     WritableMap map = Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMediaMessage(r));
     promise.resolve(map);
   }
 
   @ReactMethod
   public void createVoiceMessage(
-      int type, String targetId, String channelId, String path, int duration, Promise promise) {
+      int type, String targetId, String channelId, String path, Double duration, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
-    RCIMIWVoiceMessage r = engine.createVoiceMessage(_type, targetId, channelId, path, duration);
+
+    if (!check_engine(promise)) return;
+    RCIMIWVoiceMessage r =
+        engine.createVoiceMessage(_type, targetId, channelId, path, duration.intValue());
     WritableMap map = Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMediaMessage(r));
     promise.resolve(map);
   }
@@ -231,10 +226,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     if (referenceMessage == null) referenceMessage = Arguments.createMap();
     RCIMIWMessage _referenceMessage =
         RCIMIWPlatformConverter.convertMessage(referenceMessage.toHashMap());
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     RCIMIWReferenceMessage r =
         engine.createReferenceMessage(_type, targetId, channelId, _referenceMessage, text);
     WritableMap map = Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(r));
@@ -245,10 +238,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void createGIFMessage(
       int type, String targetId, String channelId, String path, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     RCIMIWGIFMessage r = engine.createGIFMessage(_type, targetId, channelId, path);
     WritableMap map = Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMediaMessage(r));
     promise.resolve(map);
@@ -266,12 +257,36 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
     RCIMIWCustomMessagePolicy _policy = RCIMIWCustomMessagePolicy.values()[policy];
     Map<String, String> _fields = fields != null ? (Map) fields.toHashMap() : new HashMap<>();
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     RCIMIWCustomMessage r =
         engine.createCustomMessage(_type, targetId, channelId, _policy, messageIdentifier, _fields);
+    WritableMap map = Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(r));
+    promise.resolve(map);
+  }
+
+  @ReactMethod
+  public void createLocationMessage(
+      int type,
+      String targetId,
+      String channelId,
+      Double longitude,
+      Double latitude,
+      String poiName,
+      String thumbnailPath,
+      Promise promise) {
+    RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
+
+    if (!check_engine(promise)) return;
+    RCIMIWLocationMessage r =
+        engine.createLocationMessage(
+            _type,
+            targetId,
+            channelId,
+            longitude.doubleValue(),
+            latitude.doubleValue(),
+            poiName,
+            thumbnailPath);
     WritableMap map = Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(r));
     promise.resolve(map);
   }
@@ -280,10 +295,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void sendMessage(ReadableMap message, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMessage _message = RCIMIWPlatformConverter.convertMessage(message.toHashMap());
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.sendMessage(_message);
     promise.resolve(r);
   }
@@ -292,10 +305,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void sendMediaMessage(ReadableMap message, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMediaMessage _message = RCIMIWPlatformConverter.convertMediaMessage(message.toHashMap());
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.sendMediaMessage(_message);
     promise.resolve(r);
   }
@@ -304,10 +315,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void cancelSendingMediaMessage(ReadableMap message, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMediaMessage _message = RCIMIWPlatformConverter.convertMediaMessage(message.toHashMap());
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.cancelSendingMediaMessage(_message);
     promise.resolve(r);
   }
@@ -316,10 +325,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void downloadMediaMessage(ReadableMap message, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMediaMessage _message = RCIMIWPlatformConverter.convertMediaMessage(message.toHashMap());
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.downloadMediaMessage(_message);
     promise.resolve(r);
   }
@@ -328,10 +335,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void cancelDownloadingMediaMessage(ReadableMap message, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMediaMessage _message = RCIMIWPlatformConverter.convertMediaMessage(message.toHashMap());
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.cancelDownloadingMediaMessage(_message);
     promise.resolve(r);
   }
@@ -339,36 +344,36 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void loadConversation(int type, String targetId, String channelId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadConversation(_type, targetId, channelId);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void loadConversations(
-      ReadableArray types, String channelId, Double startTime, int count, Promise promise) {
-    List<RCIMIWConversationType> _types = new ArrayList<>();
-    for (int i = 0; types != null && i < types.size(); i++) {
-      _types.add(RCIMIWConversationType.values()[types.getInt(i)]);
+      ReadableArray conversationTypes,
+      String channelId,
+      Double startTime,
+      Double count,
+      Promise promise) {
+    List<RCIMIWConversationType> _conversationTypes = new ArrayList<>();
+    for (int i = 0; conversationTypes != null && i < conversationTypes.size(); i++) {
+      _conversationTypes.add(RCIMIWConversationType.values()[conversationTypes.getInt(i)]);
     }
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
-    int r = engine.loadConversations(_types, channelId, startTime.longValue(), count);
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.loadConversations(
+            _conversationTypes, channelId, startTime.longValue(), count.intValue());
     promise.resolve(r);
   }
 
   @ReactMethod
   public void removeConversation(int type, String targetId, String channelId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.removeConversation(_type, targetId, channelId);
     promise.resolve(r);
   }
@@ -380,10 +385,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     for (int i = 0; conversationTypes != null && i < conversationTypes.size(); i++) {
       _conversationTypes.add(RCIMIWConversationType.values()[conversationTypes.getInt(i)]);
     }
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.removeConversations(_conversationTypes, channelId);
     promise.resolve(r);
   }
@@ -391,20 +394,16 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void loadUnreadCount(int type, String targetId, String channelId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadUnreadCount(_type, targetId, channelId);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void loadTotalUnreadCount(String channelId, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadTotalUnreadCount(channelId);
     promise.resolve(r);
   }
@@ -413,50 +412,40 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void loadUnreadMentionedCount(
       int type, String targetId, String channelId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadUnreadMentionedCount(_type, targetId, channelId);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void loadUltraGroupAllUnreadCount(Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadUltraGroupAllUnreadCount();
     promise.resolve(r);
   }
 
   @ReactMethod
   public void loadUltraGroupAllUnreadMentionedCount(Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadUltraGroupAllUnreadMentionedCount();
     promise.resolve(r);
   }
 
   @ReactMethod
   public void loadUltraGroupUnreadCount(String targetId, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadUltraGroupUnreadCount(targetId);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void loadUltraGroupUnreadMentionedCount(String targetId, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadUltraGroupUnreadMentionedCount(targetId);
     promise.resolve(r);
   }
@@ -468,10 +457,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     for (int i = 0; conversationTypes != null && i < conversationTypes.size(); i++) {
       _conversationTypes.add(RCIMIWConversationType.values()[conversationTypes.getInt(i)]);
     }
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadUnreadCountByConversationTypes(_conversationTypes, channelId, contain);
     promise.resolve(r);
   }
@@ -480,10 +467,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void clearUnreadCount(
       int type, String targetId, String channelId, Double timestamp, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.clearUnreadCount(_type, targetId, channelId, timestamp.longValue());
     promise.resolve(r);
   }
@@ -492,10 +477,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void saveDraftMessage(
       int type, String targetId, String channelId, String draft, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.saveDraftMessage(_type, targetId, channelId, draft);
     promise.resolve(r);
   }
@@ -503,10 +486,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void loadDraftMessage(int type, String targetId, String channelId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadDraftMessage(_type, targetId, channelId);
     promise.resolve(r);
   }
@@ -514,10 +495,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void clearDraftMessage(int type, String targetId, String channelId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.clearDraftMessage(_type, targetId, channelId);
     promise.resolve(r);
   }
@@ -529,10 +508,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     for (int i = 0; conversationTypes != null && i < conversationTypes.size(); i++) {
       _conversationTypes.add(RCIMIWConversationType.values()[conversationTypes.getInt(i)]);
     }
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadBlockedConversations(_conversationTypes, channelId);
     promise.resolve(r);
   }
@@ -541,10 +518,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void changeConversationTopStatus(
       int type, String targetId, String channelId, boolean top, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.changeConversationTopStatus(_type, targetId, channelId, top);
     promise.resolve(r);
   }
@@ -553,10 +528,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void loadConversationTopStatus(
       int type, String targetId, String channelId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadConversationTopStatus(_type, targetId, channelId);
     promise.resolve(r);
   }
@@ -565,10 +538,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void syncConversationReadStatus(
       int type, String targetId, String channelId, Double timestamp, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.syncConversationReadStatus(_type, targetId, channelId, timestamp.longValue());
     promise.resolve(r);
   }
@@ -577,10 +548,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void sendTypingStatus(
       int type, String targetId, String channelId, String currentType, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.sendTypingStatus(_type, targetId, channelId, currentType);
     promise.resolve(r);
   }
@@ -593,28 +562,24 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       Double sentTime,
       int order,
       int policy,
-      int count,
+      Double count,
       Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
     RCIMIWTimeOrder _order = RCIMIWTimeOrder.values()[order];
     RCIMIWMessageOperationPolicy _policy = RCIMIWMessageOperationPolicy.values()[policy];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r =
         engine.loadMessages(
-            _type, targetId, channelId, sentTime.longValue(), _order, _policy, count);
+            _type, targetId, channelId, sentTime.longValue(), _order, _policy, count.intValue());
     promise.resolve(r);
   }
 
   @ReactMethod
   public void loadFirstUnreadMessage(int type, String targetId, String channelId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadFirstUnreadMessage(_type, targetId, channelId);
     promise.resolve(r);
   }
@@ -623,10 +588,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void loadUnreadMentionedMessages(
       int type, String targetId, String channelId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadUnreadMentionedMessages(_type, targetId, channelId);
     promise.resolve(r);
   }
@@ -635,10 +598,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void insertMessage(ReadableMap message, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMessage _message = RCIMIWPlatformConverter.convertMessage(message.toHashMap());
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.insertMessage(_message);
     promise.resolve(r);
   }
@@ -652,10 +613,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _messages.add(RCIMIWPlatformConverter.convertMessage(_map.toHashMap()));
       }
     }
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.insertMessages(_messages);
     promise.resolve(r);
   }
@@ -665,10 +624,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       int type, String targetId, String channelId, Double timestamp, int policy, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
     RCIMIWMessageOperationPolicy _policy = RCIMIWMessageOperationPolicy.values()[policy];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.clearMessages(_type, targetId, channelId, timestamp.longValue(), _policy);
     promise.resolve(r);
   }
@@ -682,10 +639,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _messages.add(RCIMIWPlatformConverter.convertMessage(_map.toHashMap()));
       }
     }
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.deleteLocalMessages(_messages);
     promise.resolve(r);
   }
@@ -701,10 +656,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _messages.add(RCIMIWPlatformConverter.convertMessage(_map.toHashMap()));
       }
     }
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.deleteMessages(_type, targetId, channelId, _messages);
     promise.resolve(r);
   }
@@ -713,10 +666,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void recallMessage(ReadableMap message, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMessage _message = RCIMIWPlatformConverter.convertMessage(message.toHashMap());
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.recallMessage(_message);
     promise.resolve(r);
   }
@@ -724,10 +675,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void sendPrivateReadReceiptMessage(
       String targetId, String channelId, Double timestamp, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.sendPrivateReadReceiptMessage(targetId, channelId, timestamp.longValue());
     promise.resolve(r);
   }
@@ -736,10 +685,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void sendGroupReadReceiptRequest(ReadableMap message, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMessage _message = RCIMIWPlatformConverter.convertMessage(message.toHashMap());
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.sendGroupReadReceiptRequest(_message);
     promise.resolve(r);
   }
@@ -754,10 +701,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _messages.add(RCIMIWPlatformConverter.convertMessage(_map.toHashMap()));
       }
     }
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.sendGroupReadReceiptResponse(targetId, channelId, _messages);
     promise.resolve(r);
   }
@@ -766,10 +711,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void updateMessageExpansion(String messageUId, ReadableMap expansion, Promise promise) {
     Map<String, String> _expansion =
         expansion != null ? (Map) expansion.toHashMap() : new HashMap<>();
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.updateMessageExpansion(messageUId, _expansion);
     promise.resolve(r);
   }
@@ -782,65 +725,54 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       String _s = keys.getString(i);
       if (_s != null) _keys.add(_s);
     }
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.removeMessageExpansionForKeys(messageUId, _keys);
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void changeMessageSentStatus(int messageId, int sentStatus, Promise promise) {
+  public void changeMessageSentStatus(Double messageId, int sentStatus, Promise promise) {
     RCIMIWSentStatus _sentStatus = RCIMIWSentStatus.values()[sentStatus];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
-    int r = engine.changeMessageSentStatus(messageId, _sentStatus);
+
+    if (!check_engine(promise)) return;
+    int r = engine.changeMessageSentStatus(messageId.intValue(), _sentStatus);
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void changeMessageReceiveStatus(int messageId, int receivedStatus, Promise promise) {
+  public void changeMessageReceiveStatus(Double messageId, int receivedStatus, Promise promise) {
     RCIMIWReceivedStatus _receivedStatus = RCIMIWReceivedStatus.values()[receivedStatus];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
-    int r = engine.changeMessageReceiveStatus(messageId, _receivedStatus);
+
+    if (!check_engine(promise)) return;
+    int r = engine.changeMessageReceiveStatus(messageId.intValue(), _receivedStatus);
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void joinChatRoom(String targetId, int messageCount, boolean autoCreate, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
-    int r = engine.joinChatRoom(targetId, messageCount, autoCreate);
+  public void joinChatRoom(
+      String targetId, Double messageCount, boolean autoCreate, Promise promise) {
+
+    if (!check_engine(promise)) return;
+    int r = engine.joinChatRoom(targetId, messageCount.intValue(), autoCreate);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void leaveChatRoom(String targetId, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.leaveChatRoom(targetId);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void loadChatRoomMessages(
-      String targetId, Double timestamp, int order, int count, Promise promise) {
+      String targetId, Double timestamp, int order, Double count, Promise promise) {
     RCIMIWTimeOrder _order = RCIMIWTimeOrder.values()[order];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
-    int r = engine.loadChatRoomMessages(targetId, timestamp.longValue(), _order, count);
+
+    if (!check_engine(promise)) return;
+    int r = engine.loadChatRoomMessages(targetId, timestamp.longValue(), _order, count.intValue());
     promise.resolve(r);
   }
 
@@ -852,10 +784,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       boolean deleteWhenLeft,
       boolean overwrite,
       Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.addChatRoomEntry(targetId, key, value, deleteWhenLeft, overwrite);
     promise.resolve(r);
   }
@@ -868,40 +798,32 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       boolean overwrite,
       Promise promise) {
     Map<String, String> _entries = entries != null ? (Map) entries.toHashMap() : new HashMap<>();
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.addChatRoomEntries(targetId, _entries, deleteWhenLeft, overwrite);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void loadChatRoomEntry(String targetId, String key, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadChatRoomEntry(targetId, key);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void loadAllChatRoomEntries(String targetId, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadAllChatRoomEntries(targetId);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void removeChatRoomEntry(String targetId, String key, boolean force, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.removeChatRoomEntry(targetId, key, force);
     promise.resolve(r);
   }
@@ -914,50 +836,40 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       String _s = keys.getString(i);
       if (_s != null) _keys.add(_s);
     }
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.removeChatRoomEntries(targetId, _keys, force);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void addToBlacklist(String userId, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.addToBlacklist(userId);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void removeFromBlacklist(String userId, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.removeFromBlacklist(userId);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void loadBlacklistStatus(String userId, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadBlacklistStatus(userId);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void loadBlacklist(Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadBlacklist();
     promise.resolve(r);
   }
@@ -969,15 +881,14 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       String channelId,
       String keyword,
       Double startTime,
-      int count,
+      Double count,
       Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r =
-        engine.searchMessages(_type, targetId, channelId, keyword, startTime.longValue(), count);
+        engine.searchMessages(
+            _type, targetId, channelId, keyword, startTime.longValue(), count.intValue());
     promise.resolve(r);
   }
 
@@ -989,14 +900,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       String keyword,
       Double startTime,
       Double endTime,
-      int offset,
-      int count,
+      Double offset,
+      Double count,
       Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r =
         engine.searchMessagesByTimeRange(
             _type,
@@ -1005,8 +914,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
             keyword,
             startTime.longValue(),
             endTime.longValue(),
-            offset,
-            count);
+            offset.intValue(),
+            count.intValue());
     promise.resolve(r);
   }
 
@@ -1017,16 +926,14 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       String targetId,
       String channelId,
       Double startTime,
-      int count,
+      Double count,
       Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r =
         engine.searchMessagesByUserId(
-            userId, _type, targetId, channelId, startTime.longValue(), count);
+            userId, _type, targetId, channelId, startTime.longValue(), count.intValue());
     promise.resolve(r);
   }
 
@@ -1045,43 +952,35 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     for (int i = 0; messageTypes != null && i < messageTypes.size(); i++) {
       _messageTypes.add(RCIMIWMessageType.values()[messageTypes.getInt(i)]);
     }
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.searchConversations(_conversationTypes, channelId, _messageTypes, keyword);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void changeNotificationQuietHours(
-      String startTime, int spanMins, int level, Promise promise) {
+      String startTime, Double spanMins, int level, Promise promise) {
     RCIMIWPushNotificationQuietHoursLevel _level =
         RCIMIWPushNotificationQuietHoursLevel.values()[level];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
-    int r = engine.changeNotificationQuietHours(startTime, spanMins, _level);
+
+    if (!check_engine(promise)) return;
+    int r = engine.changeNotificationQuietHours(startTime, spanMins.intValue(), _level);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void removeNotificationQuietHours(Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.removeNotificationQuietHours();
     promise.resolve(r);
   }
 
   @ReactMethod
   public void loadNotificationQuietHours(Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadNotificationQuietHours();
     promise.resolve(r);
   }
@@ -1091,10 +990,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       int type, String targetId, String channelId, int level, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
     RCIMIWPushNotificationLevel _level = RCIMIWPushNotificationLevel.values()[level];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.changeConversationNotificationLevel(_type, targetId, channelId, _level);
     promise.resolve(r);
   }
@@ -1103,10 +1000,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void loadConversationNotificationLevel(
       int type, String targetId, String channelId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadConversationNotificationLevel(_type, targetId, channelId);
     promise.resolve(r);
   }
@@ -1115,10 +1010,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void changeConversationTypeNotificationLevel(int type, int level, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
     RCIMIWPushNotificationLevel _level = RCIMIWPushNotificationLevel.values()[level];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.changeConversationTypeNotificationLevel(_type, _level);
     promise.resolve(r);
   }
@@ -1126,10 +1019,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void loadConversationTypeNotificationLevel(int type, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadConversationTypeNotificationLevel(_type);
     promise.resolve(r);
   }
@@ -1138,20 +1029,16 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void changeUltraGroupDefaultNotificationLevel(
       String targetId, int level, Promise promise) {
     RCIMIWPushNotificationLevel _level = RCIMIWPushNotificationLevel.values()[level];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.changeUltraGroupDefaultNotificationLevel(targetId, _level);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void loadUltraGroupDefaultNotificationLevel(String targetId, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadUltraGroupDefaultNotificationLevel(targetId);
     promise.resolve(r);
   }
@@ -1160,10 +1047,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void changeUltraGroupChannelDefaultNotificationLevel(
       String targetId, String channelId, int level, Promise promise) {
     RCIMIWPushNotificationLevel _level = RCIMIWPushNotificationLevel.values()[level];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.changeUltraGroupChannelDefaultNotificationLevel(targetId, channelId, _level);
     promise.resolve(r);
   }
@@ -1171,40 +1056,32 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void loadUltraGroupChannelDefaultNotificationLevel(
       String targetId, String channelId, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadUltraGroupChannelDefaultNotificationLevel(targetId, channelId);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void changePushContentShowStatus(boolean showContent, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.changePushContentShowStatus(showContent);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void changePushLanguage(String language, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.changePushLanguage(language);
     promise.resolve(r);
   }
 
   @ReactMethod
   public void changePushReceiveStatus(boolean receive, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.changePushReceiveStatus(receive);
     promise.resolve(r);
   }
@@ -1219,10 +1096,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       String _s = userIds.getString(i);
       if (_s != null) _userIds.add(_s);
     }
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.sendGroupMessageToDesignatedUsers(_message, _userIds);
     promise.resolve(r);
   }
@@ -1230,10 +1105,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void loadMessageCount(int type, String targetId, String channelId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadMessageCount(_type, targetId, channelId);
     promise.resolve(r);
   }
@@ -1245,10 +1118,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     for (int i = 0; conversationTypes != null && i < conversationTypes.size(); i++) {
       _conversationTypes.add(RCIMIWConversationType.values()[conversationTypes.getInt(i)]);
     }
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadTopConversations(_conversationTypes, channelId);
     promise.resolve(r);
   }
@@ -1256,10 +1127,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void syncUltraGroupReadStatus(
       String targetId, String channelId, Double timestamp, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.syncUltraGroupReadStatus(targetId, channelId, timestamp.longValue());
     promise.resolve(r);
   }
@@ -1267,10 +1136,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void loadConversationsForAllChannel(int type, String targetId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadConversationsForAllChannel(_type, targetId);
     promise.resolve(r);
   }
@@ -1279,10 +1146,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void modifyUltraGroupMessage(String messageUId, ReadableMap message, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMessage _message = RCIMIWPlatformConverter.convertMessage(message.toHashMap());
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.modifyUltraGroupMessage(messageUId, _message);
     promise.resolve(r);
   }
@@ -1291,10 +1156,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void recallUltraGroupMessage(ReadableMap message, boolean deleteRemote, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMessage _message = RCIMIWPlatformConverter.convertMessage(message.toHashMap());
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.recallUltraGroupMessage(_message, deleteRemote);
     promise.resolve(r);
   }
@@ -1303,10 +1166,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   public void clearUltraGroupMessages(
       String targetId, String channelId, Double timestamp, int policy, Promise promise) {
     RCIMIWMessageOperationPolicy _policy = RCIMIWMessageOperationPolicy.values()[policy];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.clearUltraGroupMessages(targetId, channelId, timestamp.longValue(), _policy);
     promise.resolve(r);
   }
@@ -1316,10 +1177,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       String targetId, String channelId, int typingStatus, Promise promise) {
     RCIMIWUltraGroupTypingStatus _typingStatus =
         RCIMIWUltraGroupTypingStatus.values()[typingStatus];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.sendUltraGroupTypingStatus(targetId, channelId, _typingStatus);
     promise.resolve(r);
   }
@@ -1327,10 +1186,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void clearUltraGroupMessagesForAllChannel(
       String targetId, Double timestamp, Promise promise) {
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.clearUltraGroupMessagesForAllChannel(targetId, timestamp.longValue());
     promise.resolve(r);
   }
@@ -1344,10 +1201,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _messages.add(RCIMIWPlatformConverter.convertMessage(_map.toHashMap()));
       }
     }
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.loadBatchRemoteUltraGroupMessages(_messages);
     promise.resolve(r);
   }
@@ -1357,10 +1212,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       String messageUId, ReadableMap expansion, Promise promise) {
     Map<String, String> _expansion =
         expansion != null ? (Map) expansion.toHashMap() : new HashMap<>();
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.updateUltraGroupMessageExpansion(messageUId, _expansion);
     promise.resolve(r);
   }
@@ -1373,10 +1226,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       String _s = keys.getString(i);
       if (_s != null) _keys.add(_s);
     }
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.removeUltraGroupMessageExpansion(messageUId, _keys);
     promise.resolve(r);
   }
@@ -1384,16 +1235,13 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void changeLogLevel(int level, Promise promise) {
     RCIMIWLogLevel _level = RCIMIWLogLevel.values()[level];
-    if (engine == null) {
-      promise.reject(String.valueOf(RCIMIWErrorCode.ENGINE_DESTROYED), "engine is null");
-      return;
-    }
+
+    if (!check_engine(promise)) return;
     int r = engine.changeLogLevel(_level);
     promise.resolve(r);
   }
 
   private class RCIMIWListenerImpl extends RCIMIWListener {
-
     @Override
     public void onMessageReceived(
         RCIMIWMessage message, int left, boolean offline, boolean hasPackage) {
@@ -1403,9 +1251,10 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         arguments.putMap(
             "message", Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
       }
-      arguments.putInt("left", left);
+      arguments.putDouble("left", left);
       arguments.putBoolean("offline", offline);
       arguments.putBoolean("hasPackage", hasPackage);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1416,6 +1265,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       String eventName = "IRCIMIWListener:onConnectionStatusChanged";
       WritableMap arguments = Arguments.createMap();
       arguments.putInt("status", status.ordinal());
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1430,6 +1280,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putBoolean("top", top);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1443,6 +1294,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         arguments.putMap(
             "message", Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
       }
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1455,6 +1307,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putDouble("timestamp", timestamp);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1472,6 +1325,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         arguments.putMap(
             "message", Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
       }
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1488,6 +1342,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       if (keys == null) keys = new ArrayList<>();
       WritableArray _keys = Arguments.makeNativeArray(keys);
       arguments.putArray("keys", _keys);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1508,6 +1363,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _actions.pushMap(__map);
       }
       arguments.putArray("actions", _actions);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1534,6 +1390,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _userTypingStatus.pushMap(__map);
       }
       arguments.putArray("userTypingStatus", _userTypingStatus);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1547,6 +1404,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putDouble("timestamp", timestamp);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1557,6 +1415,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       String eventName = "IRCIMIWListener:onChatRoomEntriesSynced";
       WritableMap arguments = Arguments.createMap();
       arguments.putString("roomId", roomId);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1574,6 +1433,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       if (entries == null) entries = new HashMap<>();
       WritableMap _entries = Arguments.makeNativeMap((Map) entries);
       arguments.putMap("entries", _entries);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1593,6 +1453,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _messages.pushMap(__map);
       }
       arguments.putArray("messages", _messages);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1612,6 +1473,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _messages.pushMap(__map);
       }
       arguments.putArray("messages", _messages);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1631,6 +1493,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _messages.pushMap(__map);
       }
       arguments.putArray("messages", _messages);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1643,6 +1506,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putDouble("timestamp", timestamp);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1662,6 +1526,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _info.pushMap(__map);
       }
       arguments.putArray("info", _info);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1676,6 +1541,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
             "info",
             Arguments.makeNativeMap(RCIMIWPlatformConverter.convertBlockedMessageInfo(info)));
       }
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1687,6 +1553,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       WritableMap arguments = Arguments.createMap();
       arguments.putString("targetId", targetId);
       arguments.putInt("status", status.ordinal());
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1698,6 +1565,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       WritableMap arguments = Arguments.createMap();
       arguments.putString("targetId", targetId);
       arguments.putString("messageUId", messageUId);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1713,6 +1581,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       if (respondUserIds == null) respondUserIds = new HashMap<>();
       WritableMap _respondUserIds = Arguments.makeNativeMap((Map) respondUserIds);
       arguments.putMap("respondUserIds", _respondUserIds);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1722,8 +1591,9 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onConnected(int code, String userId) {
       String eventName = "IRCIMIWListener:onConnected";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("userId", userId);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1733,7 +1603,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onDatabaseOpened(int code) {
       String eventName = "IRCIMIWListener:onDatabaseOpened";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1748,7 +1619,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         RCIMIWConversation conversation) {
       String eventName = "IRCIMIWListener:onConversationLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
@@ -1757,6 +1628,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
             "conversation",
             Arguments.makeNativeMap(RCIMIWPlatformConverter.convertConversation(conversation)));
       }
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1772,7 +1644,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         List<RCIMIWConversation> conversations) {
       String eventName = "IRCIMIWListener:onConversationsLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       WritableArray _conversationTypes = Arguments.createArray();
       for (int i = 0; conversationTypes != null && i < conversationTypes.size(); i++) {
         _conversationTypes.pushInt(conversationTypes.get(i).ordinal());
@@ -1780,7 +1652,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       arguments.putArray("conversationTypes", _conversationTypes);
       arguments.putString("channelId", channelId);
       arguments.putDouble("startTime", startTime);
-      arguments.putInt("count", count);
+      arguments.putDouble("count", count);
       WritableArray _conversations = Arguments.createArray();
       for (int i = 0; conversations != null && i < conversations.size(); i++) {
         RCIMIWConversation obj = conversations.get(i);
@@ -1791,6 +1663,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _conversations.pushMap(__map);
       }
       arguments.putArray("conversations", _conversations);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1801,10 +1674,11 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, RCIMIWConversationType type, String targetId, String channelId) {
       String eventName = "IRCIMIWListener:onConversationRemoved";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1812,16 +1686,17 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
 
     @Override
     public void onConversationsRemoved(
-        int code, List<RCIMIWConversationType> types, String channelId) {
+        int code, List<RCIMIWConversationType> conversationTypes, String channelId) {
       String eventName = "IRCIMIWListener:onConversationsRemoved";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
-      WritableArray _types = Arguments.createArray();
-      for (int i = 0; types != null && i < types.size(); i++) {
-        _types.pushInt(types.get(i).ordinal());
+      arguments.putDouble("code", code);
+      WritableArray _conversationTypes = Arguments.createArray();
+      for (int i = 0; conversationTypes != null && i < conversationTypes.size(); i++) {
+        _conversationTypes.pushInt(conversationTypes.get(i).ordinal());
       }
-      arguments.putArray("types", _types);
+      arguments.putArray("conversationTypes", _conversationTypes);
       arguments.putString("channelId", channelId);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1831,9 +1706,10 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onTotalUnreadCountLoaded(int code, String channelId, int count) {
       String eventName = "IRCIMIWListener:onTotalUnreadCountLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("channelId", channelId);
-      arguments.putInt("count", count);
+      arguments.putDouble("count", count);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1844,11 +1720,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, RCIMIWConversationType type, String targetId, String channelId, int count) {
       String eventName = "IRCIMIWListener:onUnreadCountLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
-      arguments.putInt("count", count);
+      arguments.putDouble("count", count);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1857,21 +1734,22 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     @Override
     public void onUnreadCountByConversationTypesLoaded(
         int code,
-        List<RCIMIWConversationType> types,
+        List<RCIMIWConversationType> conversationTypes,
         String channelId,
         boolean contain,
         int count) {
       String eventName = "IRCIMIWListener:onUnreadCountByConversationTypesLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
-      WritableArray _types = Arguments.createArray();
-      for (int i = 0; types != null && i < types.size(); i++) {
-        _types.pushInt(types.get(i).ordinal());
+      arguments.putDouble("code", code);
+      WritableArray _conversationTypes = Arguments.createArray();
+      for (int i = 0; conversationTypes != null && i < conversationTypes.size(); i++) {
+        _conversationTypes.pushInt(conversationTypes.get(i).ordinal());
       }
-      arguments.putArray("types", _types);
+      arguments.putArray("conversationTypes", _conversationTypes);
       arguments.putString("channelId", channelId);
       arguments.putBoolean("contain", contain);
-      arguments.putInt("count", count);
+      arguments.putDouble("count", count);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1882,11 +1760,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, RCIMIWConversationType type, String targetId, String channelId, int count) {
       String eventName = "IRCIMIWListener:onUnreadMentionedCountLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
-      arguments.putInt("count", count);
+      arguments.putDouble("count", count);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1896,8 +1775,9 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onUltraGroupAllUnreadCountLoaded(int code, int count) {
       String eventName = "IRCIMIWListener:onUltraGroupAllUnreadCountLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
-      arguments.putInt("count", count);
+      arguments.putDouble("code", code);
+      arguments.putDouble("count", count);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1907,8 +1787,9 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onUltraGroupAllUnreadMentionedCountLoaded(int code, int count) {
       String eventName = "IRCIMIWListener:onUltraGroupAllUnreadMentionedCountLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
-      arguments.putInt("count", count);
+      arguments.putDouble("code", code);
+      arguments.putDouble("count", count);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1919,11 +1800,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, RCIMIWConversationType type, String targetId, String channelId, long timestamp) {
       String eventName = "IRCIMIWListener:onUnreadCountCleared";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putDouble("timestamp", timestamp);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1934,11 +1816,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, RCIMIWConversationType type, String targetId, String channelId, String draft) {
       String eventName = "IRCIMIWListener:onDraftMessageSaved";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putString("draft", draft);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1949,10 +1832,11 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, RCIMIWConversationType type, String targetId, String channelId) {
       String eventName = "IRCIMIWListener:onDraftMessageCleared";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1963,11 +1847,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, RCIMIWConversationType type, String targetId, String channelId, String draft) {
       String eventName = "IRCIMIWListener:onDraftMessageLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putString("draft", draft);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -1976,17 +1861,17 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     @Override
     public void onBlockedConversationsLoaded(
         int code,
-        List<RCIMIWConversationType> types,
+        List<RCIMIWConversationType> conversationTypes,
         String channelId,
         List<RCIMIWConversation> conversations) {
       String eventName = "IRCIMIWListener:onBlockedConversationsLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
-      WritableArray _types = Arguments.createArray();
-      for (int i = 0; types != null && i < types.size(); i++) {
-        _types.pushInt(types.get(i).ordinal());
+      arguments.putDouble("code", code);
+      WritableArray _conversationTypes = Arguments.createArray();
+      for (int i = 0; conversationTypes != null && i < conversationTypes.size(); i++) {
+        _conversationTypes.pushInt(conversationTypes.get(i).ordinal());
       }
-      arguments.putArray("types", _types);
+      arguments.putArray("conversationTypes", _conversationTypes);
       arguments.putString("channelId", channelId);
       WritableArray _conversations = Arguments.createArray();
       for (int i = 0; conversations != null && i < conversations.size(); i++) {
@@ -1998,6 +1883,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _conversations.pushMap(__map);
       }
       arguments.putArray("conversations", _conversations);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2008,11 +1894,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, RCIMIWConversationType type, String targetId, String channelId, boolean top) {
       String eventName = "IRCIMIWListener:onConversationTopStatusChanged";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putBoolean("top", top);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2023,11 +1910,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, RCIMIWConversationType type, String targetId, String channelId, boolean top) {
       String eventName = "IRCIMIWListener:onConversationTopStatusLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putBoolean("top", top);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2038,11 +1926,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, RCIMIWConversationType type, String targetId, String channelId, long timestamp) {
       String eventName = "IRCIMIWListener:onConversationReadStatusSynced";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putDouble("timestamp", timestamp);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2056,6 +1945,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         arguments.putMap(
             "message", Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
       }
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2065,11 +1955,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onMessageSent(int code, RCIMIWMessage message) {
       String eventName = "IRCIMIWListener:onMessageSent";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       if (message != null) {
         arguments.putMap(
             "message", Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
       }
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2084,6 +1975,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
             "message",
             Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMediaMessage(message)));
       }
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2098,7 +1990,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
             "message",
             Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMediaMessage(message)));
       }
-      arguments.putInt("progress", progress);
+      arguments.putDouble("progress", progress);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2108,12 +2001,13 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onSendingMediaMessageCanceled(int code, RCIMIWMediaMessage message) {
       String eventName = "IRCIMIWListener:onSendingMediaMessageCanceled";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       if (message != null) {
         arguments.putMap(
             "message",
             Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMediaMessage(message)));
       }
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2123,12 +2017,13 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onMediaMessageSent(int code, RCIMIWMediaMessage message) {
       String eventName = "IRCIMIWListener:onMediaMessageSent";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       if (message != null) {
         arguments.putMap(
             "message",
             Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMediaMessage(message)));
       }
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2143,7 +2038,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
             "message",
             Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMediaMessage(message)));
       }
-      arguments.putInt("progress", progress);
+      arguments.putDouble("progress", progress);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2153,12 +2049,13 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onMediaMessageDownloaded(int code, RCIMIWMediaMessage message) {
       String eventName = "IRCIMIWListener:onMediaMessageDownloaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       if (message != null) {
         arguments.putMap(
             "message",
             Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMediaMessage(message)));
       }
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2168,12 +2065,13 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onDownloadingMediaMessageCanceled(int code, RCIMIWMediaMessage message) {
       String eventName = "IRCIMIWListener:onDownloadingMediaMessageCanceled";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       if (message != null) {
         arguments.putMap(
             "message",
             Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMediaMessage(message)));
       }
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2190,7 +2088,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         List<RCIMIWMessage> messages) {
       String eventName = "IRCIMIWListener:onMessagesLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
@@ -2206,6 +2104,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _messages.pushMap(__map);
       }
       arguments.putArray("messages", _messages);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2220,7 +2119,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         List<RCIMIWMessage> messages) {
       String eventName = "IRCIMIWListener:onUnreadMentionedMessagesLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
@@ -2234,6 +2133,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _messages.pushMap(__map);
       }
       arguments.putArray("messages", _messages);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2248,7 +2148,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         RCIMIWMessage message) {
       String eventName = "IRCIMIWListener:onFirstUnreadMessageLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
@@ -2256,6 +2156,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         arguments.putMap(
             "message", Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
       }
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2265,11 +2166,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onMessageInserted(int code, RCIMIWMessage message) {
       String eventName = "IRCIMIWListener:onMessageInserted";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       if (message != null) {
         arguments.putMap(
             "message", Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
       }
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2279,7 +2181,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onMessagesInserted(int code, List<RCIMIWMessage> messages) {
       String eventName = "IRCIMIWListener:onMessagesInserted";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       WritableArray _messages = Arguments.createArray();
       for (int i = 0; messages != null && i < messages.size(); i++) {
         RCIMIWMessage obj = messages.get(i);
@@ -2290,6 +2192,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _messages.pushMap(__map);
       }
       arguments.putArray("messages", _messages);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2300,11 +2203,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, RCIMIWConversationType type, String targetId, String channelId, long timestamp) {
       String eventName = "IRCIMIWListener:onMessageCleared";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putDouble("timestamp", timestamp);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2314,7 +2218,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onLocalMessagesDeleted(int code, List<RCIMIWMessage> messages) {
       String eventName = "IRCIMIWListener:onLocalMessagesDeleted";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       WritableArray _messages = Arguments.createArray();
       for (int i = 0; messages != null && i < messages.size(); i++) {
         RCIMIWMessage obj = messages.get(i);
@@ -2325,6 +2229,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _messages.pushMap(__map);
       }
       arguments.putArray("messages", _messages);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2339,7 +2244,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         List<RCIMIWMessage> messages) {
       String eventName = "IRCIMIWListener:onMessagesDeleted";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
@@ -2353,6 +2258,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _messages.pushMap(__map);
       }
       arguments.putArray("messages", _messages);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2362,11 +2268,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onMessageRecalled(int code, RCIMIWMessage message) {
       String eventName = "IRCIMIWListener:onMessageRecalled";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       if (message != null) {
         arguments.putMap(
             "message", Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
       }
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2377,10 +2284,11 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, String targetId, String channelId, long timestamp) {
       String eventName = "IRCIMIWListener:onPrivateReadReceiptMessageSent";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putDouble("timestamp", timestamp);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2391,11 +2299,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, String messageUId, Map<String, String> expansion) {
       String eventName = "IRCIMIWListener:onMessageExpansionUpdated";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("messageUId", messageUId);
       if (expansion == null) expansion = new HashMap<>();
       WritableMap _expansion = Arguments.makeNativeMap((Map) expansion);
       arguments.putMap("expansion", _expansion);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2405,11 +2314,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onMessageExpansionForKeysRemoved(int code, String messageUId, List<String> keys) {
       String eventName = "IRCIMIWListener:onMessageExpansionForKeysRemoved";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("messageUId", messageUId);
       if (keys == null) keys = new ArrayList<>();
       WritableArray _keys = Arguments.makeNativeArray(keys);
       arguments.putArray("keys", _keys);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2419,8 +2329,9 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onMessageReceiveStatusChanged(int code, long messageId) {
       String eventName = "IRCIMIWListener:onMessageReceiveStatusChanged";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putDouble("messageId", messageId);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2430,8 +2341,9 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onMessageSentStatusChanged(int code, long messageId) {
       String eventName = "IRCIMIWListener:onMessageSentStatusChanged";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putDouble("messageId", messageId);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2441,8 +2353,9 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onChatRoomJoined(int code, String targetId) {
       String eventName = "IRCIMIWListener:onChatRoomJoined";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2453,6 +2366,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       String eventName = "IRCIMIWListener:onChatRoomJoining";
       WritableMap arguments = Arguments.createMap();
       arguments.putString("targetId", targetId);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2462,8 +2376,9 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onChatRoomLeft(int code, String targetId) {
       String eventName = "IRCIMIWListener:onChatRoomLeft";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2474,7 +2389,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, String targetId, List<RCIMIWMessage> messages, long syncTime) {
       String eventName = "IRCIMIWListener:onChatRoomMessagesLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
       WritableArray _messages = Arguments.createArray();
       for (int i = 0; messages != null && i < messages.size(); i++) {
@@ -2487,6 +2402,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       }
       arguments.putArray("messages", _messages);
       arguments.putDouble("syncTime", syncTime);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2496,9 +2412,10 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onChatRoomEntryAdded(int code, String targetId, String key) {
       String eventName = "IRCIMIWListener:onChatRoomEntryAdded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
       arguments.putString("key", key);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2509,7 +2426,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, String targetId, Map<String, String> entries, Map<String, Integer> errorEntries) {
       String eventName = "IRCIMIWListener:onChatRoomEntriesAdded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
       if (entries == null) entries = new HashMap<>();
       WritableMap _entries = Arguments.makeNativeMap((Map) entries);
@@ -2517,6 +2434,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       if (errorEntries == null) errorEntries = new HashMap<>();
       WritableMap _errorEntries = Arguments.makeNativeMap((Map) errorEntries);
       arguments.putMap("errorEntries", _errorEntries);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2526,11 +2444,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onChatRoomEntryLoaded(int code, String targetId, Map<String, String> entry) {
       String eventName = "IRCIMIWListener:onChatRoomEntryLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
       if (entry == null) entry = new HashMap<>();
       WritableMap _entry = Arguments.makeNativeMap((Map) entry);
       arguments.putMap("entry", _entry);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2540,11 +2459,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onAllChatRoomEntriesLoaded(int code, String targetId, Map<String, String> entries) {
       String eventName = "IRCIMIWListener:onAllChatRoomEntriesLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
       if (entries == null) entries = new HashMap<>();
       WritableMap _entries = Arguments.makeNativeMap((Map) entries);
       arguments.putMap("entries", _entries);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2554,9 +2474,10 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onChatRoomEntryRemoved(int code, String targetId, String key) {
       String eventName = "IRCIMIWListener:onChatRoomEntryRemoved";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
       arguments.putString("key", key);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2566,11 +2487,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onChatRoomEntriesRemoved(int code, String targetId, List<String> keys) {
       String eventName = "IRCIMIWListener:onChatRoomEntriesRemoved";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
       if (keys == null) keys = new ArrayList<>();
       WritableArray _keys = Arguments.makeNativeArray(keys);
       arguments.putArray("keys", _keys);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2580,8 +2502,9 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onBlacklistAdded(int code, String userId) {
       String eventName = "IRCIMIWListener:onBlacklistAdded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("userId", userId);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2591,8 +2514,9 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onBlacklistRemoved(int code, String userId) {
       String eventName = "IRCIMIWListener:onBlacklistRemoved";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("userId", userId);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2602,9 +2526,10 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onBlacklistStatusLoaded(int code, String userId, RCIMIWBlacklistStatus status) {
       String eventName = "IRCIMIWListener:onBlacklistStatusLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("userId", userId);
       arguments.putInt("status", status.ordinal());
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2614,10 +2539,11 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onBlacklistLoaded(int code, List<String> userIds) {
       String eventName = "IRCIMIWListener:onBlacklistLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       if (userIds == null) userIds = new ArrayList<>();
       WritableArray _userIds = Arguments.makeNativeArray(userIds);
       arguments.putArray("userIds", _userIds);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2635,13 +2561,13 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         List<RCIMIWMessage> messages) {
       String eventName = "IRCIMIWListener:onMessagesSearched";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putString("keyword", keyword);
       arguments.putDouble("startTime", startTime);
-      arguments.putInt("count", count);
+      arguments.putDouble("count", count);
       WritableArray _messages = Arguments.createArray();
       for (int i = 0; messages != null && i < messages.size(); i++) {
         RCIMIWMessage obj = messages.get(i);
@@ -2652,6 +2578,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _messages.pushMap(__map);
       }
       arguments.putArray("messages", _messages);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2671,15 +2598,15 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         List<RCIMIWMessage> messages) {
       String eventName = "IRCIMIWListener:onMessagesSearchedByTimeRange";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putString("keyword", keyword);
       arguments.putDouble("startTime", startTime);
       arguments.putDouble("endTime", endTime);
-      arguments.putInt("offset", offset);
-      arguments.putInt("count", count);
+      arguments.putDouble("offset", offset);
+      arguments.putDouble("count", count);
       WritableArray _messages = Arguments.createArray();
       for (int i = 0; messages != null && i < messages.size(); i++) {
         RCIMIWMessage obj = messages.get(i);
@@ -2690,6 +2617,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _messages.pushMap(__map);
       }
       arguments.putArray("messages", _messages);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2707,13 +2635,13 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         List<RCIMIWMessage> messages) {
       String eventName = "IRCIMIWListener:onMessagesSearchedByUserId";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("userId", userId);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putDouble("startTime", startTime);
-      arguments.putInt("count", count);
+      arguments.putDouble("count", count);
       WritableArray _messages = Arguments.createArray();
       for (int i = 0; messages != null && i < messages.size(); i++) {
         RCIMIWMessage obj = messages.get(i);
@@ -2724,6 +2652,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _messages.pushMap(__map);
       }
       arguments.putArray("messages", _messages);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2739,7 +2668,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         List<RCIMIWSearchConversationResult> conversations) {
       String eventName = "IRCIMIWListener:onConversationsSearched";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       WritableArray _conversationTypes = Arguments.createArray();
       for (int i = 0; conversationTypes != null && i < conversationTypes.size(); i++) {
         _conversationTypes.pushInt(conversationTypes.get(i).ordinal());
@@ -2762,6 +2691,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _conversations.pushMap(__map);
       }
       arguments.putArray("conversations", _conversations);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2771,11 +2701,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onGroupReadReceiptRequestSent(int code, RCIMIWMessage message) {
       String eventName = "IRCIMIWListener:onGroupReadReceiptRequestSent";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       if (message != null) {
         arguments.putMap(
             "message", Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
       }
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2786,7 +2717,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, String targetId, String channelId, List<RCIMIWMessage> messages) {
       String eventName = "IRCIMIWListener:onGroupReadReceiptResponseSent";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       WritableArray _messages = Arguments.createArray();
@@ -2799,6 +2730,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _messages.pushMap(__map);
       }
       arguments.putArray("messages", _messages);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2809,10 +2741,11 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, String startTime, int spanMins, RCIMIWPushNotificationQuietHoursLevel level) {
       String eventName = "IRCIMIWListener:onNotificationQuietHoursChanged";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("startTime", startTime);
-      arguments.putInt("spanMins", spanMins);
+      arguments.putDouble("spanMins", spanMins);
       arguments.putInt("level", level.ordinal());
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2822,7 +2755,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onNotificationQuietHoursRemoved(int code) {
       String eventName = "IRCIMIWListener:onNotificationQuietHoursRemoved";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2833,10 +2767,11 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, String startTime, int spanMins, RCIMIWPushNotificationQuietHoursLevel level) {
       String eventName = "IRCIMIWListener:onNotificationQuietHoursLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("startTime", startTime);
-      arguments.putInt("spanMins", spanMins);
+      arguments.putDouble("spanMins", spanMins);
       arguments.putInt("level", level.ordinal());
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2851,11 +2786,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         RCIMIWPushNotificationLevel level) {
       String eventName = "IRCIMIWListener:onConversationNotificationLevelChanged";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putInt("level", level.ordinal());
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2870,11 +2806,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         RCIMIWPushNotificationLevel level) {
       String eventName = "IRCIMIWListener:onConversationNotificationLevelLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putInt("level", level.ordinal());
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2885,9 +2822,10 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, RCIMIWConversationType type, RCIMIWPushNotificationLevel level) {
       String eventName = "IRCIMIWListener:onConversationTypeNotificationLevelChanged";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putInt("level", level.ordinal());
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2898,9 +2836,10 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, RCIMIWConversationType type, RCIMIWPushNotificationLevel level) {
       String eventName = "IRCIMIWListener:onConversationTypeNotificationLevelLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putInt("level", level.ordinal());
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2911,9 +2850,10 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, String targetId, RCIMIWPushNotificationLevel level) {
       String eventName = "IRCIMIWListener:onUltraGroupDefaultNotificationLevelChanged";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
       arguments.putInt("level", level.ordinal());
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2924,9 +2864,10 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, String targetId, RCIMIWPushNotificationLevel level) {
       String eventName = "IRCIMIWListener:onUltraGroupDefaultNotificationLevelLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
       arguments.putInt("level", level.ordinal());
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2937,10 +2878,11 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, String targetId, String channelId, RCIMIWPushNotificationLevel level) {
       String eventName = "IRCIMIWListener:onUltraGroupChannelDefaultNotificationLevelChanged";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putInt("level", level.ordinal());
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2951,10 +2893,11 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, String targetId, String channelId, RCIMIWPushNotificationLevel level) {
       String eventName = "IRCIMIWListener:onUltraGroupChannelDefaultNotificationLevelLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putInt("level", level.ordinal());
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2964,8 +2907,9 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onPushContentShowStatusChanged(int code, boolean showContent) {
       String eventName = "IRCIMIWListener:onPushContentShowStatusChanged";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putBoolean("showContent", showContent);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2975,8 +2919,9 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onPushLanguageChanged(int code, String language) {
       String eventName = "IRCIMIWListener:onPushLanguageChanged";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("language", language);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2986,8 +2931,9 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onPushReceiveStatusChanged(int code, boolean receive) {
       String eventName = "IRCIMIWListener:onPushReceiveStatusChanged";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putBoolean("receive", receive);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -2998,11 +2944,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, RCIMIWConversationType type, String targetId, String channelId, int count) {
       String eventName = "IRCIMIWListener:onMessageCountLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
-      arguments.putInt("count", count);
+      arguments.putDouble("count", count);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -3016,7 +2963,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         List<RCIMIWConversation> conversations) {
       String eventName = "IRCIMIWListener:onTopConversationsLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       WritableArray _conversationTypes = Arguments.createArray();
       for (int i = 0; conversationTypes != null && i < conversationTypes.size(); i++) {
         _conversationTypes.pushInt(conversationTypes.get(i).ordinal());
@@ -3033,6 +2980,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _conversations.pushMap(__map);
       }
       arguments.putArray("conversations", _conversations);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -3046,6 +2994,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         arguments.putMap(
             "message", Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
       }
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -3055,11 +3004,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onGroupMessageToDesignatedUsersSent(int code, RCIMIWMessage message) {
       String eventName = "IRCIMIWListener:onGroupMessageToDesignatedUsersSent";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       if (message != null) {
         arguments.putMap(
             "message", Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
       }
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -3070,10 +3020,11 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, String targetId, String channelId, long timestamp) {
       String eventName = "IRCIMIWListener:onUltraGroupReadStatusSynced";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putDouble("timestamp", timestamp);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -3087,7 +3038,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         List<RCIMIWConversation> conversations) {
       String eventName = "IRCIMIWListener:onConversationsLoadedForAllChannel";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
       arguments.putString("targetId", targetId);
       WritableArray _conversations = Arguments.createArray();
@@ -3100,6 +3051,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _conversations.pushMap(__map);
       }
       arguments.putArray("conversations", _conversations);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -3109,9 +3061,10 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onUltraGroupUnreadMentionedCountLoaded(int code, String targetId, int count) {
       String eventName = "IRCIMIWListener:onUltraGroupUnreadMentionedCountLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
-      arguments.putInt("count", count);
+      arguments.putDouble("count", count);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -3121,9 +3074,10 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onUltraGroupUnreadCountLoaded(int code, String targetId, int count) {
       String eventName = "IRCIMIWListener:onUltraGroupUnreadCountLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
-      arguments.putInt("count", count);
+      arguments.putDouble("count", count);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -3133,8 +3087,9 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onUltraGroupMessageModified(int code, String messageUId) {
       String eventName = "IRCIMIWListener:onUltraGroupMessageModified";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("messageUId", messageUId);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -3144,12 +3099,13 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     public void onUltraGroupMessageRecalled(int code, RCIMIWMessage message, boolean deleteRemote) {
       String eventName = "IRCIMIWListener:onUltraGroupMessageRecalled";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       if (message != null) {
         arguments.putMap(
             "message", Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
       }
       arguments.putBoolean("deleteRemote", deleteRemote);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -3164,11 +3120,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         RCIMIWMessageOperationPolicy policy) {
       String eventName = "IRCIMIWListener:onUltraGroupMessagesCleared";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putDouble("timestamp", timestamp);
       arguments.putInt("policy", policy.ordinal());
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -3179,9 +3136,10 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, String targetId, long timestamp) {
       String eventName = "IRCIMIWListener:onUltraGroupMessagesClearedForAllChannel";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
       arguments.putDouble("timestamp", timestamp);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -3192,10 +3150,11 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, String targetId, String channelId, RCIMIWUltraGroupTypingStatus typingStatus) {
       String eventName = "IRCIMIWListener:onUltraGroupTypingStatusSent";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
       arguments.putString("channelId", channelId);
       arguments.putInt("typingStatus", typingStatus.ordinal());
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -3206,7 +3165,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, List<RCIMIWMessage> matchedMessages, List<RCIMIWMessage> notMatchedMessages) {
       String eventName = "IRCIMIWListener:onBatchRemoteUltraGroupMessagesLoaded";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       WritableArray _matchedMessages = Arguments.createArray();
       for (int i = 0; matchedMessages != null && i < matchedMessages.size(); i++) {
         RCIMIWMessage obj = matchedMessages.get(i);
@@ -3227,6 +3186,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         _notMatchedMessages.pushMap(__map);
       }
       arguments.putArray("notMatchedMessages", _notMatchedMessages);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -3237,11 +3197,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, Map<String, String> expansion, String messageUId) {
       String eventName = "IRCIMIWListener:onUltraGroupMessageExpansionUpdated";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       if (expansion == null) expansion = new HashMap<>();
       WritableMap _expansion = Arguments.makeNativeMap((Map) expansion);
       arguments.putMap("expansion", _expansion);
       arguments.putString("messageUId", messageUId);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);
@@ -3252,11 +3213,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
         int code, String messageUId, List<String> keys) {
       String eventName = "IRCIMIWListener:onUltraGroupMessageExpansionRemoved";
       WritableMap arguments = Arguments.createMap();
-      arguments.putInt("code", code);
+      arguments.putDouble("code", code);
       arguments.putString("messageUId", messageUId);
       if (keys == null) keys = new ArrayList<>();
       WritableArray _keys = Arguments.makeNativeArray(keys);
       arguments.putArray("keys", _keys);
+
       context
           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
           .emit(eventName, arguments);

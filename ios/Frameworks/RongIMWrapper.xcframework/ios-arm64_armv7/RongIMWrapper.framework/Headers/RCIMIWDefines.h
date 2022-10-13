@@ -186,6 +186,11 @@ typedef NS_ENUM(NSInteger, RCIMIWMessageType)  {
      命令通知消息
      */
     RCIMIWMessageTypeCommandNotification = 11,
+    
+    /*!
+     位置消息
+     */
+    RCIMIWMessageTypeLocation = 12,
 };
 
 #pragma mark 自定义消息的类别
@@ -307,12 +312,12 @@ typedef NS_ENUM(NSUInteger, RCIMIWMentionedType) {
     /*!
      @ 所有人
      */
-    RCIMIWMentionedTypeAll = 1,
+    RCIMIWMentionedTypeAll = 0,
     
     /*!
      @ 部分人
      */
-    RCIMIWMentionedTypePart = 2,
+    RCIMIWMentionedTypePart = 1,
 };
 
 #pragma mark 时间顺序
@@ -512,6 +517,21 @@ typedef NS_ENUM(NSInteger, RCIMIWPushNotificationLevel) {
 typedef NS_ENUM(NSUInteger, RCIMIWChatRoomEntriesOperationType) {
     RCIMIWChatRoomEntriesOperationTypeUpdate = 0,
     RCIMIWChatRoomEntriesOperationTypeRemove = 1,
+};
+
+/**
+ 华为推送消息级别
+ */
+typedef NS_ENUM(NSUInteger, RCIMIWImportanceHW) {
+    /*!
+     华为推送消息级别 NORMAL，表示消息为服务与通讯类。消息提醒方式为锁屏+铃声+震动。
+     */
+    RCIMIWImportanceHWNormal = 0,
+    
+    /*!
+     华为推送消息级别 LOW, 表示消息为资讯营销类。消息提醒方式为静默通知，仅在下拉通知栏展示。
+     */
+    RCIMIWImportanceHWLow = 1,
 };
 
 #endif /* RCIMIWDefines_h */

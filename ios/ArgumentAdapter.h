@@ -8,6 +8,10 @@
 extern "C" {
 #endif
 
+RCIMIWImportanceHW toImportanceHW(NSUInteger w);
+
+NSUInteger ImportanceHWToNum(RCIMIWImportanceHW w);
+
 RCIMIWMessageOperationPolicy toMessageOperationPolicy(NSUInteger policy);
 
 NSUInteger MessageOperationPolicyToNum(RCIMIWMessageOperationPolicy policy);

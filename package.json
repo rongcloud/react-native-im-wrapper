@@ -1,6 +1,6 @@
 {
   "name": "@rongcloud/react-native-im-wrapper",
-  "version": "5.2.4-release.3",
+  "version": "5.2.5",
   "description": "React Native RongCloud Im Wrapper",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -37,7 +37,7 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/rongcloud/react-native-im-wrapper",
+  "repository": "https://github.com/rongcloud/rongcloud-react-native-im-wrapper",
   "author": "RongCloud <support@rongcloud.cn> (https://www.rongcloud.cn)",
   "license": "MIT",
   "bugs": {

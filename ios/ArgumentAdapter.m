@@ -2,6 +2,28 @@
 
 #import "ArgumentAdapter.h"
 
+RCIMIWImportanceHW toImportanceHW(NSUInteger w) {
+  static NSArray<NSNumber *> *RCIMIWImportanceHW_array = nil;
+  if (!RCIMIWImportanceHW_array) {
+    RCIMIWImportanceHW_array =
+        @[ @(RCIMIWImportanceHWNormal), @(RCIMIWImportanceHWLow) ];
+  }
+  if (w > [RCIMIWImportanceHW_array count] - 1)
+    w = [RCIMIWImportanceHW_array count] - 1;
+
+  return (RCIMIWImportanceHW)[RCIMIWImportanceHW_array[w] integerValue];
+}
+
+NSUInteger ImportanceHWToNum(RCIMIWImportanceHW w) {
+  static NSArray<NSNumber *> *RCIMIWImportanceHW_array = nil;
+  if (!RCIMIWImportanceHW_array) {
+    RCIMIWImportanceHW_array =
+        @[ @(RCIMIWImportanceHWNormal), @(RCIMIWImportanceHWLow) ];
+  }
+
+  return [RCIMIWImportanceHW_array indexOfObject:@(w)];
+}
+
 RCIMIWMessageOperationPolicy toMessageOperationPolicy(NSUInteger policy) {
   static NSArray<NSNumber *> *RCIMIWMessageOperationPolicy_array = nil;
   if (!RCIMIWMessageOperationPolicy_array) {
@@ -13,6 +35,7 @@ RCIMIWMessageOperationPolicy toMessageOperationPolicy(NSUInteger policy) {
   }
   if (policy > [RCIMIWMessageOperationPolicy_array count] - 1)
     policy = [RCIMIWMessageOperationPolicy_array count] - 1;
+
   return (RCIMIWMessageOperationPolicy)
       [RCIMIWMessageOperationPolicy_array[policy] integerValue];
 }
@@ -26,6 +49,7 @@ NSUInteger MessageOperationPolicyToNum(RCIMIWMessageOperationPolicy policy) {
       @(RCIMIWMessageOperationPolicyLocalRemote)
     ];
   }
+
   return [RCIMIWMessageOperationPolicy_array indexOfObject:@(policy)];
 }
 
@@ -37,6 +61,7 @@ RCIMIWVIVOPushType toVIVOPushType(NSUInteger type) {
   }
   if (type > [RCIMIWVIVOPushType_array count] - 1)
     type = [RCIMIWVIVOPushType_array count] - 1;
+
   return (RCIMIWVIVOPushType)[RCIMIWVIVOPushType_array[type] integerValue];
 }
 
@@ -46,6 +71,7 @@ NSUInteger VIVOPushTypeToNum(RCIMIWVIVOPushType type) {
     RCIMIWVIVOPushType_array =
         @[ @(RCIMIWVIVOPushTypeOperate), @(RCIMIWVIVOPushTypeSystem) ];
   }
+
   return [RCIMIWVIVOPushType_array indexOfObject:@(type)];
 }
 
@@ -61,6 +87,7 @@ RCIMIWSentStatus toSentStatus(NSUInteger status) {
   }
   if (status > [RCIMIWSentStatus_array count] - 1)
     status = [RCIMIWSentStatus_array count] - 1;
+
   return (RCIMIWSentStatus)[RCIMIWSentStatus_array[status] integerValue];
 }
 
@@ -74,6 +101,7 @@ NSUInteger SentStatusToNum(RCIMIWSentStatus status) {
       @(RCIMIWSentStatusCanceled)
     ];
   }
+
   return [RCIMIWSentStatus_array indexOfObject:@(status)];
 }
 
@@ -89,6 +117,7 @@ toPushNotificationQuietHoursLevel(NSUInteger level) {
   }
   if (level > [RCIMIWPushNotificationQuietHoursLevel_array count] - 1)
     level = [RCIMIWPushNotificationQuietHoursLevel_array count] - 1;
+
   return (RCIMIWPushNotificationQuietHoursLevel)
       [RCIMIWPushNotificationQuietHoursLevel_array[level] integerValue];
 }
@@ -103,6 +132,7 @@ NSUInteger PushNotificationQuietHoursLevelToNum(
       @(RCIMIWPushNotificationQuietHoursLevelBlocked)
     ];
   }
+
   return [RCIMIWPushNotificationQuietHoursLevel_array indexOfObject:@(level)];
 }
 
@@ -114,6 +144,7 @@ RCIMIWMessageDirection toMessageDirection(NSUInteger direction) {
   }
   if (direction > [RCIMIWMessageDirection_array count] - 1)
     direction = [RCIMIWMessageDirection_array count] - 1;
+
   return (RCIMIWMessageDirection)
       [RCIMIWMessageDirection_array[direction] integerValue];
 }
@@ -124,6 +155,7 @@ NSUInteger MessageDirectionToNum(RCIMIWMessageDirection direction) {
     RCIMIWMessageDirection_array =
         @[ @(RCIMIWMessageDirectionSend), @(RCIMIWMessageDirectionReceive) ];
   }
+
   return [RCIMIWMessageDirection_array indexOfObject:@(direction)];
 }
 
@@ -138,6 +170,7 @@ RCIMIWReceivedStatus toReceivedStatus(NSUInteger status) {
   }
   if (status > [RCIMIWReceivedStatus_array count] - 1)
     status = [RCIMIWReceivedStatus_array count] - 1;
+
   return (
       RCIMIWReceivedStatus)[RCIMIWReceivedStatus_array[status] integerValue];
 }
@@ -151,6 +184,7 @@ NSUInteger ReceivedStatusToNum(RCIMIWReceivedStatus status) {
       @(RCIMIWReceivedStatusRetrieved), @(RCIMIWReceivedStatusMultipleReceive)
     ];
   }
+
   return [RCIMIWReceivedStatus_array indexOfObject:@(status)];
 }
 
@@ -165,6 +199,7 @@ RCIMIWChatRoomMemberActionType toChatRoomMemberActionType(NSUInteger type) {
   }
   if (type > [RCIMIWChatRoomMemberActionType_array count] - 1)
     type = [RCIMIWChatRoomMemberActionType_array count] - 1;
+
   return (RCIMIWChatRoomMemberActionType)
       [RCIMIWChatRoomMemberActionType_array[type] integerValue];
 }
@@ -178,6 +213,7 @@ NSUInteger ChatRoomMemberActionTypeToNum(RCIMIWChatRoomMemberActionType type) {
       @(RCIMIWChatRoomMemberActionTypeLeave)
     ];
   }
+
   return [RCIMIWChatRoomMemberActionType_array indexOfObject:@(type)];
 }
 
@@ -194,6 +230,7 @@ RCIMIWPushNotificationLevel toPushNotificationLevel(NSUInteger level) {
   }
   if (level > [RCIMIWPushNotificationLevel_array count] - 1)
     level = [RCIMIWPushNotificationLevel_array count] - 1;
+
   return (RCIMIWPushNotificationLevel)
       [RCIMIWPushNotificationLevel_array[level] integerValue];
 }
@@ -209,6 +246,7 @@ NSUInteger PushNotificationLevelToNum(RCIMIWPushNotificationLevel level) {
       @(RCIMIWPushNotificationLevelBlocked)
     ];
   }
+
   return [RCIMIWPushNotificationLevel_array indexOfObject:@(level)];
 }
 
@@ -221,11 +259,13 @@ RCIMIWMessageType toMessageType(NSUInteger type) {
       @(RCIMIWMessageTypeImage), @(RCIMIWMessageTypeFile),
       @(RCIMIWMessageTypeSight), @(RCIMIWMessageTypeGIF),
       @(RCIMIWMessageTypeRecall), @(RCIMIWMessageTypeReference),
-      @(RCIMIWMessageTypeCommand), @(RCIMIWMessageTypeCommandNotification)
+      @(RCIMIWMessageTypeCommand), @(RCIMIWMessageTypeCommandNotification),
+      @(RCIMIWMessageTypeLocation)
     ];
   }
   if (type > [RCIMIWMessageType_array count] - 1)
     type = [RCIMIWMessageType_array count] - 1;
+
   return (RCIMIWMessageType)[RCIMIWMessageType_array[type] integerValue];
 }
 
@@ -238,9 +278,11 @@ NSUInteger MessageTypeToNum(RCIMIWMessageType type) {
       @(RCIMIWMessageTypeImage), @(RCIMIWMessageTypeFile),
       @(RCIMIWMessageTypeSight), @(RCIMIWMessageTypeGIF),
       @(RCIMIWMessageTypeRecall), @(RCIMIWMessageTypeReference),
-      @(RCIMIWMessageTypeCommand), @(RCIMIWMessageTypeCommandNotification)
+      @(RCIMIWMessageTypeCommand), @(RCIMIWMessageTypeCommandNotification),
+      @(RCIMIWMessageTypeLocation)
     ];
   }
+
   return [RCIMIWMessageType_array indexOfObject:@(type)];
 }
 
@@ -254,6 +296,7 @@ RCIMIWMessageBlockType toMessageBlockType(NSUInteger type) {
   }
   if (type > [RCIMIWMessageBlockType_array count] - 1)
     type = [RCIMIWMessageBlockType_array count] - 1;
+
   return (
       RCIMIWMessageBlockType)[RCIMIWMessageBlockType_array[type] integerValue];
 }
@@ -266,6 +309,7 @@ NSUInteger MessageBlockTypeToNum(RCIMIWMessageBlockType type) {
       @(RCIMIWMessageBlockTypeCustom), @(RCIMIWMessageBlockTypeThirdParty)
     ];
   }
+
   return [RCIMIWMessageBlockType_array indexOfObject:@(type)];
 }
 
@@ -277,6 +321,7 @@ RCIMIWTimeOrder toTimeOrder(NSUInteger order) {
   }
   if (order > [RCIMIWTimeOrder_array count] - 1)
     order = [RCIMIWTimeOrder_array count] - 1;
+
   return (RCIMIWTimeOrder)[RCIMIWTimeOrder_array[order] integerValue];
 }
 
@@ -286,6 +331,7 @@ NSUInteger TimeOrderToNum(RCIMIWTimeOrder order) {
     RCIMIWTimeOrder_array =
         @[ @(RCIMIWTimeOrderBefore), @(RCIMIWTimeOrderAfter) ];
   }
+
   return [RCIMIWTimeOrder_array indexOfObject:@(order)];
 }
 
@@ -299,6 +345,7 @@ RCIMIWCustomMessagePolicy toCustomMessagePolicy(NSUInteger policy) {
   }
   if (policy > [RCIMIWCustomMessagePolicy_array count] - 1)
     policy = [RCIMIWCustomMessagePolicy_array count] - 1;
+
   return (RCIMIWCustomMessagePolicy)
       [RCIMIWCustomMessagePolicy_array[policy] integerValue];
 }
@@ -311,6 +358,7 @@ NSUInteger CustomMessagePolicyToNum(RCIMIWCustomMessagePolicy policy) {
       @(RCIMIWCustomMessagePolicyStatus), @(RCIMIWCustomMessagePolicyStorage)
     ];
   }
+
   return [RCIMIWCustomMessagePolicy_array indexOfObject:@(policy)];
 }
 
@@ -324,6 +372,7 @@ RCIMIWChatRoomStatus toChatRoomStatus(NSUInteger status) {
   }
   if (status > [RCIMIWChatRoomStatus_array count] - 1)
     status = [RCIMIWChatRoomStatus_array count] - 1;
+
   return (
       RCIMIWChatRoomStatus)[RCIMIWChatRoomStatus_array[status] integerValue];
 }
@@ -336,6 +385,7 @@ NSUInteger ChatRoomStatusToNum(RCIMIWChatRoomStatus status) {
       @(RCIMIWChatRoomStatusDestroyAuto)
     ];
   }
+
   return [RCIMIWChatRoomStatus_array indexOfObject:@(status)];
 }
 
@@ -350,6 +400,7 @@ RCIMIWConversationType toConversationType(NSUInteger type) {
   }
   if (type > [RCIMIWConversationType_array count] - 1)
     type = [RCIMIWConversationType_array count] - 1;
+
   return (
       RCIMIWConversationType)[RCIMIWConversationType_array[type] integerValue];
 }
@@ -363,6 +414,7 @@ NSUInteger ConversationTypeToNum(RCIMIWConversationType type) {
       @(RCIMIWConversationTypeSystem), @(RCIMIWConversationTypeUltraGroup)
     ];
   }
+
   return [RCIMIWConversationType_array indexOfObject:@(type)];
 }
 
@@ -377,6 +429,7 @@ RCIMIWErrorCode toErrorCode(NSUInteger code) {
   }
   if (code > [RCIMIWErrorCode_array count] - 1)
     code = [RCIMIWErrorCode_array count] - 1;
+
   return (RCIMIWErrorCode)[RCIMIWErrorCode_array[code] integerValue];
 }
 
@@ -389,6 +442,7 @@ NSUInteger ErrorCodeToNum(RCIMIWErrorCode code) {
       @(RCIMIWErrorCodeResultUnknown)
     ];
   }
+
   return [RCIMIWErrorCode_array indexOfObject:@(code)];
 }
 
@@ -400,6 +454,7 @@ RCIMIWUltraGroupTypingStatus toUltraGroupTypingStatus(NSUInteger status) {
   }
   if (status > [RCIMIWUltraGroupTypingStatus_array count] - 1)
     status = [RCIMIWUltraGroupTypingStatus_array count] - 1;
+
   return (RCIMIWUltraGroupTypingStatus)
       [RCIMIWUltraGroupTypingStatus_array[status] integerValue];
 }
@@ -410,6 +465,7 @@ NSUInteger UltraGroupTypingStatusToNum(RCIMIWUltraGroupTypingStatus status) {
     RCIMIWUltraGroupTypingStatus_array =
         @[ @(RCIMIWUltraGroupTypingStatusText) ];
   }
+
   return [RCIMIWUltraGroupTypingStatus_array indexOfObject:@(status)];
 }
 
@@ -421,6 +477,7 @@ RCIMIWMentionedType toMentionedType(NSUInteger type) {
   }
   if (type > [RCIMIWMentionedType_array count] - 1)
     type = [RCIMIWMentionedType_array count] - 1;
+
   return (RCIMIWMentionedType)[RCIMIWMentionedType_array[type] integerValue];
 }
 
@@ -430,6 +487,7 @@ NSUInteger MentionedTypeToNum(RCIMIWMentionedType type) {
     RCIMIWMentionedType_array =
         @[ @(RCIMIWMentionedTypeAll), @(RCIMIWMentionedTypePart) ];
   }
+
   return [RCIMIWMentionedType_array indexOfObject:@(type)];
 }
 
@@ -444,6 +502,7 @@ toChatRoomEntriesOperationType(NSUInteger type) {
   }
   if (type > [RCIMIWChatRoomEntriesOperationType_array count] - 1)
     type = [RCIMIWChatRoomEntriesOperationType_array count] - 1;
+
   return (RCIMIWChatRoomEntriesOperationType)
       [RCIMIWChatRoomEntriesOperationType_array[type] integerValue];
 }
@@ -457,6 +516,7 @@ ChatRoomEntriesOperationTypeToNum(RCIMIWChatRoomEntriesOperationType type) {
       @(RCIMIWChatRoomEntriesOperationTypeRemove)
     ];
   }
+
   return [RCIMIWChatRoomEntriesOperationType_array indexOfObject:@(type)];
 }
 
@@ -470,6 +530,7 @@ RCIMIWLogLevel toLogLevel(NSUInteger level) {
   }
   if (level > [RCIMIWLogLevel_array count] - 1)
     level = [RCIMIWLogLevel_array count] - 1;
+
   return (RCIMIWLogLevel)[RCIMIWLogLevel_array[level] integerValue];
 }
 
@@ -481,6 +542,7 @@ NSUInteger LogLevelToNum(RCIMIWLogLevel level) {
       @(RCIMIWLogLevelInfo), @(RCIMIWLogLevelDebug), @(RCIMIWLogLevelVerbose)
     ];
   }
+
   return [RCIMIWLogLevel_array indexOfObject:@(level)];
 }
 
@@ -494,6 +556,7 @@ RCIMIWBlacklistStatus toBlacklistStatus(NSUInteger status) {
   }
   if (status > [RCIMIWBlacklistStatus_array count] - 1)
     status = [RCIMIWBlacklistStatus_array count] - 1;
+
   return (
       RCIMIWBlacklistStatus)[RCIMIWBlacklistStatus_array[status] integerValue];
 }
@@ -506,6 +569,7 @@ NSUInteger BlacklistStatusToNum(RCIMIWBlacklistStatus status) {
       @(RCIMIWBlacklistStatusNotInBlacklist)
     ];
   }
+
   return [RCIMIWBlacklistStatus_array indexOfObject:@(status)];
 }
 
@@ -520,11 +584,12 @@ RCIMIWConnectionStatus toConnectionStatus(NSUInteger status) {
       @(RCIMIWConnectionStatusTokenIncorrect),
       @(RCIMIWConnectionStatusConnUserBlocked),
       @(RCIMIWConnectionStatusSignOut), @(RCIMIWConnectionStatusSuspend),
-      @(RCIMIWConnectionStatusTimeout)
+      @(RCIMIWConnectionStatusTimeout), @(RCIMIWConnectionStatusUnknown)
     ];
   }
   if (status > [RCIMIWConnectionStatus_array count] - 1)
     status = [RCIMIWConnectionStatus_array count] - 1;
+
   return (RCIMIWConnectionStatus)
       [RCIMIWConnectionStatus_array[status] integerValue];
 }
@@ -540,8 +605,9 @@ NSUInteger ConnectionStatusToNum(RCIMIWConnectionStatus status) {
       @(RCIMIWConnectionStatusTokenIncorrect),
       @(RCIMIWConnectionStatusConnUserBlocked),
       @(RCIMIWConnectionStatusSignOut), @(RCIMIWConnectionStatusSuspend),
-      @(RCIMIWConnectionStatusTimeout)
+      @(RCIMIWConnectionStatusTimeout), @(RCIMIWConnectionStatusUnknown)
     ];
   }
+
   return [RCIMIWConnectionStatus_array indexOfObject:@(status)];
 }

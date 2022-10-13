@@ -1,4 +1,6 @@
-import {logger} from './Logger';
+import {
+    logger
+} from './Logger';
 import {
     RCIMIWAndroidPushOptions,
     RCIMIWBlacklistStatus,
@@ -21,7 +23,9 @@ import {
     RCIMIWGIFMessage,
     RCIMIWGroupReadReceiptInfo,
     RCIMIWImageMessage,
+    RCIMIWImportanceHW,
     RCIMIWIOSPushOptions,
+    RCIMIWLocationMessage,
     RCIMIWLogLevel,
     RCIMIWMediaMessage,
     RCIMIWMentionedInfo,
@@ -51,10 +55,11 @@ import {
     RCIMIWVIVOPushType,
     RCIMIWVoiceMessage
 } from './RCIMDefines';
-import {RCIMIWEngine} from './RCIMEngine';
+import {
+    RCIMIWEngine
+} from './RCIMEngine';
 
-export {
-    logger,
+export {logger,
     RCIMIWAndroidPushOptions,
     RCIMIWBlacklistStatus,
     RCIMIWBlockedMessageInfo,
@@ -77,7 +82,9 @@ export {
     RCIMIWGIFMessage,
     RCIMIWGroupReadReceiptInfo,
     RCIMIWImageMessage,
+    RCIMIWImportanceHW,
     RCIMIWIOSPushOptions,
+    RCIMIWLocationMessage,
     RCIMIWLogLevel,
     RCIMIWMediaMessage,
     RCIMIWMentionedInfo,
@@ -105,5 +112,4 @@ export {
     RCIMIWUnknownMessage,
     RCIMIWUserInfo,
     RCIMIWVIVOPushType,
-    RCIMIWVoiceMessage
-}
+    RCIMIWVoiceMessage}

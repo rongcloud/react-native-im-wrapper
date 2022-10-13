@@ -42,12 +42,11 @@ export interface RCIMIWAndroidPushOptions {
     /**
      *华为推送消息级别
      */
-    importanceHW?: string;
+    importanceHW?: RCIMIWImportanceHW;
 
     /**
      *华为通知栏消息右侧大图标 URL，如果不设置，则不展示通知栏右侧图标。
-     *URL使用的协议必须是HTTPS协议，取值样例：https://example.com/image.png。图标文件须小于 512KB，图标建议规格大小：40dp x 40dp，弧角大小为
-     *8dp，超出建议规格大小的图标会存在图片压缩或显示不全的情况。
+     *URL使用的协议必须是HTTPS协议，取值样例：https://example.com/image.png。图标文件须小于 512KB，图标建议规格大小：40dp x 40dp，弧角大小为 8dp，超出建议规格大小的图标会存在图片压缩或显示不全的情况。
      */
     imageUrlHW?: string;
 
@@ -141,8 +140,8 @@ export interface RCIMIWIOSPushOptions {
     threadId?: string;
 
     /**
-     *iOS 富文本推送的类型开发者自己定义，自己在 App 端进行解析判断，与 richMediaUri 一起使用，当设置 category 后，推送时默认携带 mutable-content
-     *进行推送，属性值为 1。 如果不设置后台默认取消息类型字符串，如RC:TxtMsg
+     *iOS 富文本推送的类型开发者自己定义，自己在 App 端进行解析判断，与 richMediaUri 一起使用，当设置 category 后，推送时默认携带 mutable-content 进行推送，属性值为 1。
+     *如果不设置后台默认取消息类型字符串，如RC:TxtMsg
      *@return
      */
     category?: string;
@@ -200,6 +199,21 @@ export interface RCIMIWCompressOptions {
      *小视频压缩高度，建议使用16的倍数
      */
     sightCompressHeight?: number;
+
+    /**
+     *位置消息缩略图压缩比例
+     */
+    locationThumbnailQuality?: number;
+
+    /**
+     *位置消息压缩的宽度
+     */
+    locationThumbnailWidth?: number;
+
+    /**
+     *位置消息压缩的高度
+     */
+    locationThumbnailHeight?: number;
 }
 
 export interface RCIMIWEngineOptions {
@@ -230,7 +244,7 @@ export interface RCIMIWEngineOptions {
     compressOptions?: RCIMIWCompressOptions;
 
     /**
-     *
+     *Android 推送参数配置
      */
     pushOptions?: RCIMIWPushOptions;
 }
@@ -295,7 +309,7 @@ export interface RCIMIWCustomMessage extends RCIMIWMessage {
      *自定义消息的键值对
      *@return
      */
-    fields?: {[propName: string]: string};
+    fields?: { [propName: string]: string };
 }
 
 export interface RCIMIWMessage {
@@ -398,7 +412,7 @@ export interface RCIMIWMessage {
      *扩展信息只支持单聊和群组，其它会话类型不能设置扩展信息
      *默认消息扩展字典 key 长度不超过 32 ，value 长度不超过 4096 ，单次设置扩展数量最大为 20，消息的扩展总数不能超过 300
      */
-    expansion?: {[propName: string]: string};
+    expansion?: { [propName: string]: string };
 }
 
 export interface RCIMIWImageMessage extends RCIMIWMediaMessage {
@@ -563,6 +577,32 @@ export interface RCIMIWSightMessage extends RCIMIWMediaMessage {
     thumbnailBase64String?: string;
 }
 
+export interface RCIMIWLocationMessage extends RCIMIWMessage {
+    /**
+     *经度信息
+     *@return
+     */
+    longitude?: number;
+
+    /**
+     *纬度信息
+     *@return
+     */
+    latitude?: number;
+
+    /**
+     *POI 信息
+     *@return
+     */
+    poiName?: string;
+
+    /**
+     *缩略图地址
+     *@return
+     */
+    thumbnailPath?: string;
+}
+
 export interface RCIMIWReferenceMessage extends RCIMIWMessage {
     /**
      *引用文本
@@ -610,7 +650,7 @@ export interface RCIMIWTypingStatus {
     userId?: string;
 
     /**
-     *当前正在输入的消息类型名
+     *当前正在输入的消息类型名，为发送方调用发送接口时传入的 currentType
      *@return
      */
     contentType?: string;
@@ -672,7 +712,7 @@ export interface RCIMIWGroupReadReceiptInfo {
     /**
      *会话中响应过该消息回执的成员 userId 列表。 key: userId value: respondTime
      */
-    respondUserIds?: {[propName: string]: number};
+    respondUserIds?: { [propName: string]: number };
 }
 
 export interface RCIMIWChatRoomMemberAction {
@@ -797,6 +837,18 @@ export interface RCIMIWPushOptions {
     enableVIVOPush?: boolean;
 }
 
+export enum RCIMIWImportanceHW {
+    /**
+     *表示消息为服务与通讯类。消息提醒方式为锁屏+铃声+震动。
+     */
+    NORMAL,
+
+    /**
+     *表示消息为资讯营销类。消息提醒方式为静默通知，仅在下拉通知栏展示。
+     */
+    LOW
+}
+
 export enum RCIMIWMessageOperationPolicy {
     /**
      *本地
@@ -914,8 +966,7 @@ export enum RCIMIWReceivedStatus {
     DOWNLOADED,
 
     /**
-     * 该消息已经被其他登录的多端收取过。（即该消息已经被其他端收取过后。当前端才登录，并重新拉取了这条消息。客户可以通过这个状态更新
-     * UI，比如不再提示）
+     * 该消息已经被其他登录的多端收取过。（即该消息已经被其他端收取过后。当前端才登录，并重新拉取了这条消息。客户可以通过这个状态更新 UI，比如不再提示）
      */
     RETRIEVED,
 
@@ -1033,7 +1084,12 @@ export enum RCIMIWMessageType {
     /**
      *命令通知
      */
-    COMMAND_NOTIFICATION
+    COMMAND_NOTIFICATION,
+
+    /**
+     *位置消息
+     */
+    LOCATION
 }
 
 export enum RCIMIWMessageBlockType {
@@ -1297,5 +1353,10 @@ export enum RCIMIWConnectionStatus {
     /**
      *自动连接超时，SDK 将不会继续连接，用户需要做超时处理，再自行调用 connectWithToken 接口进行连接
      */
-    TIMEOUT
+    TIMEOUT,
+
+    /**
+     *异常情况
+     */
+    UNKNOWN
 }

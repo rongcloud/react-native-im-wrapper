@@ -31,6 +31,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) int sightCompressWidth;
 @property (nonatomic, assign) int sightCompressHeight;
 
+/**
+ 位置消息预览图压缩比 0 ~ 100
+ */
+@property (nonatomic, assign) int locationThumbnailQuality;
+@property (nonatomic, assign) int locationThumbnailWidth;
+@property (nonatomic, assign) int locationThumbnailHeight;
+
 @end
 
 NS_ASSUME_NONNULL_END

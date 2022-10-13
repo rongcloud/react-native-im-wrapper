@@ -62,11 +62,6 @@ NS_ASSUME_NONNULL_BEGIN
 //+ (RCIMIWAndroidPushOptions *)convertAndroidPushOptionsFromDict:(NSDictionary *)androidPushOptions;
 
 
-// CompressOptions
-+ (NSDictionary *)convertCompressOptionsToDict:(RCIMIWCompressOptions *)compressOptions;
-+ (RCIMIWCompressOptions *)convertCompressOptionsFromDict:(NSDictionary *)compressOptions;
-
-
 // EngineOptions
 + (NSDictionary *)convertEngineOptionsToDict:(RCIMIWEngineOptions *)engineOptions;
 + (RCIMIWEngineOptions *)convertEngineOptionsFromDict:(NSDictionary *)engineOptions;

@@ -50,6 +50,16 @@ export function isEmpty(str: string) {
     return isNull(str) || str.length == 0 || str == '';
 }
 
+export function isConversationType(useTypes: string) {
+    if (isNaN(Number(useTypes))) {
+        return true;
+    }
+    if (Number(useTypes) <= 0 || Number(useTypes) > 5) {
+        return true;
+    }
+    return false;
+}
+
 
 export function post(url: string, params: object, success: (obj: any) => void, error: (err: any) => void) {
     let json = JSON.stringify(params);
