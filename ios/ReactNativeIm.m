@@ -8,7 +8,7 @@
 
 @end
 @implementation RCReactNativeIMVersion
-static NSString *const VER = @"5.2.5";
+static NSString *const VER = @"5.2.5.release.1";
 + (void)load {
   [RCUtilities setModuleName:@"imwrapperrn" version:VER];
 }
@@ -2117,7 +2117,7 @@ RCT_EXPORT_METHOD(clearUltraGroupMessagesForAllChannel : (NSString *)targetId ti
 RCT_EXPORT_METHOD(loadBatchRemoteUltraGroupMessages : (NSArray<NSDictionary *> *)messages resolve : (RCTPromiseResolveBlock)resolve reject : (RCTPromiseRejectBlock)reject) {
   ENGINEASSERT
   NSArray<RCIMIWMessage *> *_messages = [NSMutableArray new];
-  for (int i = 0; messages && i < messages.count; i++)
+  for (int i = 0; messages && i < messages.count; i++) 
     [(NSMutableArray *)_messages addObject:[RCIMIWPlatformConverter convertMessageFromDict:[messages objectAtIndex:i]]];
   NSInteger r = [engine loadBatchRemoteUltraGroupMessages:_messages];
   resolve(@(r));
