@@ -3,6 +3,91 @@ package cn.rongcloud.im.wrapper.rn;
 import androidx.annotation.NonNull;
 import cn.rongcloud.im.wrapper.RCIMIWEngine;
 import cn.rongcloud.im.wrapper.RCIMIWEngineImpl;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWAddChatRoomEntriesCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWAddChatRoomEntryCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWAddToBlacklistCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWCancelDownloadingMediaMessageCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWCancelSendingMediaMessageCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWChangeConversationNotificationLevelCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWChangeConversationTopStatusCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWChangeConversationTypeNotificationLevelCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWChangeMessageReceivedStatusCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWChangeMessageSentStatusCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWChangeNotificationQuietHoursCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWChangePushContentShowStatusCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWChangePushLanguageCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWChangePushReceiveStatusCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWChangeUltraGroupChannelDefaultNotificationLevelCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWChangeUltraGroupDefaultNotificationLevelCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWClearDraftMessageCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWClearMessagesCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWClearUltraGroupMessagesCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWClearUltraGroupMessagesForAllChannelCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWClearUnreadCountCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWDeleteLocalMessagesCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWDeleteMessagesCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetBatchRemoteUltraGroupMessagesCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetBlacklistCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetBlacklistStatusCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetBlockedConversationsCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetChatRoomAllEntriesCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetChatRoomEntryCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetChatRoomMessagesCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetConversationCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetConversationNotificationLevelCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetConversationTopStatusCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetConversationTypeNotificationLevelCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetConversationsCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetConversationsForAllChannelCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetDraftMessageCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetFirstUnreadMessageCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetMessageCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetMessageCountCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetMessagesCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetNotificationQuietHoursCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetTopConversationsCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetTotalUnreadCountCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetUltraGroupAllUnreadCountCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetUltraGroupAllUnreadMentionedCountCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetUltraGroupChannelDefaultNotificationLevelCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetUltraGroupDefaultNotificationLevelCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetUltraGroupUnreadCountCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetUltraGroupUnreadMentionedCountCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetUnreadCountByConversationTypesCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetUnreadCountCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetUnreadMentionedCountCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWGetUnreadMentionedMessagesCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWInsertMessageCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWInsertMessagesCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWJoinChatRoomCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWLeaveChatRoomCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWModifyUltraGroupMessageCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWRecallMessageCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWRecallUltraGroupMessageCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWRemoveChatRoomEntriesCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWRemoveChatRoomEntryCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWRemoveConversationCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWRemoveConversationsCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWRemoveFromBlacklistCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWRemoveMessageExpansionForKeysCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWRemoveNotificationQuietHoursCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWRemoveUltraGroupMessageExpansionForKeysCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWSaveDraftMessageCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWSearchConversationsCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWSearchMessagesByTimeRangeCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWSearchMessagesByUserIdCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWSearchMessagesCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWSendGroupReadReceiptRequestCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWSendGroupReadReceiptResponseCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWSendPrivateReadReceiptMessageCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWSendUltraGroupTypingStatusCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWSyncConversationReadStatusCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWSyncUltraGroupReadStatusCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWUpdateMessageExpansionCallback;
+import cn.rongcloud.im.wrapper.callback.IRCIMIWUpdateUltraGroupMessageExpansionCallback;
+import cn.rongcloud.im.wrapper.callback.RCIMIWConnectCallback;
+import cn.rongcloud.im.wrapper.callback.RCIMIWSendGroupMessageToDesignatedUsersCallback;
+import cn.rongcloud.im.wrapper.callback.RCIMIWSendMessageCallback;
 import cn.rongcloud.im.wrapper.chatroom.RCIMIWChatRoomMemberAction;
 import cn.rongcloud.im.wrapper.constants.RCIMIWBlacklistStatus;
 import cn.rongcloud.im.wrapper.constants.RCIMIWBlockedMessageInfo;
@@ -25,8 +110,9 @@ import cn.rongcloud.im.wrapper.constants.RCIMIWUltraGroupTypingStatus;
 import cn.rongcloud.im.wrapper.constants.RCIMIWUltraGroupTypingStatusInfo;
 import cn.rongcloud.im.wrapper.conversation.RCIMIWConversation;
 import cn.rongcloud.im.wrapper.conversation.RCIMIWSearchConversationResult;
-import cn.rongcloud.im.wrapper.listener.IGetMessageCallback;
+import cn.rongcloud.im.wrapper.listener.RCIMIWDownloadMediaMessageListener;
 import cn.rongcloud.im.wrapper.listener.RCIMIWListener;
+import cn.rongcloud.im.wrapper.listener.RCIMIWSendMediaMessageListener;
 import cn.rongcloud.im.wrapper.messages.RCIMIWCustomMessage;
 import cn.rongcloud.im.wrapper.messages.RCIMIWFileMessage;
 import cn.rongcloud.im.wrapper.messages.RCIMIWGIFMessage;
@@ -50,6 +136,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +145,7 @@ import java.util.Map;
 public class ReactNativeImModule extends ReactContextBaseJavaModule {
   private RCIMIWEngine engine;
   private ReactApplicationContext context;
+  private RCTDeviceEventEmitter eventEmitter;
 
   public ReactNativeImModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -68,6 +156,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   @NonNull
   public String getName() {
     return "RCReactNativeIM";
+  }
+
+  @Override
+  public void initialize() {
+    super.initialize();
+    eventEmitter = this.context.getJSModule(RCTDeviceEventEmitter.class);
   }
 
   private boolean check_engine(Promise promise) {
@@ -99,53 +193,31 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void getMessageById(int messageId, Promise promise) {
-    if (!check_engine(promise)) return;
-
-    engine.getMessageById(
-        messageId,
-        new IGetMessageCallback() {
-          @Override
-          public void onSuccess(RCIMIWMessage message) {
-            WritableMap map = null;
-            if (message != null)
-              map = Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message));
-            promise.resolve(map);
-          }
-
-          @Override
-          public void onError(int i) {
-            promise.reject("-1", String.valueOf(i));
-          }
-        });
-  }
-
-  @ReactMethod
-  public void getMessageByUId(String messageUId, Promise promise) {
-    if (!check_engine(promise)) return;
-    engine.getMessageByUId(
-        messageUId,
-        new IGetMessageCallback() {
-          @Override
-          public void onSuccess(RCIMIWMessage message) {
-            WritableMap map = null;
-            if (message != null)
-              map = Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message));
-            promise.resolve(map);
-          }
-
-          @Override
-          public void onError(int i) {
-            promise.reject("-1", String.valueOf(i));
-          }
-        });
-  }
-
-  @ReactMethod
-  public void connect(String token, Double timeout, Promise promise) {
+  public void connect(String token, Double timeout, String eventId, Promise promise) {
 
     if (!check_engine(promise)) return;
-    int r = engine.connect(token, timeout.intValue());
+    int r =
+        engine.connect(
+            token,
+            timeout.intValue(),
+            new RCIMIWConnectCallback() {
+              @Override
+              public void onDatabaseOpened(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("Connect:onDatabaseOpened", writableMap);
+              }
+
+              @Override
+              public void onConnected(int code, String userId) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                writableMap.putString("userId", userId);
+                eventEmitter.emit("Connect:onConnected", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -292,52 +364,231 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void sendMessage(ReadableMap message, Promise promise) {
+  public void sendMessage(ReadableMap message, String eventId, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMessage _message = RCIMIWPlatformConverter.convertMessage(message.toHashMap());
 
     if (!check_engine(promise)) return;
-    int r = engine.sendMessage(_message);
+    int r =
+        engine.sendMessage(
+            _message,
+            new RCIMIWSendMessageCallback() {
+              @Override
+              public void onMessageSaved(RCIMIWMessage message) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                if (message != null) {
+                  writableMap.putMap(
+                      "message",
+                      Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
+                }
+                ;
+                eventEmitter.emit("SendMessage:onMessageSaved", writableMap);
+              }
+
+              @Override
+              public void onMessageSent(int code, RCIMIWMessage message) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                if (message != null) {
+                  writableMap.putMap(
+                      "message",
+                      Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
+                }
+                ;
+                eventEmitter.emit("SendMessage:onMessageSent", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void sendMediaMessage(ReadableMap message, Promise promise) {
+  public void sendMediaMessage(ReadableMap message, String eventId, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMediaMessage _message = RCIMIWPlatformConverter.convertMediaMessage(message.toHashMap());
 
     if (!check_engine(promise)) return;
-    int r = engine.sendMediaMessage(_message);
+    int r =
+        engine.sendMediaMessage(
+            _message,
+            new RCIMIWSendMediaMessageListener() {
+              @Override
+              public void onMediaMessageSaved(RCIMIWMediaMessage message) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                if (message != null) {
+                  writableMap.putMap(
+                      "message",
+                      Arguments.makeNativeMap(
+                          RCIMIWPlatformConverter.convertMediaMessage(message)));
+                }
+                ;
+                eventEmitter.emit("SendMediaMessage:onMediaMessageSaved", writableMap);
+              }
+
+              @Override
+              public void onMediaMessageSending(RCIMIWMediaMessage message, int progress) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                if (message != null) {
+                  writableMap.putMap(
+                      "message",
+                      Arguments.makeNativeMap(
+                          RCIMIWPlatformConverter.convertMediaMessage(message)));
+                }
+                ;
+                writableMap.putDouble("progress", progress);
+                eventEmitter.emit("SendMediaMessage:onMediaMessageSending", writableMap);
+              }
+
+              @Override
+              public void onSendingMediaMessageCanceled(RCIMIWMediaMessage message) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                if (message != null) {
+                  writableMap.putMap(
+                      "message",
+                      Arguments.makeNativeMap(
+                          RCIMIWPlatformConverter.convertMediaMessage(message)));
+                }
+                ;
+                eventEmitter.emit("SendMediaMessage:onSendingMediaMessageCanceled", writableMap);
+              }
+
+              @Override
+              public void onMediaMessageSent(int code, RCIMIWMediaMessage message) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                if (message != null) {
+                  writableMap.putMap(
+                      "message",
+                      Arguments.makeNativeMap(
+                          RCIMIWPlatformConverter.convertMediaMessage(message)));
+                }
+                ;
+                eventEmitter.emit("SendMediaMessage:onMediaMessageSent", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void cancelSendingMediaMessage(ReadableMap message, Promise promise) {
+  public void cancelSendingMediaMessage(ReadableMap message, String eventId, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMediaMessage _message = RCIMIWPlatformConverter.convertMediaMessage(message.toHashMap());
 
     if (!check_engine(promise)) return;
-    int r = engine.cancelSendingMediaMessage(_message);
+    int r =
+        engine.cancelSendingMediaMessage(
+            _message,
+            new IRCIMIWCancelSendingMediaMessageCallback() {
+              @Override
+              public void onCancelSendingMediaMessageCalled(int code, RCIMIWMediaMessage message) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                if (message != null) {
+                  writableMap.putMap(
+                      "message",
+                      Arguments.makeNativeMap(
+                          RCIMIWPlatformConverter.convertMediaMessage(message)));
+                }
+                ;
+                eventEmitter.emit(
+                    "CancelSendingMediaMessage:onCancelSendingMediaMessageCalled", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void downloadMediaMessage(ReadableMap message, Promise promise) {
+  public void downloadMediaMessage(ReadableMap message, String eventId, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMediaMessage _message = RCIMIWPlatformConverter.convertMediaMessage(message.toHashMap());
 
     if (!check_engine(promise)) return;
-    int r = engine.downloadMediaMessage(_message);
+    int r =
+        engine.downloadMediaMessage(
+            _message,
+            new RCIMIWDownloadMediaMessageListener() {
+              @Override
+              public void onMediaMessageDownloading(RCIMIWMediaMessage message, int progress) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                if (message != null) {
+                  writableMap.putMap(
+                      "message",
+                      Arguments.makeNativeMap(
+                          RCIMIWPlatformConverter.convertMediaMessage(message)));
+                }
+                ;
+                writableMap.putDouble("progress", progress);
+                eventEmitter.emit("DownloadMediaMessage:onMediaMessageDownloading", writableMap);
+              }
+
+              @Override
+              public void onDownloadingMediaMessageCanceled(RCIMIWMediaMessage message) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                if (message != null) {
+                  writableMap.putMap(
+                      "message",
+                      Arguments.makeNativeMap(
+                          RCIMIWPlatformConverter.convertMediaMessage(message)));
+                }
+                ;
+                eventEmitter.emit(
+                    "DownloadMediaMessage:onDownloadingMediaMessageCanceled", writableMap);
+              }
+
+              @Override
+              public void onMediaMessageDownloaded(int code, RCIMIWMediaMessage message) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                if (message != null) {
+                  writableMap.putMap(
+                      "message",
+                      Arguments.makeNativeMap(
+                          RCIMIWPlatformConverter.convertMediaMessage(message)));
+                }
+                ;
+                eventEmitter.emit("DownloadMediaMessage:onMediaMessageDownloaded", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void cancelDownloadingMediaMessage(ReadableMap message, Promise promise) {
+  public void cancelDownloadingMediaMessage(ReadableMap message, String eventId, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMediaMessage _message = RCIMIWPlatformConverter.convertMediaMessage(message.toHashMap());
 
     if (!check_engine(promise)) return;
-    int r = engine.cancelDownloadingMediaMessage(_message);
+    int r =
+        engine.cancelDownloadingMediaMessage(
+            _message,
+            new IRCIMIWCancelDownloadingMediaMessageCallback() {
+              @Override
+              public void onCancelDownloadingMediaMessageCalled(
+                  int code, RCIMIWMediaMessage message) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                if (message != null) {
+                  writableMap.putMap(
+                      "message",
+                      Arguments.makeNativeMap(
+                          RCIMIWPlatformConverter.convertMediaMessage(message)));
+                }
+                ;
+                eventEmitter.emit(
+                    "CancelDownloadingMediaMessage:onCancelDownloadingMediaMessageCalled",
+                    writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -347,6 +598,41 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
 
     if (!check_engine(promise)) return;
     int r = engine.loadConversation(_type, targetId, channelId);
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void getConversation(
+      int type, String targetId, String channelId, String eventId, Promise promise) {
+    RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getConversation(
+            _type,
+            targetId,
+            channelId,
+            new IRCIMIWGetConversationCallback() {
+              @Override
+              public void onSuccess(RCIMIWConversation t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                if (t != null) {
+                  writableMap.putMap(
+                      "t", Arguments.makeNativeMap(RCIMIWPlatformConverter.convertConversation(t)));
+                }
+                ;
+                eventEmitter.emit("GetConversation:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetConversation:onError", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -370,24 +656,99 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void removeConversation(int type, String targetId, String channelId, Promise promise) {
-    RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
-
-    if (!check_engine(promise)) return;
-    int r = engine.removeConversation(_type, targetId, channelId);
-    promise.resolve(r);
-  }
-
-  @ReactMethod
-  public void removeConversations(
-      ReadableArray conversationTypes, String channelId, Promise promise) {
+  public void getConversations(
+      ReadableArray conversationTypes,
+      String channelId,
+      Double startTime,
+      Double count,
+      String eventId,
+      Promise promise) {
     List<RCIMIWConversationType> _conversationTypes = new ArrayList<>();
     for (int i = 0; conversationTypes != null && i < conversationTypes.size(); i++) {
       _conversationTypes.add(RCIMIWConversationType.values()[conversationTypes.getInt(i)]);
     }
 
     if (!check_engine(promise)) return;
-    int r = engine.removeConversations(_conversationTypes, channelId);
+    int r =
+        engine.getConversations(
+            _conversationTypes,
+            channelId,
+            startTime.longValue(),
+            count.intValue(),
+            new IRCIMIWGetConversationsCallback() {
+              @Override
+              public void onSuccess(List<RCIMIWConversation> t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                WritableArray _t = Arguments.createArray();
+                for (int i = 0; t != null && i < t.size(); i++) {
+                  RCIMIWConversation obj = t.get(i);
+                  if (obj == null) continue;
+                  Map<String, Object> _map = RCIMIWPlatformConverter.convertConversation(obj);
+                  if (_map == null) _map = new HashMap<>();
+                  ReadableMap __map = Arguments.makeNativeMap(_map);
+                  _t.pushMap(__map);
+                }
+                writableMap.putArray("t", _t);
+                eventEmitter.emit("GetConversations:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetConversations:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void removeConversation(
+      int type, String targetId, String channelId, String eventId, Promise promise) {
+    RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.removeConversation(
+            _type,
+            targetId,
+            channelId,
+            new IRCIMIWRemoveConversationCallback() {
+              @Override
+              public void onConversationRemoved(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("RemoveConversation:onConversationRemoved", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void removeConversations(
+      ReadableArray conversationTypes, String channelId, String eventId, Promise promise) {
+    List<RCIMIWConversationType> _conversationTypes = new ArrayList<>();
+    for (int i = 0; conversationTypes != null && i < conversationTypes.size(); i++) {
+      _conversationTypes.add(RCIMIWConversationType.values()[conversationTypes.getInt(i)]);
+    }
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.removeConversations(
+            _conversationTypes,
+            channelId,
+            new IRCIMIWRemoveConversationsCallback() {
+              @Override
+              public void onConversationsRemoved(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("RemoveConversations:onConversationsRemoved", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -401,10 +762,68 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void getUnreadCount(
+      int type, String targetId, String channelId, String eventId, Promise promise) {
+    RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getUnreadCount(
+            _type,
+            targetId,
+            channelId,
+            new IRCIMIWGetUnreadCountCallback() {
+              @Override
+              public void onSuccess(Integer t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("t", t);
+                eventEmitter.emit("GetUnreadCount:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetUnreadCount:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
   public void loadTotalUnreadCount(String channelId, Promise promise) {
 
     if (!check_engine(promise)) return;
     int r = engine.loadTotalUnreadCount(channelId);
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void getTotalUnreadCount(String channelId, String eventId, Promise promise) {
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getTotalUnreadCount(
+            channelId,
+            new IRCIMIWGetTotalUnreadCountCallback() {
+              @Override
+              public void onSuccess(Integer t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("t", t);
+                eventEmitter.emit("GetTotalUnreadCount:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetTotalUnreadCount:onError", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -419,10 +838,67 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void getUnreadMentionedCount(
+      int type, String targetId, String channelId, String eventId, Promise promise) {
+    RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getUnreadMentionedCount(
+            _type,
+            targetId,
+            channelId,
+            new IRCIMIWGetUnreadMentionedCountCallback() {
+              @Override
+              public void onSuccess(Integer t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("t", t);
+                eventEmitter.emit("GetUnreadMentionedCount:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetUnreadMentionedCount:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
   public void loadUltraGroupAllUnreadCount(Promise promise) {
 
     if (!check_engine(promise)) return;
     int r = engine.loadUltraGroupAllUnreadCount();
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void getUltraGroupAllUnreadCount(String eventId, Promise promise) {
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getUltraGroupAllUnreadCount(
+            new IRCIMIWGetUltraGroupAllUnreadCountCallback() {
+              @Override
+              public void onSuccess(Integer t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("t", t);
+                eventEmitter.emit("GetUltraGroupAllUnreadCount:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetUltraGroupAllUnreadCount:onError", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -435,6 +911,32 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void getUltraGroupAllUnreadMentionedCount(String eventId, Promise promise) {
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getUltraGroupAllUnreadMentionedCount(
+            new IRCIMIWGetUltraGroupAllUnreadMentionedCountCallback() {
+              @Override
+              public void onSuccess(Integer t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("t", t);
+                eventEmitter.emit("GetUltraGroupAllUnreadMentionedCount:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetUltraGroupAllUnreadMentionedCount:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
   public void loadUltraGroupUnreadCount(String targetId, Promise promise) {
 
     if (!check_engine(promise)) return;
@@ -443,10 +945,64 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void getUltraGroupUnreadCount(String targetId, String eventId, Promise promise) {
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getUltraGroupUnreadCount(
+            targetId,
+            new IRCIMIWGetUltraGroupUnreadCountCallback() {
+              @Override
+              public void onSuccess(Integer t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("t", t);
+                eventEmitter.emit("GetUltraGroupUnreadCount:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetUltraGroupUnreadCount:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
   public void loadUltraGroupUnreadMentionedCount(String targetId, Promise promise) {
 
     if (!check_engine(promise)) return;
     int r = engine.loadUltraGroupUnreadMentionedCount(targetId);
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void getUltraGroupUnreadMentionedCount(String targetId, String eventId, Promise promise) {
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getUltraGroupUnreadMentionedCount(
+            targetId,
+            new IRCIMIWGetUltraGroupUnreadMentionedCountCallback() {
+              @Override
+              public void onSuccess(Integer t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("t", t);
+                eventEmitter.emit("GetUltraGroupUnreadMentionedCount:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetUltraGroupUnreadMentionedCount:onError", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -464,22 +1020,93 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void getUnreadCountByConversationTypes(
+      ReadableArray conversationTypes,
+      String channelId,
+      boolean contain,
+      String eventId,
+      Promise promise) {
+    List<RCIMIWConversationType> _conversationTypes = new ArrayList<>();
+    for (int i = 0; conversationTypes != null && i < conversationTypes.size(); i++) {
+      _conversationTypes.add(RCIMIWConversationType.values()[conversationTypes.getInt(i)]);
+    }
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getUnreadCountByConversationTypes(
+            _conversationTypes,
+            channelId,
+            contain,
+            new IRCIMIWGetUnreadCountByConversationTypesCallback() {
+              @Override
+              public void onSuccess(Integer t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("t", t);
+                eventEmitter.emit("GetUnreadCountByConversationTypes:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetUnreadCountByConversationTypes:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
   public void clearUnreadCount(
-      int type, String targetId, String channelId, Double timestamp, Promise promise) {
+      int type,
+      String targetId,
+      String channelId,
+      Double timestamp,
+      String eventId,
+      Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
 
     if (!check_engine(promise)) return;
-    int r = engine.clearUnreadCount(_type, targetId, channelId, timestamp.longValue());
+    int r =
+        engine.clearUnreadCount(
+            _type,
+            targetId,
+            channelId,
+            timestamp.longValue(),
+            new IRCIMIWClearUnreadCountCallback() {
+              @Override
+              public void onUnreadCountCleared(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("ClearUnreadCount:onUnreadCountCleared", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
   public void saveDraftMessage(
-      int type, String targetId, String channelId, String draft, Promise promise) {
+      int type, String targetId, String channelId, String draft, String eventId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
 
     if (!check_engine(promise)) return;
-    int r = engine.saveDraftMessage(_type, targetId, channelId, draft);
+    int r =
+        engine.saveDraftMessage(
+            _type,
+            targetId,
+            channelId,
+            draft,
+            new IRCIMIWSaveDraftMessageCallback() {
+              @Override
+              public void onDraftMessageSaved(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("SaveDraftMessage:onDraftMessageSaved", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -493,11 +1120,56 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void clearDraftMessage(int type, String targetId, String channelId, Promise promise) {
+  public void getDraftMessage(
+      int type, String targetId, String channelId, String eventId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
 
     if (!check_engine(promise)) return;
-    int r = engine.clearDraftMessage(_type, targetId, channelId);
+    int r =
+        engine.getDraftMessage(
+            _type,
+            targetId,
+            channelId,
+            new IRCIMIWGetDraftMessageCallback() {
+              @Override
+              public void onSuccess(String t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putString("t", t);
+                eventEmitter.emit("GetDraftMessage:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetDraftMessage:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void clearDraftMessage(
+      int type, String targetId, String channelId, String eventId, Promise promise) {
+    RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.clearDraftMessage(
+            _type,
+            targetId,
+            channelId,
+            new IRCIMIWClearDraftMessageCallback() {
+              @Override
+              public void onDraftMessageCleared(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("ClearDraftMessage:onDraftMessageCleared", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -515,12 +1187,69 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void getBlockedConversations(
+      ReadableArray conversationTypes, String channelId, String eventId, Promise promise) {
+    List<RCIMIWConversationType> _conversationTypes = new ArrayList<>();
+    for (int i = 0; conversationTypes != null && i < conversationTypes.size(); i++) {
+      _conversationTypes.add(RCIMIWConversationType.values()[conversationTypes.getInt(i)]);
+    }
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getBlockedConversations(
+            _conversationTypes,
+            channelId,
+            new IRCIMIWGetBlockedConversationsCallback() {
+              @Override
+              public void onSuccess(List<RCIMIWConversation> t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                WritableArray _t = Arguments.createArray();
+                for (int i = 0; t != null && i < t.size(); i++) {
+                  RCIMIWConversation obj = t.get(i);
+                  if (obj == null) continue;
+                  Map<String, Object> _map = RCIMIWPlatformConverter.convertConversation(obj);
+                  if (_map == null) _map = new HashMap<>();
+                  ReadableMap __map = Arguments.makeNativeMap(_map);
+                  _t.pushMap(__map);
+                }
+                writableMap.putArray("t", _t);
+                eventEmitter.emit("GetBlockedConversations:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetBlockedConversations:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
   public void changeConversationTopStatus(
-      int type, String targetId, String channelId, boolean top, Promise promise) {
+      int type, String targetId, String channelId, boolean top, String eventId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
 
     if (!check_engine(promise)) return;
-    int r = engine.changeConversationTopStatus(_type, targetId, channelId, top);
+    int r =
+        engine.changeConversationTopStatus(
+            _type,
+            targetId,
+            channelId,
+            top,
+            new IRCIMIWChangeConversationTopStatusCallback() {
+              @Override
+              public void onConversationTopStatusChanged(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "ChangeConversationTopStatus:onConversationTopStatusChanged", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -535,12 +1264,63 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void syncConversationReadStatus(
-      int type, String targetId, String channelId, Double timestamp, Promise promise) {
+  public void getConversationTopStatus(
+      int type, String targetId, String channelId, String eventId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
 
     if (!check_engine(promise)) return;
-    int r = engine.syncConversationReadStatus(_type, targetId, channelId, timestamp.longValue());
+    int r =
+        engine.getConversationTopStatus(
+            _type,
+            targetId,
+            channelId,
+            new IRCIMIWGetConversationTopStatusCallback() {
+              @Override
+              public void onSuccess(Boolean t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putBoolean("t", t);
+                eventEmitter.emit("GetConversationTopStatus:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetConversationTopStatus:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void syncConversationReadStatus(
+      int type,
+      String targetId,
+      String channelId,
+      Double timestamp,
+      String eventId,
+      Promise promise) {
+    RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.syncConversationReadStatus(
+            _type,
+            targetId,
+            channelId,
+            timestamp.longValue(),
+            new IRCIMIWSyncConversationReadStatusCallback() {
+              @Override
+              public void onConversationReadStatusSynced(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "SyncConversationReadStatus:onConversationReadStatusSynced", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -576,11 +1356,162 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void getMessages(
+      int type,
+      String targetId,
+      String channelId,
+      Double sentTime,
+      int order,
+      int policy,
+      Double count,
+      String eventId,
+      Promise promise) {
+    RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
+    RCIMIWTimeOrder _order = RCIMIWTimeOrder.values()[order];
+    RCIMIWMessageOperationPolicy _policy = RCIMIWMessageOperationPolicy.values()[policy];
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getMessages(
+            _type,
+            targetId,
+            channelId,
+            sentTime.longValue(),
+            _order,
+            _policy,
+            count.intValue(),
+            new IRCIMIWGetMessagesCallback() {
+              @Override
+              public void onSuccess(List<RCIMIWMessage> t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                WritableArray _t = Arguments.createArray();
+                for (int i = 0; t != null && i < t.size(); i++) {
+                  RCIMIWMessage obj = t.get(i);
+                  if (obj == null) continue;
+                  Map<String, Object> _map = RCIMIWPlatformConverter.convertMessage(obj);
+                  if (_map == null) _map = new HashMap<>();
+                  ReadableMap __map = Arguments.makeNativeMap(_map);
+                  _t.pushMap(__map);
+                }
+                writableMap.putArray("t", _t);
+                eventEmitter.emit("GetMessages:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetMessages:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void getMessageById(Double messageId, String eventId, Promise promise) {
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getMessageById(
+            messageId.intValue(),
+            new IRCIMIWGetMessageCallback() {
+              @Override
+              public void onSuccess(RCIMIWMessage t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                if (t != null) {
+                  writableMap.putMap(
+                      "t", Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(t)));
+                }
+                ;
+                eventEmitter.emit("GetMessageById:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetMessageById:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void getMessageByUId(String messageUId, String eventId, Promise promise) {
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getMessageByUId(
+            messageUId,
+            new IRCIMIWGetMessageCallback() {
+              @Override
+              public void onSuccess(RCIMIWMessage t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                if (t != null) {
+                  writableMap.putMap(
+                      "t", Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(t)));
+                }
+                ;
+                eventEmitter.emit("GetMessageByUId:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetMessageByUId:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
   public void loadFirstUnreadMessage(int type, String targetId, String channelId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
 
     if (!check_engine(promise)) return;
     int r = engine.loadFirstUnreadMessage(_type, targetId, channelId);
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void getFirstUnreadMessage(
+      int type, String targetId, String channelId, String eventId, Promise promise) {
+    RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getFirstUnreadMessage(
+            _type,
+            targetId,
+            channelId,
+            new IRCIMIWGetFirstUnreadMessageCallback() {
+              @Override
+              public void onSuccess(RCIMIWMessage t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                if (t != null) {
+                  writableMap.putMap(
+                      "t", Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(t)));
+                }
+                ;
+                eventEmitter.emit("GetFirstUnreadMessage:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetFirstUnreadMessage:onError", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -595,17 +1526,74 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void insertMessage(ReadableMap message, Promise promise) {
-    if (message == null) message = Arguments.createMap();
-    RCIMIWMessage _message = RCIMIWPlatformConverter.convertMessage(message.toHashMap());
+  public void getUnreadMentionedMessages(
+      int type, String targetId, String channelId, String eventId, Promise promise) {
+    RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
 
     if (!check_engine(promise)) return;
-    int r = engine.insertMessage(_message);
+    int r =
+        engine.getUnreadMentionedMessages(
+            _type,
+            targetId,
+            channelId,
+            new IRCIMIWGetUnreadMentionedMessagesCallback() {
+              @Override
+              public void onSuccess(List<RCIMIWMessage> t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                WritableArray _t = Arguments.createArray();
+                for (int i = 0; t != null && i < t.size(); i++) {
+                  RCIMIWMessage obj = t.get(i);
+                  if (obj == null) continue;
+                  Map<String, Object> _map = RCIMIWPlatformConverter.convertMessage(obj);
+                  if (_map == null) _map = new HashMap<>();
+                  ReadableMap __map = Arguments.makeNativeMap(_map);
+                  _t.pushMap(__map);
+                }
+                writableMap.putArray("t", _t);
+                eventEmitter.emit("GetUnreadMentionedMessages:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetUnreadMentionedMessages:onError", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void insertMessages(ReadableArray messages, Promise promise) {
+  public void insertMessage(ReadableMap message, String eventId, Promise promise) {
+    if (message == null) message = Arguments.createMap();
+    RCIMIWMessage _message = RCIMIWPlatformConverter.convertMessage(message.toHashMap());
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.insertMessage(
+            _message,
+            new IRCIMIWInsertMessageCallback() {
+              @Override
+              public void onMessageInserted(int code, RCIMIWMessage message) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                if (message != null) {
+                  writableMap.putMap(
+                      "message",
+                      Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
+                }
+                ;
+                eventEmitter.emit("InsertMessage:onMessageInserted", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void insertMessages(ReadableArray messages, String eventId, Promise promise) {
     List<RCIMIWMessage> _messages = new ArrayList<>();
     for (int i = 0; messages != null && i < messages.size(); i++) {
       ReadableMap _map = messages.getMap(i);
@@ -615,23 +1603,65 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     }
 
     if (!check_engine(promise)) return;
-    int r = engine.insertMessages(_messages);
+    int r =
+        engine.insertMessages(
+            _messages,
+            new IRCIMIWInsertMessagesCallback() {
+              @Override
+              public void onMessagesInserted(int code, List<RCIMIWMessage> messages) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                WritableArray _messages = Arguments.createArray();
+                for (int i = 0; messages != null && i < messages.size(); i++) {
+                  RCIMIWMessage obj = messages.get(i);
+                  if (obj == null) continue;
+                  Map<String, Object> _map = RCIMIWPlatformConverter.convertMessage(obj);
+                  if (_map == null) _map = new HashMap<>();
+                  ReadableMap __map = Arguments.makeNativeMap(_map);
+                  _messages.pushMap(__map);
+                }
+                writableMap.putArray("messages", _messages);
+                eventEmitter.emit("InsertMessages:onMessagesInserted", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
   public void clearMessages(
-      int type, String targetId, String channelId, Double timestamp, int policy, Promise promise) {
+      int type,
+      String targetId,
+      String channelId,
+      Double timestamp,
+      int policy,
+      String eventId,
+      Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
     RCIMIWMessageOperationPolicy _policy = RCIMIWMessageOperationPolicy.values()[policy];
 
     if (!check_engine(promise)) return;
-    int r = engine.clearMessages(_type, targetId, channelId, timestamp.longValue(), _policy);
+    int r =
+        engine.clearMessages(
+            _type,
+            targetId,
+            channelId,
+            timestamp.longValue(),
+            _policy,
+            new IRCIMIWClearMessagesCallback() {
+              @Override
+              public void onMessagesCleared(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("ClearMessages:onMessagesCleared", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void deleteLocalMessages(ReadableArray messages, Promise promise) {
+  public void deleteLocalMessages(ReadableArray messages, String eventId, Promise promise) {
     List<RCIMIWMessage> _messages = new ArrayList<>();
     for (int i = 0; messages != null && i < messages.size(); i++) {
       ReadableMap _map = messages.getMap(i);
@@ -641,13 +1671,39 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     }
 
     if (!check_engine(promise)) return;
-    int r = engine.deleteLocalMessages(_messages);
+    int r =
+        engine.deleteLocalMessages(
+            _messages,
+            new IRCIMIWDeleteLocalMessagesCallback() {
+              @Override
+              public void onLocalMessagesDeleted(int code, List<RCIMIWMessage> messages) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                WritableArray _messages = Arguments.createArray();
+                for (int i = 0; messages != null && i < messages.size(); i++) {
+                  RCIMIWMessage obj = messages.get(i);
+                  if (obj == null) continue;
+                  Map<String, Object> _map = RCIMIWPlatformConverter.convertMessage(obj);
+                  if (_map == null) _map = new HashMap<>();
+                  ReadableMap __map = Arguments.makeNativeMap(_map);
+                  _messages.pushMap(__map);
+                }
+                writableMap.putArray("messages", _messages);
+                eventEmitter.emit("DeleteLocalMessages:onLocalMessagesDeleted", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
   public void deleteMessages(
-      int type, String targetId, String channelId, ReadableArray messages, Promise promise) {
+      int type,
+      String targetId,
+      String channelId,
+      ReadableArray messages,
+      String eventId,
+      Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
     List<RCIMIWMessage> _messages = new ArrayList<>();
     for (int i = 0; messages != null && i < messages.size(); i++) {
@@ -658,42 +1714,115 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     }
 
     if (!check_engine(promise)) return;
-    int r = engine.deleteMessages(_type, targetId, channelId, _messages);
+    int r =
+        engine.deleteMessages(
+            _type,
+            targetId,
+            channelId,
+            _messages,
+            new IRCIMIWDeleteMessagesCallback() {
+              @Override
+              public void onMessagesDeleted(int code, List<RCIMIWMessage> messages) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                WritableArray _messages = Arguments.createArray();
+                for (int i = 0; messages != null && i < messages.size(); i++) {
+                  RCIMIWMessage obj = messages.get(i);
+                  if (obj == null) continue;
+                  Map<String, Object> _map = RCIMIWPlatformConverter.convertMessage(obj);
+                  if (_map == null) _map = new HashMap<>();
+                  ReadableMap __map = Arguments.makeNativeMap(_map);
+                  _messages.pushMap(__map);
+                }
+                writableMap.putArray("messages", _messages);
+                eventEmitter.emit("DeleteMessages:onMessagesDeleted", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void recallMessage(ReadableMap message, Promise promise) {
+  public void recallMessage(ReadableMap message, String eventId, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMessage _message = RCIMIWPlatformConverter.convertMessage(message.toHashMap());
 
     if (!check_engine(promise)) return;
-    int r = engine.recallMessage(_message);
+    int r =
+        engine.recallMessage(
+            _message,
+            new IRCIMIWRecallMessageCallback() {
+              @Override
+              public void onMessageRecalled(int code, RCIMIWMessage message) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                if (message != null) {
+                  writableMap.putMap(
+                      "message",
+                      Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
+                }
+                ;
+                eventEmitter.emit("RecallMessage:onMessageRecalled", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
   public void sendPrivateReadReceiptMessage(
-      String targetId, String channelId, Double timestamp, Promise promise) {
+      String targetId, String channelId, Double timestamp, String eventId, Promise promise) {
 
     if (!check_engine(promise)) return;
-    int r = engine.sendPrivateReadReceiptMessage(targetId, channelId, timestamp.longValue());
+    int r =
+        engine.sendPrivateReadReceiptMessage(
+            targetId,
+            channelId,
+            timestamp.longValue(),
+            new IRCIMIWSendPrivateReadReceiptMessageCallback() {
+              @Override
+              public void onPrivateReadReceiptMessageSent(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "SendPrivateReadReceiptMessage:onPrivateReadReceiptMessageSent", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void sendGroupReadReceiptRequest(ReadableMap message, Promise promise) {
+  public void sendGroupReadReceiptRequest(ReadableMap message, String eventId, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMessage _message = RCIMIWPlatformConverter.convertMessage(message.toHashMap());
 
     if (!check_engine(promise)) return;
-    int r = engine.sendGroupReadReceiptRequest(_message);
+    int r =
+        engine.sendGroupReadReceiptRequest(
+            _message,
+            new IRCIMIWSendGroupReadReceiptRequestCallback() {
+              @Override
+              public void onGroupReadReceiptRequestSent(int code, RCIMIWMessage message) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                if (message != null) {
+                  writableMap.putMap(
+                      "message",
+                      Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
+                }
+                ;
+                eventEmitter.emit(
+                    "SendGroupReadReceiptRequest:onGroupReadReceiptRequestSent", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
   public void sendGroupReadReceiptResponse(
-      String targetId, String channelId, ReadableArray messages, Promise promise) {
+      String targetId, String channelId, ReadableArray messages, String eventId, Promise promise) {
     List<RCIMIWMessage> _messages = new ArrayList<>();
     for (int i = 0; messages != null && i < messages.size(); i++) {
       ReadableMap _map = messages.getMap(i);
@@ -703,23 +1832,60 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     }
 
     if (!check_engine(promise)) return;
-    int r = engine.sendGroupReadReceiptResponse(targetId, channelId, _messages);
+    int r =
+        engine.sendGroupReadReceiptResponse(
+            targetId,
+            channelId,
+            _messages,
+            new IRCIMIWSendGroupReadReceiptResponseCallback() {
+              @Override
+              public void onGroupReadReceiptResponseSent(int code, List<RCIMIWMessage> message) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                WritableArray _message = Arguments.createArray();
+                for (int i = 0; message != null && i < message.size(); i++) {
+                  RCIMIWMessage obj = message.get(i);
+                  if (obj == null) continue;
+                  Map<String, Object> _map = RCIMIWPlatformConverter.convertMessage(obj);
+                  if (_map == null) _map = new HashMap<>();
+                  ReadableMap __map = Arguments.makeNativeMap(_map);
+                  _message.pushMap(__map);
+                }
+                writableMap.putArray("message", _message);
+                eventEmitter.emit(
+                    "SendGroupReadReceiptResponse:onGroupReadReceiptResponseSent", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void updateMessageExpansion(String messageUId, ReadableMap expansion, Promise promise) {
+  public void updateMessageExpansion(
+      String messageUId, ReadableMap expansion, String eventId, Promise promise) {
     Map<String, String> _expansion =
         expansion != null ? (Map) expansion.toHashMap() : new HashMap<>();
 
     if (!check_engine(promise)) return;
-    int r = engine.updateMessageExpansion(messageUId, _expansion);
+    int r =
+        engine.updateMessageExpansion(
+            messageUId,
+            _expansion,
+            new IRCIMIWUpdateMessageExpansionCallback() {
+              @Override
+              public void onMessageExpansionUpdated(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("UpdateMessageExpansion:onMessageExpansionUpdated", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
   public void removeMessageExpansionForKeys(
-      String messageUId, ReadableArray keys, Promise promise) {
+      String messageUId, ReadableArray keys, String eventId, Promise promise) {
     List<String> _keys = new ArrayList<>();
     for (int i = 0; keys != null && i < keys.size(); i++) {
       String _s = keys.getString(i);
@@ -727,42 +1893,109 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     }
 
     if (!check_engine(promise)) return;
-    int r = engine.removeMessageExpansionForKeys(messageUId, _keys);
+    int r =
+        engine.removeMessageExpansionForKeys(
+            messageUId,
+            _keys,
+            new IRCIMIWRemoveMessageExpansionForKeysCallback() {
+              @Override
+              public void onMessageExpansionForKeysRemoved(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "RemoveMessageExpansionForKeys:onMessageExpansionForKeysRemoved", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void changeMessageSentStatus(Double messageId, int sentStatus, Promise promise) {
+  public void changeMessageSentStatus(
+      Double messageId, int sentStatus, String eventId, Promise promise) {
     RCIMIWSentStatus _sentStatus = RCIMIWSentStatus.values()[sentStatus];
 
     if (!check_engine(promise)) return;
-    int r = engine.changeMessageSentStatus(messageId.intValue(), _sentStatus);
+    int r =
+        engine.changeMessageSentStatus(
+            messageId.intValue(),
+            _sentStatus,
+            new IRCIMIWChangeMessageSentStatusCallback() {
+              @Override
+              public void onMessageSentStatusChanged(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "ChangeMessageSentStatus:onMessageSentStatusChanged", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void changeMessageReceiveStatus(Double messageId, int receivedStatus, Promise promise) {
+  public void changeMessageReceiveStatus(
+      Double messageId, int receivedStatus, String eventId, Promise promise) {
     RCIMIWReceivedStatus _receivedStatus = RCIMIWReceivedStatus.values()[receivedStatus];
 
     if (!check_engine(promise)) return;
-    int r = engine.changeMessageReceiveStatus(messageId.intValue(), _receivedStatus);
+    int r =
+        engine.changeMessageReceiveStatus(
+            messageId.intValue(),
+            _receivedStatus,
+            new IRCIMIWChangeMessageReceivedStatusCallback() {
+              @Override
+              public void onMessageReceiveStatusChanged(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "ChangeMessageReceiveStatus:onMessageReceiveStatusChanged", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
   public void joinChatRoom(
-      String targetId, Double messageCount, boolean autoCreate, Promise promise) {
+      String targetId, Double messageCount, boolean autoCreate, String eventId, Promise promise) {
 
     if (!check_engine(promise)) return;
-    int r = engine.joinChatRoom(targetId, messageCount.intValue(), autoCreate);
+    int r =
+        engine.joinChatRoom(
+            targetId,
+            messageCount.intValue(),
+            autoCreate,
+            new IRCIMIWJoinChatRoomCallback() {
+              @Override
+              public void onChatRoomJoined(int code, String targetId) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                writableMap.putString("targetId", targetId);
+                eventEmitter.emit("JoinChatRoom:onChatRoomJoined", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void leaveChatRoom(String targetId, Promise promise) {
+  public void leaveChatRoom(String targetId, String eventId, Promise promise) {
 
     if (!check_engine(promise)) return;
-    int r = engine.leaveChatRoom(targetId);
+    int r =
+        engine.leaveChatRoom(
+            targetId,
+            new IRCIMIWLeaveChatRoomCallback() {
+              @Override
+              public void onChatRoomLeft(int code, String targetId) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                writableMap.putString("targetId", targetId);
+                eventEmitter.emit("LeaveChatRoom:onChatRoomLeft", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -777,16 +2010,73 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void getChatRoomMessages(
+      String targetId, Double timestamp, int order, Double count, String eventId, Promise promise) {
+    RCIMIWTimeOrder _order = RCIMIWTimeOrder.values()[order];
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getChatRoomMessages(
+            targetId,
+            timestamp.longValue(),
+            _order,
+            count.intValue(),
+            new IRCIMIWGetChatRoomMessagesCallback() {
+              @Override
+              public void onSuccess(List<RCIMIWMessage> t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                WritableArray _t = Arguments.createArray();
+                for (int i = 0; t != null && i < t.size(); i++) {
+                  RCIMIWMessage obj = t.get(i);
+                  if (obj == null) continue;
+                  Map<String, Object> _map = RCIMIWPlatformConverter.convertMessage(obj);
+                  if (_map == null) _map = new HashMap<>();
+                  ReadableMap __map = Arguments.makeNativeMap(_map);
+                  _t.pushMap(__map);
+                }
+                writableMap.putArray("t", _t);
+                eventEmitter.emit("GetChatRoomMessages:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetChatRoomMessages:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
   public void addChatRoomEntry(
       String targetId,
       String key,
       String value,
       boolean deleteWhenLeft,
       boolean overwrite,
+      String eventId,
       Promise promise) {
 
     if (!check_engine(promise)) return;
-    int r = engine.addChatRoomEntry(targetId, key, value, deleteWhenLeft, overwrite);
+    int r =
+        engine.addChatRoomEntry(
+            targetId,
+            key,
+            value,
+            deleteWhenLeft,
+            overwrite,
+            new IRCIMIWAddChatRoomEntryCallback() {
+              @Override
+              public void onChatRoomEntryAdded(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("AddChatRoomEntry:onChatRoomEntryAdded", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -796,11 +2086,29 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       ReadableMap entries,
       boolean deleteWhenLeft,
       boolean overwrite,
+      String eventId,
       Promise promise) {
     Map<String, String> _entries = entries != null ? (Map) entries.toHashMap() : new HashMap<>();
 
     if (!check_engine(promise)) return;
-    int r = engine.addChatRoomEntries(targetId, _entries, deleteWhenLeft, overwrite);
+    int r =
+        engine.addChatRoomEntries(
+            targetId,
+            _entries,
+            deleteWhenLeft,
+            overwrite,
+            new IRCIMIWAddChatRoomEntriesCallback() {
+              @Override
+              public void onChatRoomEntriesAdded(int code, Map<String, Integer> errors) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                if (errors == null) errors = new HashMap<>();
+                WritableMap _errors = Arguments.makeNativeMap((Map) errors);
+                writableMap.putMap("errors", _errors);
+                eventEmitter.emit("AddChatRoomEntries:onChatRoomEntriesAdded", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -813,24 +2121,97 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void loadAllChatRoomEntries(String targetId, Promise promise) {
+  public void getChatRoomEntry(String targetId, String key, String eventId, Promise promise) {
 
     if (!check_engine(promise)) return;
-    int r = engine.loadAllChatRoomEntries(targetId);
+    int r =
+        engine.getChatRoomEntry(
+            targetId,
+            key,
+            new IRCIMIWGetChatRoomEntryCallback() {
+              @Override
+              public void onSuccess(Map<String, String> t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                if (t == null) t = new HashMap<>();
+                WritableMap _t = Arguments.makeNativeMap((Map) t);
+                writableMap.putMap("t", _t);
+                eventEmitter.emit("GetChatRoomEntry:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetChatRoomEntry:onError", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void removeChatRoomEntry(String targetId, String key, boolean force, Promise promise) {
+  public void loadChatRoomAllEntries(String targetId, Promise promise) {
 
     if (!check_engine(promise)) return;
-    int r = engine.removeChatRoomEntry(targetId, key, force);
+    int r = engine.loadChatRoomAllEntries(targetId);
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void getChatRoomAllEntries(String targetId, String eventId, Promise promise) {
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getChatRoomAllEntries(
+            targetId,
+            new IRCIMIWGetChatRoomAllEntriesCallback() {
+              @Override
+              public void onSuccess(Map<String, String> t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                if (t == null) t = new HashMap<>();
+                WritableMap _t = Arguments.makeNativeMap((Map) t);
+                writableMap.putMap("t", _t);
+                eventEmitter.emit("GetChatRoomAllEntries:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetChatRoomAllEntries:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void removeChatRoomEntry(
+      String targetId, String key, boolean force, String eventId, Promise promise) {
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.removeChatRoomEntry(
+            targetId,
+            key,
+            force,
+            new IRCIMIWRemoveChatRoomEntryCallback() {
+              @Override
+              public void onChatRoomEntryRemoved(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("RemoveChatRoomEntry:onChatRoomEntryRemoved", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
   public void removeChatRoomEntries(
-      String targetId, ReadableArray keys, boolean force, Promise promise) {
+      String targetId, ReadableArray keys, boolean force, String eventId, Promise promise) {
     List<String> _keys = new ArrayList<>();
     for (int i = 0; keys != null && i < keys.size(); i++) {
       String _s = keys.getString(i);
@@ -838,23 +2219,60 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     }
 
     if (!check_engine(promise)) return;
-    int r = engine.removeChatRoomEntries(targetId, _keys, force);
+    int r =
+        engine.removeChatRoomEntries(
+            targetId,
+            _keys,
+            force,
+            new IRCIMIWRemoveChatRoomEntriesCallback() {
+              @Override
+              public void onChatRoomEntriesRemoved(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("RemoveChatRoomEntries:onChatRoomEntriesRemoved", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void addToBlacklist(String userId, Promise promise) {
+  public void addToBlacklist(String userId, String eventId, Promise promise) {
 
     if (!check_engine(promise)) return;
-    int r = engine.addToBlacklist(userId);
+    int r =
+        engine.addToBlacklist(
+            userId,
+            new IRCIMIWAddToBlacklistCallback() {
+              @Override
+              public void onBlacklistAdded(int code, String userId) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                writableMap.putString("userId", userId);
+                eventEmitter.emit("AddToBlacklist:onBlacklistAdded", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void removeFromBlacklist(String userId, Promise promise) {
+  public void removeFromBlacklist(String userId, String eventId, Promise promise) {
 
     if (!check_engine(promise)) return;
-    int r = engine.removeFromBlacklist(userId);
+    int r =
+        engine.removeFromBlacklist(
+            userId,
+            new IRCIMIWRemoveFromBlacklistCallback() {
+              @Override
+              public void onBlacklistRemoved(int code, String userId) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                writableMap.putString("userId", userId);
+                eventEmitter.emit("RemoveFromBlacklist:onBlacklistRemoved", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -867,10 +2285,65 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void getBlacklistStatus(String userId, String eventId, Promise promise) {
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getBlacklistStatus(
+            userId,
+            new IRCIMIWGetBlacklistStatusCallback() {
+              @Override
+              public void onSuccess(RCIMIWBlacklistStatus t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putInt("t", t.ordinal());
+                eventEmitter.emit("GetBlacklistStatus:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetBlacklistStatus:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
   public void loadBlacklist(Promise promise) {
 
     if (!check_engine(promise)) return;
     int r = engine.loadBlacklist();
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void getBlacklist(String eventId, Promise promise) {
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getBlacklist(
+            new IRCIMIWGetBlacklistCallback() {
+              @Override
+              public void onSuccess(List<String> t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                if (t == null) t = new ArrayList<>();
+                WritableArray _t = Arguments.makeNativeArray(t);
+                writableMap.putArray("t", _t);
+                eventEmitter.emit("GetBlacklist:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetBlacklist:onError", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -882,13 +2355,45 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       String keyword,
       Double startTime,
       Double count,
+      String eventId,
       Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
 
     if (!check_engine(promise)) return;
     int r =
         engine.searchMessages(
-            _type, targetId, channelId, keyword, startTime.longValue(), count.intValue());
+            _type,
+            targetId,
+            channelId,
+            keyword,
+            startTime.longValue(),
+            count.intValue(),
+            new IRCIMIWSearchMessagesCallback() {
+              @Override
+              public void onSuccess(List<RCIMIWMessage> t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                WritableArray _t = Arguments.createArray();
+                for (int i = 0; t != null && i < t.size(); i++) {
+                  RCIMIWMessage obj = t.get(i);
+                  if (obj == null) continue;
+                  Map<String, Object> _map = RCIMIWPlatformConverter.convertMessage(obj);
+                  if (_map == null) _map = new HashMap<>();
+                  ReadableMap __map = Arguments.makeNativeMap(_map);
+                  _t.pushMap(__map);
+                }
+                writableMap.putArray("t", _t);
+                eventEmitter.emit("SearchMessages:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("SearchMessages:onError", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -902,6 +2407,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       Double endTime,
       Double offset,
       Double count,
+      String eventId,
       Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
 
@@ -915,7 +2421,33 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
             startTime.longValue(),
             endTime.longValue(),
             offset.intValue(),
-            count.intValue());
+            count.intValue(),
+            new IRCIMIWSearchMessagesByTimeRangeCallback() {
+              @Override
+              public void onSuccess(List<RCIMIWMessage> t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                WritableArray _t = Arguments.createArray();
+                for (int i = 0; t != null && i < t.size(); i++) {
+                  RCIMIWMessage obj = t.get(i);
+                  if (obj == null) continue;
+                  Map<String, Object> _map = RCIMIWPlatformConverter.convertMessage(obj);
+                  if (_map == null) _map = new HashMap<>();
+                  ReadableMap __map = Arguments.makeNativeMap(_map);
+                  _t.pushMap(__map);
+                }
+                writableMap.putArray("t", _t);
+                eventEmitter.emit("SearchMessagesByTimeRange:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("SearchMessagesByTimeRange:onError", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -927,13 +2459,45 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       String channelId,
       Double startTime,
       Double count,
+      String eventId,
       Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
 
     if (!check_engine(promise)) return;
     int r =
         engine.searchMessagesByUserId(
-            userId, _type, targetId, channelId, startTime.longValue(), count.intValue());
+            userId,
+            _type,
+            targetId,
+            channelId,
+            startTime.longValue(),
+            count.intValue(),
+            new IRCIMIWSearchMessagesByUserIdCallback() {
+              @Override
+              public void onSuccess(List<RCIMIWMessage> t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                WritableArray _t = Arguments.createArray();
+                for (int i = 0; t != null && i < t.size(); i++) {
+                  RCIMIWMessage obj = t.get(i);
+                  if (obj == null) continue;
+                  Map<String, Object> _map = RCIMIWPlatformConverter.convertMessage(obj);
+                  if (_map == null) _map = new HashMap<>();
+                  ReadableMap __map = Arguments.makeNativeMap(_map);
+                  _t.pushMap(__map);
+                }
+                writableMap.putArray("t", _t);
+                eventEmitter.emit("SearchMessagesByUserId:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("SearchMessagesByUserId:onError", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -943,6 +2507,7 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
       String channelId,
       ReadableArray messageTypes,
       String keyword,
+      String eventId,
       Promise promise) {
     List<RCIMIWConversationType> _conversationTypes = new ArrayList<>();
     for (int i = 0; conversationTypes != null && i < conversationTypes.size(); i++) {
@@ -954,26 +2519,83 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     }
 
     if (!check_engine(promise)) return;
-    int r = engine.searchConversations(_conversationTypes, channelId, _messageTypes, keyword);
+    int r =
+        engine.searchConversations(
+            _conversationTypes,
+            channelId,
+            _messageTypes,
+            keyword,
+            new IRCIMIWSearchConversationsCallback() {
+              @Override
+              public void onSuccess(List<RCIMIWSearchConversationResult> t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                WritableArray _t = Arguments.createArray();
+                for (int i = 0; t != null && i < t.size(); i++) {
+                  RCIMIWSearchConversationResult obj = t.get(i);
+                  if (obj == null) continue;
+                  Map<String, Object> _map =
+                      RCIMIWPlatformConverter.convertSearchConversationResult(obj);
+                  if (_map == null) _map = new HashMap<>();
+                  ReadableMap __map = Arguments.makeNativeMap(_map);
+                  _t.pushMap(__map);
+                }
+                writableMap.putArray("t", _t);
+                eventEmitter.emit("SearchConversations:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("SearchConversations:onError", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
   public void changeNotificationQuietHours(
-      String startTime, Double spanMins, int level, Promise promise) {
+      String startTime, Double spanMinutes, int level, String eventId, Promise promise) {
     RCIMIWPushNotificationQuietHoursLevel _level =
         RCIMIWPushNotificationQuietHoursLevel.values()[level];
 
     if (!check_engine(promise)) return;
-    int r = engine.changeNotificationQuietHours(startTime, spanMins.intValue(), _level);
+    int r =
+        engine.changeNotificationQuietHours(
+            startTime,
+            spanMinutes.intValue(),
+            _level,
+            new IRCIMIWChangeNotificationQuietHoursCallback() {
+              @Override
+              public void onNotificationQuietHoursChanged(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "ChangeNotificationQuietHours:onNotificationQuietHoursChanged", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void removeNotificationQuietHours(Promise promise) {
+  public void removeNotificationQuietHours(String eventId, Promise promise) {
 
     if (!check_engine(promise)) return;
-    int r = engine.removeNotificationQuietHours();
+    int r =
+        engine.removeNotificationQuietHours(
+            new IRCIMIWRemoveNotificationQuietHoursCallback() {
+              @Override
+              public void onNotificationQuietHoursRemoved(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "RemoveNotificationQuietHours:onNotificationQuietHoursRemoved", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -986,13 +2608,58 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void getNotificationQuietHours(String eventId, Promise promise) {
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getNotificationQuietHours(
+            new IRCIMIWGetNotificationQuietHoursCallback() {
+              @Override
+              public void onSuccess(
+                  String startTime, int spanMinutes, RCIMIWPushNotificationQuietHoursLevel level) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putString("startTime", startTime);
+                writableMap.putDouble("spanMinutes", spanMinutes);
+                writableMap.putInt("level", level.ordinal());
+                eventEmitter.emit("GetNotificationQuietHours:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetNotificationQuietHours:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
   public void changeConversationNotificationLevel(
-      int type, String targetId, String channelId, int level, Promise promise) {
+      int type, String targetId, String channelId, int level, String eventId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
     RCIMIWPushNotificationLevel _level = RCIMIWPushNotificationLevel.values()[level];
 
     if (!check_engine(promise)) return;
-    int r = engine.changeConversationNotificationLevel(_type, targetId, channelId, _level);
+    int r =
+        engine.changeConversationNotificationLevel(
+            _type,
+            targetId,
+            channelId,
+            _level,
+            new IRCIMIWChangeConversationNotificationLevelCallback() {
+              @Override
+              public void onConversationNotificationLevelChanged(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "ChangeConversationNotificationLevel:onConversationNotificationLevelChanged",
+                    writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -1007,12 +2674,58 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void changeConversationTypeNotificationLevel(int type, int level, Promise promise) {
+  public void getConversationNotificationLevel(
+      int type, String targetId, String channelId, String eventId, Promise promise) {
+    RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getConversationNotificationLevel(
+            _type,
+            targetId,
+            channelId,
+            new IRCIMIWGetConversationNotificationLevelCallback() {
+              @Override
+              public void onSuccess(RCIMIWPushNotificationLevel t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putInt("t", t.ordinal());
+                eventEmitter.emit("GetConversationNotificationLevel:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetConversationNotificationLevel:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void changeConversationTypeNotificationLevel(
+      int type, int level, String eventId, Promise promise) {
     RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
     RCIMIWPushNotificationLevel _level = RCIMIWPushNotificationLevel.values()[level];
 
     if (!check_engine(promise)) return;
-    int r = engine.changeConversationTypeNotificationLevel(_type, _level);
+    int r =
+        engine.changeConversationTypeNotificationLevel(
+            _type,
+            _level,
+            new IRCIMIWChangeConversationTypeNotificationLevelCallback() {
+              @Override
+              public void onConversationTypeNotificationLevelChanged(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "ChangeConversationTypeNotificationLevel:onConversationTypeNotificationLevelChanged",
+                    writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -1026,12 +2739,54 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void getConversationTypeNotificationLevel(int type, String eventId, Promise promise) {
+    RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getConversationTypeNotificationLevel(
+            _type,
+            new IRCIMIWGetConversationTypeNotificationLevelCallback() {
+              @Override
+              public void onSuccess(RCIMIWPushNotificationLevel t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putInt("t", t.ordinal());
+                eventEmitter.emit("GetConversationTypeNotificationLevel:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetConversationTypeNotificationLevel:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
   public void changeUltraGroupDefaultNotificationLevel(
-      String targetId, int level, Promise promise) {
+      String targetId, int level, String eventId, Promise promise) {
     RCIMIWPushNotificationLevel _level = RCIMIWPushNotificationLevel.values()[level];
 
     if (!check_engine(promise)) return;
-    int r = engine.changeUltraGroupDefaultNotificationLevel(targetId, _level);
+    int r =
+        engine.changeUltraGroupDefaultNotificationLevel(
+            targetId,
+            _level,
+            new IRCIMIWChangeUltraGroupDefaultNotificationLevelCallback() {
+              @Override
+              public void onUltraGroupDefaultNotificationLevelChanged(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "ChangeUltraGroupDefaultNotificationLevel:onUltraGroupDefaultNotificationLevelChanged",
+                    writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -1044,12 +2799,55 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void getUltraGroupDefaultNotificationLevel(
+      String targetId, String eventId, Promise promise) {
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getUltraGroupDefaultNotificationLevel(
+            targetId,
+            new IRCIMIWGetUltraGroupDefaultNotificationLevelCallback() {
+              @Override
+              public void onSuccess(RCIMIWPushNotificationLevel t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putInt("t", t.ordinal());
+                eventEmitter.emit("GetUltraGroupDefaultNotificationLevel:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetUltraGroupDefaultNotificationLevel:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
   public void changeUltraGroupChannelDefaultNotificationLevel(
-      String targetId, String channelId, int level, Promise promise) {
+      String targetId, String channelId, int level, String eventId, Promise promise) {
     RCIMIWPushNotificationLevel _level = RCIMIWPushNotificationLevel.values()[level];
 
     if (!check_engine(promise)) return;
-    int r = engine.changeUltraGroupChannelDefaultNotificationLevel(targetId, channelId, _level);
+    int r =
+        engine.changeUltraGroupChannelDefaultNotificationLevel(
+            targetId,
+            channelId,
+            _level,
+            new IRCIMIWChangeUltraGroupChannelDefaultNotificationLevelCallback() {
+              @Override
+              public void onUltraGroupChannelDefaultNotificationLevelChanged(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "ChangeUltraGroupChannelDefaultNotificationLevel:onUltraGroupChannelDefaultNotificationLevelChanged",
+                    writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -1063,32 +2861,98 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void changePushContentShowStatus(boolean showContent, Promise promise) {
+  public void getUltraGroupChannelDefaultNotificationLevel(
+      String targetId, String channelId, String eventId, Promise promise) {
 
     if (!check_engine(promise)) return;
-    int r = engine.changePushContentShowStatus(showContent);
+    int r =
+        engine.getUltraGroupChannelDefaultNotificationLevel(
+            targetId,
+            channelId,
+            new IRCIMIWGetUltraGroupChannelDefaultNotificationLevelCallback() {
+              @Override
+              public void onSuccess(RCIMIWPushNotificationLevel t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putInt("t", t.ordinal());
+                eventEmitter.emit(
+                    "GetUltraGroupChannelDefaultNotificationLevel:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "GetUltraGroupChannelDefaultNotificationLevel:onError", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void changePushLanguage(String language, Promise promise) {
+  public void changePushContentShowStatus(boolean showContent, String eventId, Promise promise) {
 
     if (!check_engine(promise)) return;
-    int r = engine.changePushLanguage(language);
+    int r =
+        engine.changePushContentShowStatus(
+            showContent,
+            new IRCIMIWChangePushContentShowStatusCallback() {
+              @Override
+              public void onPushContentShowStatusChanged(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "ChangePushContentShowStatus:onPushContentShowStatusChanged", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void changePushReceiveStatus(boolean receive, Promise promise) {
+  public void changePushLanguage(String language, String eventId, Promise promise) {
 
     if (!check_engine(promise)) return;
-    int r = engine.changePushReceiveStatus(receive);
+    int r =
+        engine.changePushLanguage(
+            language,
+            new IRCIMIWChangePushLanguageCallback() {
+              @Override
+              public void onPushLanguageChanged(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("ChangePushLanguage:onPushLanguageChanged", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void changePushReceiveStatus(boolean receive, String eventId, Promise promise) {
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.changePushReceiveStatus(
+            receive,
+            new IRCIMIWChangePushReceiveStatusCallback() {
+              @Override
+              public void onPushReceiveStatusChanged(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "ChangePushReceiveStatus:onPushReceiveStatusChanged", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
   public void sendGroupMessageToDesignatedUsers(
-      ReadableMap message, ReadableArray userIds, Promise promise) {
+      ReadableMap message, ReadableArray userIds, String eventId, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMessage _message = RCIMIWPlatformConverter.convertMessage(message.toHashMap());
     List<String> _userIds = new ArrayList<>();
@@ -1098,7 +2962,38 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     }
 
     if (!check_engine(promise)) return;
-    int r = engine.sendGroupMessageToDesignatedUsers(_message, _userIds);
+    int r =
+        engine.sendGroupMessageToDesignatedUsers(
+            _message,
+            _userIds,
+            new RCIMIWSendGroupMessageToDesignatedUsersCallback() {
+              @Override
+              public void onMessageSaved(RCIMIWMessage message) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                if (message != null) {
+                  writableMap.putMap(
+                      "message",
+                      Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
+                }
+                ;
+                eventEmitter.emit("SendGroupMessageToDesignatedUsers:onMessageSaved", writableMap);
+              }
+
+              @Override
+              public void onMessageSent(int code, RCIMIWMessage message) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                if (message != null) {
+                  writableMap.putMap(
+                      "message",
+                      Arguments.makeNativeMap(RCIMIWPlatformConverter.convertMessage(message)));
+                }
+                ;
+                eventEmitter.emit("SendGroupMessageToDesignatedUsers:onMessageSent", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -1108,6 +3003,37 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
 
     if (!check_engine(promise)) return;
     int r = engine.loadMessageCount(_type, targetId, channelId);
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void getMessageCount(
+      int type, String targetId, String channelId, String eventId, Promise promise) {
+    RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.getMessageCount(
+            _type,
+            targetId,
+            channelId,
+            new IRCIMIWGetMessageCountCallback() {
+              @Override
+              public void onSuccess(Integer t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("t", t);
+                eventEmitter.emit("GetMessageCount:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetMessageCount:onError", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -1125,11 +3051,67 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void syncUltraGroupReadStatus(
-      String targetId, String channelId, Double timestamp, Promise promise) {
+  public void getTopConversations(
+      ReadableArray conversationTypes, String channelId, String eventId, Promise promise) {
+    List<RCIMIWConversationType> _conversationTypes = new ArrayList<>();
+    for (int i = 0; conversationTypes != null && i < conversationTypes.size(); i++) {
+      _conversationTypes.add(RCIMIWConversationType.values()[conversationTypes.getInt(i)]);
+    }
 
     if (!check_engine(promise)) return;
-    int r = engine.syncUltraGroupReadStatus(targetId, channelId, timestamp.longValue());
+    int r =
+        engine.getTopConversations(
+            _conversationTypes,
+            channelId,
+            new IRCIMIWGetTopConversationsCallback() {
+              @Override
+              public void onSuccess(List<RCIMIWConversation> t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                WritableArray _t = Arguments.createArray();
+                for (int i = 0; t != null && i < t.size(); i++) {
+                  RCIMIWConversation obj = t.get(i);
+                  if (obj == null) continue;
+                  Map<String, Object> _map = RCIMIWPlatformConverter.convertConversation(obj);
+                  if (_map == null) _map = new HashMap<>();
+                  ReadableMap __map = Arguments.makeNativeMap(_map);
+                  _t.pushMap(__map);
+                }
+                writableMap.putArray("t", _t);
+                eventEmitter.emit("GetTopConversations:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetTopConversations:onError", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void syncUltraGroupReadStatus(
+      String targetId, String channelId, Double timestamp, String eventId, Promise promise) {
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.syncUltraGroupReadStatus(
+            targetId,
+            channelId,
+            timestamp.longValue(),
+            new IRCIMIWSyncUltraGroupReadStatusCallback() {
+              @Override
+              public void onUltraGroupReadStatusSynced(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "SyncUltraGroupReadStatus:onUltraGroupReadStatusSynced", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -1143,52 +3125,167 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void modifyUltraGroupMessage(String messageUId, ReadableMap message, Promise promise) {
-    if (message == null) message = Arguments.createMap();
-    RCIMIWMessage _message = RCIMIWPlatformConverter.convertMessage(message.toHashMap());
+  public void getConversationsForAllChannel(
+      int type, String targetId, String eventId, Promise promise) {
+    RCIMIWConversationType _type = RCIMIWConversationType.values()[type];
 
     if (!check_engine(promise)) return;
-    int r = engine.modifyUltraGroupMessage(messageUId, _message);
+    int r =
+        engine.getConversationsForAllChannel(
+            _type,
+            targetId,
+            new IRCIMIWGetConversationsForAllChannelCallback() {
+              @Override
+              public void onSuccess(List<RCIMIWConversation> t) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                WritableArray _t = Arguments.createArray();
+                for (int i = 0; t != null && i < t.size(); i++) {
+                  RCIMIWConversation obj = t.get(i);
+                  if (obj == null) continue;
+                  Map<String, Object> _map = RCIMIWPlatformConverter.convertConversation(obj);
+                  if (_map == null) _map = new HashMap<>();
+                  ReadableMap __map = Arguments.makeNativeMap(_map);
+                  _t.pushMap(__map);
+                }
+                writableMap.putArray("t", _t);
+                eventEmitter.emit("GetConversationsForAllChannel:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetConversationsForAllChannel:onError", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void recallUltraGroupMessage(ReadableMap message, boolean deleteRemote, Promise promise) {
+  public void modifyUltraGroupMessage(
+      String messageUId, ReadableMap message, String eventId, Promise promise) {
     if (message == null) message = Arguments.createMap();
     RCIMIWMessage _message = RCIMIWPlatformConverter.convertMessage(message.toHashMap());
 
     if (!check_engine(promise)) return;
-    int r = engine.recallUltraGroupMessage(_message, deleteRemote);
+    int r =
+        engine.modifyUltraGroupMessage(
+            messageUId,
+            _message,
+            new IRCIMIWModifyUltraGroupMessageCallback() {
+              @Override
+              public void onUltraGroupMessageModified(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "ModifyUltraGroupMessage:onUltraGroupMessageModified", writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void recallUltraGroupMessage(
+      ReadableMap message, boolean deleteRemote, String eventId, Promise promise) {
+    if (message == null) message = Arguments.createMap();
+    RCIMIWMessage _message = RCIMIWPlatformConverter.convertMessage(message.toHashMap());
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.recallUltraGroupMessage(
+            _message,
+            deleteRemote,
+            new IRCIMIWRecallUltraGroupMessageCallback() {
+              @Override
+              public void onUltraGroupMessageRecalled(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "RecallUltraGroupMessage:onUltraGroupMessageRecalled", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
   public void clearUltraGroupMessages(
-      String targetId, String channelId, Double timestamp, int policy, Promise promise) {
+      String targetId,
+      String channelId,
+      Double timestamp,
+      int policy,
+      String eventId,
+      Promise promise) {
     RCIMIWMessageOperationPolicy _policy = RCIMIWMessageOperationPolicy.values()[policy];
 
     if (!check_engine(promise)) return;
-    int r = engine.clearUltraGroupMessages(targetId, channelId, timestamp.longValue(), _policy);
+    int r =
+        engine.clearUltraGroupMessages(
+            targetId,
+            channelId,
+            timestamp.longValue(),
+            _policy,
+            new IRCIMIWClearUltraGroupMessagesCallback() {
+              @Override
+              public void onUltraGroupMessagesCleared(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "ClearUltraGroupMessages:onUltraGroupMessagesCleared", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
   public void sendUltraGroupTypingStatus(
-      String targetId, String channelId, int typingStatus, Promise promise) {
+      String targetId, String channelId, int typingStatus, String eventId, Promise promise) {
     RCIMIWUltraGroupTypingStatus _typingStatus =
         RCIMIWUltraGroupTypingStatus.values()[typingStatus];
 
     if (!check_engine(promise)) return;
-    int r = engine.sendUltraGroupTypingStatus(targetId, channelId, _typingStatus);
+    int r =
+        engine.sendUltraGroupTypingStatus(
+            targetId,
+            channelId,
+            _typingStatus,
+            new IRCIMIWSendUltraGroupTypingStatusCallback() {
+              @Override
+              public void onUltraGroupTypingStatusSent(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "SendUltraGroupTypingStatus:onUltraGroupTypingStatusSent", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
   public void clearUltraGroupMessagesForAllChannel(
-      String targetId, Double timestamp, Promise promise) {
+      String targetId, Double timestamp, String eventId, Promise promise) {
 
     if (!check_engine(promise)) return;
-    int r = engine.clearUltraGroupMessagesForAllChannel(targetId, timestamp.longValue());
+    int r =
+        engine.clearUltraGroupMessagesForAllChannel(
+            targetId,
+            timestamp.longValue(),
+            new IRCIMIWClearUltraGroupMessagesForAllChannelCallback() {
+              @Override
+              public void onUltraGroupMessagesClearedForAllChannel(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "ClearUltraGroupMessagesForAllChannel:onUltraGroupMessagesClearedForAllChannel",
+                    writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -1208,19 +3305,88 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void updateUltraGroupMessageExpansion(
-      String messageUId, ReadableMap expansion, Promise promise) {
-    Map<String, String> _expansion =
-        expansion != null ? (Map) expansion.toHashMap() : new HashMap<>();
+  public void getBatchRemoteUltraGroupMessages(
+      ReadableArray messages, String eventId, Promise promise) {
+    List<RCIMIWMessage> _messages = new ArrayList<>();
+    for (int i = 0; messages != null && i < messages.size(); i++) {
+      ReadableMap _map = messages.getMap(i);
+      if (_map != null) {
+        _messages.add(RCIMIWPlatformConverter.convertMessage(_map.toHashMap()));
+      }
+    }
 
     if (!check_engine(promise)) return;
-    int r = engine.updateUltraGroupMessageExpansion(messageUId, _expansion);
+    int r =
+        engine.getBatchRemoteUltraGroupMessages(
+            _messages,
+            new IRCIMIWGetBatchRemoteUltraGroupMessagesCallback() {
+              @Override
+              public void onSuccess(
+                  List<RCIMIWMessage> matchedMessages, List<RCIMIWMessage> notMatchedMessages) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                WritableArray _matchedMessages = Arguments.createArray();
+                for (int i = 0; matchedMessages != null && i < matchedMessages.size(); i++) {
+                  RCIMIWMessage obj = matchedMessages.get(i);
+                  if (obj == null) continue;
+                  Map<String, Object> _map = RCIMIWPlatformConverter.convertMessage(obj);
+                  if (_map == null) _map = new HashMap<>();
+                  ReadableMap __map = Arguments.makeNativeMap(_map);
+                  _matchedMessages.pushMap(__map);
+                }
+                writableMap.putArray("matchedMessages", _matchedMessages);
+                WritableArray _notMatchedMessages = Arguments.createArray();
+                for (int i = 0; notMatchedMessages != null && i < notMatchedMessages.size(); i++) {
+                  RCIMIWMessage obj = notMatchedMessages.get(i);
+                  if (obj == null) continue;
+                  Map<String, Object> _map = RCIMIWPlatformConverter.convertMessage(obj);
+                  if (_map == null) _map = new HashMap<>();
+                  ReadableMap __map = Arguments.makeNativeMap(_map);
+                  _notMatchedMessages.pushMap(__map);
+                }
+                writableMap.putArray("notMatchedMessages", _notMatchedMessages);
+                eventEmitter.emit("GetBatchRemoteUltraGroupMessages:onSuccess", writableMap);
+              }
+
+              @Override
+              public void onError(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit("GetBatchRemoteUltraGroupMessages:onError", writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
   @ReactMethod
-  public void removeUltraGroupMessageExpansion(
-      String messageUId, ReadableArray keys, Promise promise) {
+  public void updateUltraGroupMessageExpansion(
+      String messageUId, ReadableMap expansion, String eventId, Promise promise) {
+    Map<String, String> _expansion =
+        expansion != null ? (Map) expansion.toHashMap() : new HashMap<>();
+
+    if (!check_engine(promise)) return;
+    int r =
+        engine.updateUltraGroupMessageExpansion(
+            messageUId,
+            _expansion,
+            new IRCIMIWUpdateUltraGroupMessageExpansionCallback() {
+              @Override
+              public void onUltraGroupMessageExpansionUpdated(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "UpdateUltraGroupMessageExpansion:onUltraGroupMessageExpansionUpdated",
+                    writableMap);
+              }
+            });
+    promise.resolve(r);
+  }
+
+  @ReactMethod
+  public void removeUltraGroupMessageExpansionForKeys(
+      String messageUId, ReadableArray keys, String eventId, Promise promise) {
     List<String> _keys = new ArrayList<>();
     for (int i = 0; keys != null && i < keys.size(); i++) {
       String _s = keys.getString(i);
@@ -1228,7 +3394,21 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     }
 
     if (!check_engine(promise)) return;
-    int r = engine.removeUltraGroupMessageExpansion(messageUId, _keys);
+    int r =
+        engine.removeUltraGroupMessageExpansionForKeys(
+            messageUId,
+            _keys,
+            new IRCIMIWRemoveUltraGroupMessageExpansionForKeysCallback() {
+              @Override
+              public void onUltraGroupMessageExpansionForKeysRemoved(int code) {
+                WritableMap writableMap = Arguments.createMap();
+                writableMap.putString("eventId", eventId);
+                writableMap.putDouble("code", code);
+                eventEmitter.emit(
+                    "RemoveUltraGroupMessageExpansionForKeys:onUltraGroupMessageExpansionForKeysRemoved",
+                    writableMap);
+              }
+            });
     promise.resolve(r);
   }
 
@@ -2199,9 +4379,9 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     }
 
     @Override
-    public void onMessageCleared(
+    public void onMessagesCleared(
         int code, RCIMIWConversationType type, String targetId, String channelId, long timestamp) {
-      String eventName = "IRCIMIWListener:onMessageCleared";
+      String eventName = "IRCIMIWListener:onMessagesCleared";
       WritableMap arguments = Arguments.createMap();
       arguments.putDouble("code", code);
       arguments.putInt("type", type.ordinal());
@@ -2456,8 +4636,8 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     }
 
     @Override
-    public void onAllChatRoomEntriesLoaded(int code, String targetId, Map<String, String> entries) {
-      String eventName = "IRCIMIWListener:onAllChatRoomEntriesLoaded";
+    public void onChatRoomAllEntriesLoaded(int code, String targetId, Map<String, String> entries) {
+      String eventName = "IRCIMIWListener:onChatRoomAllEntriesLoaded";
       WritableMap arguments = Arguments.createMap();
       arguments.putDouble("code", code);
       arguments.putString("targetId", targetId);
@@ -2738,12 +4918,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
 
     @Override
     public void onNotificationQuietHoursChanged(
-        int code, String startTime, int spanMins, RCIMIWPushNotificationQuietHoursLevel level) {
+        int code, String startTime, int spanMinutes, RCIMIWPushNotificationQuietHoursLevel level) {
       String eventName = "IRCIMIWListener:onNotificationQuietHoursChanged";
       WritableMap arguments = Arguments.createMap();
       arguments.putDouble("code", code);
       arguments.putString("startTime", startTime);
-      arguments.putDouble("spanMins", spanMins);
+      arguments.putDouble("spanMinutes", spanMinutes);
       arguments.putInt("level", level.ordinal());
 
       context
@@ -2764,12 +4944,12 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
 
     @Override
     public void onNotificationQuietHoursLoaded(
-        int code, String startTime, int spanMins, RCIMIWPushNotificationQuietHoursLevel level) {
+        int code, String startTime, int spanMinutes, RCIMIWPushNotificationQuietHoursLevel level) {
       String eventName = "IRCIMIWListener:onNotificationQuietHoursLoaded";
       WritableMap arguments = Arguments.createMap();
       arguments.putDouble("code", code);
       arguments.putString("startTime", startTime);
-      arguments.putDouble("spanMins", spanMins);
+      arguments.putDouble("spanMinutes", spanMinutes);
       arguments.putInt("level", level.ordinal());
 
       context
@@ -3209,9 +5389,9 @@ public class ReactNativeImModule extends ReactContextBaseJavaModule {
     }
 
     @Override
-    public void onUltraGroupMessageExpansionRemoved(
+    public void onUltraGroupMessageExpansionForKeysRemoved(
         int code, String messageUId, List<String> keys) {
-      String eventName = "IRCIMIWListener:onUltraGroupMessageExpansionRemoved";
+      String eventName = "IRCIMIWListener:onUltraGroupMessageExpansionForKeysRemoved";
       WritableMap arguments = Arguments.createMap();
       arguments.putDouble("code", code);
       arguments.putString("messageUId", messageUId);

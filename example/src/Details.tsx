@@ -54,6 +54,7 @@ export default class Details extends React.Component<NativeStackScreenProps<any>
                         let item = itemInfo.item
                         let showState = this.state.unwindStates
                         const index = itemInfo.index
+                        let showText = item.data?.length > 5000 ? item.data?.slice(0, 5000) : item.data;
                         return (
                             <View>
                                 <TouchableOpacity style={{ flexDirection: 'row', padding: 5 }}
@@ -66,7 +67,7 @@ export default class Details extends React.Component<NativeStackScreenProps<any>
                                 {
                                     showState[index] &&
                                     <View style={{ flexDirection: "row", flexWrap: 'wrap', backgroundColor: "#eeeeee", paddingVertical: 10, paddingHorizontal: 5 }}>
-                                        <Text selectable={true} style={{ fontSize: 15 }}>{item.data}</Text>
+                                        <Text selectable={true} style={{ fontSize: 15 }}>{showText}</Text>
                                     </View>
                                 }
                             </View>)

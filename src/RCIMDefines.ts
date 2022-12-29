@@ -788,6 +788,12 @@ export interface RCIMIWConversation {
      *@return
      */
     notificationLevel?: RCIMIWPushNotificationLevel;
+
+    /**
+     *获取会话第一条未读消息的时间戳，仅对超级群生效
+     *@return
+     */
+    firstUnreadMsgSendTime?: number;
 }
 
 export interface RCIMIWPushOptions {
@@ -1359,4 +1365,1484 @@ export enum RCIMIWConnectionStatus {
      *异常情况
      */
     UNKNOWN
+}
+
+export interface RCIMIWConnectCallback extends IRCIMIWConnectCallback {
+    /**
+     *
+     */
+    onDatabaseOpened?: (code: number) => void;
+}
+
+export interface RCIMIWSendMessageCallback extends IRCIMIWSendMessageCallback {
+    /**
+     *
+     */
+    onMessageSaved?: (message: RCIMIWMessage) => void;
+}
+
+export interface RCIMIWSendMediaMessageListener extends IRCIMIWSendMediaMessageListener {
+    /**
+     *
+     */
+    onMediaMessageSaved?: (message: RCIMIWMediaMessage) => void;
+
+    /**
+     *
+     */
+    onMediaMessageSending?: (message: RCIMIWMediaMessage, progress: number) => void;
+
+    /**
+     *
+     */
+    onSendingMediaMessageCanceled?: (message: RCIMIWMediaMessage) => void;
+}
+
+export interface RCIMIWDownloadMediaMessageListener extends IRCIMIWDownloadMediaMessageListener {
+    /**
+     *
+     */
+    onMediaMessageDownloading?: (message: RCIMIWMediaMessage, progress: number) => void;
+
+    /**
+     *
+     */
+    onDownloadingMediaMessageCanceled?: (message: RCIMIWMediaMessage) => void;
+}
+
+export interface RCIMIWSendGroupMessageToDesignatedUsersCallback extends IRCIMIWSendGroupMessageToDesignatedUsersCallback {
+    /**
+     *
+     */
+    onMessageSaved?: (message: RCIMIWMessage) => void;
+}
+
+export interface IRCIMIWConnectCallback {
+    /**
+     *
+     */
+    onConnected?: (code: number, userId: string) => void;
+
+    /**
+     *
+     */
+    onDatabaseOpened?: (code: number) => void;
+}
+
+export interface IRCIMIWSendMessageCallback {
+    /**
+     *
+     */
+    onMessageSaved?: (message: RCIMIWMessage) => void;
+
+    /**
+     *
+     */
+    onMessageSent?: (code: number, message: RCIMIWMessage) => void;
+}
+
+export interface IRCIMIWSendMediaMessageListener {
+    /**
+     *
+     */
+    onMediaMessageSaved?: (message: RCIMIWMediaMessage) => void;
+
+    /**
+     *
+     */
+    onMediaMessageSending?: (message: RCIMIWMediaMessage, progress: number) => void;
+
+    /**
+     *
+     */
+    onSendingMediaMessageCanceled?: (message: RCIMIWMediaMessage) => void;
+
+    /**
+     *
+     */
+    onMediaMessageSent?: (code: number, message: RCIMIWMediaMessage) => void;
+}
+
+export interface IRCIMIWCancelSendingMediaMessageCallback {
+    /**
+     *
+     */
+    onCancelSendingMediaMessageCalled?: (code: number, message: RCIMIWMediaMessage) => void;
+}
+
+export interface IRCIMIWDownloadMediaMessageListener {
+    /**
+     *
+     */
+    onMediaMessageDownloading?: (message: RCIMIWMediaMessage, progress: number) => void;
+
+    /**
+     *
+     */
+    onDownloadingMediaMessageCanceled?: (message: RCIMIWMediaMessage) => void;
+
+    /**
+     *
+     */
+    onMediaMessageDownloaded?: (code: number, message: RCIMIWMediaMessage) => void;
+}
+
+export interface IRCIMIWCancelDownloadingMediaMessageCallback {
+    /**
+     *
+     */
+    onCancelDownloadingMediaMessageCalled?: (code: number, message: RCIMIWMediaMessage) => void;
+}
+
+export interface IRCIMIWGetConversationCallback extends IRCIMIWObjectCallback<RCIMIWConversation> { }
+
+export interface IRCIMIWObjectCallback<T> {
+    /**
+     *
+     */
+    onSuccess?: (t: T) => void;
+
+    /**
+     *
+     */
+    onError?: (code: number) => void;
+}
+
+export interface IRCIMIWGetConversationsCallback extends IRCIMIWObjectCallback<Array<RCIMIWConversation>> { }
+
+export interface IRCIMIWRemoveConversationCallback {
+    /**
+     *
+     */
+    onConversationRemoved?: (code: number) => void;
+}
+
+export interface IRCIMIWRemoveConversationsCallback {
+    /**
+     *
+     */
+    onConversationsRemoved?: (code: number) => void;
+}
+
+export interface IRCIMIWGetUnreadCountCallback extends IRCIMIWObjectCallback<number> { }
+
+export interface IRCIMIWGetTotalUnreadCountCallback extends IRCIMIWObjectCallback<number> { }
+
+export interface IRCIMIWGetUnreadMentionedCountCallback extends IRCIMIWObjectCallback<number> { }
+
+export interface IRCIMIWGetUltraGroupAllUnreadCountCallback extends IRCIMIWObjectCallback<number> { }
+
+export interface IRCIMIWGetUltraGroupAllUnreadMentionedCountCallback extends IRCIMIWObjectCallback<number> { }
+
+export interface IRCIMIWGetUltraGroupUnreadCountCallback extends IRCIMIWObjectCallback<number> { }
+
+export interface IRCIMIWGetUltraGroupUnreadMentionedCountCallback extends IRCIMIWObjectCallback<number> { }
+
+export interface IRCIMIWGetUnreadCountByConversationTypesCallback extends IRCIMIWObjectCallback<number> { }
+
+export interface IRCIMIWClearUnreadCountCallback {
+    /**
+     *
+     */
+    onUnreadCountCleared?: (code: number) => void;
+}
+
+export interface IRCIMIWSaveDraftMessageCallback {
+    /**
+     *
+     */
+    onDraftMessageSaved?: (code: number) => void;
+}
+
+export interface IRCIMIWGetDraftMessageCallback extends IRCIMIWObjectCallback<string> { }
+
+export interface IRCIMIWClearDraftMessageCallback {
+    /**
+     *
+     */
+    onDraftMessageCleared?: (code: number) => void;
+}
+
+export interface IRCIMIWGetBlockedConversationsCallback extends IRCIMIWObjectCallback<Array<RCIMIWConversation>> { }
+
+export interface IRCIMIWChangeConversationTopStatusCallback {
+    /**
+     *
+     */
+    onConversationTopStatusChanged?: (code: number) => void;
+}
+
+export interface IRCIMIWGetConversationTopStatusCallback extends IRCIMIWObjectCallback<Boolean> { }
+
+export interface IRCIMIWSyncConversationReadStatusCallback {
+    /**
+     *
+     */
+    onConversationReadStatusSynced?: (code: number) => void;
+}
+
+export interface IRCIMIWGetMessagesCallback extends IRCIMIWObjectCallback<Array<RCIMIWMessage>> { }
+
+export interface IRCIMIWGetMessageCallback extends IRCIMIWObjectCallback<RCIMIWMessage> { }
+
+export interface IRCIMIWGetFirstUnreadMessageCallback extends IRCIMIWObjectCallback<RCIMIWMessage> { }
+
+export interface IRCIMIWGetUnreadMentionedMessagesCallback extends IRCIMIWObjectCallback<Array<RCIMIWMessage>> { }
+
+export interface IRCIMIWInsertMessageCallback {
+    /**
+     *
+     */
+    onMessageInserted?: (code: number, message: RCIMIWMessage) => void;
+}
+
+export interface IRCIMIWInsertMessagesCallback {
+    /**
+     *
+     */
+    onMessagesInserted?: (code: number, messages: Array<RCIMIWMessage>) => void;
+}
+
+export interface IRCIMIWClearMessagesCallback {
+    /**
+     *
+     */
+    onMessagesCleared?: (code: number) => void;
+}
+
+export interface IRCIMIWDeleteLocalMessagesCallback {
+    /**
+     *
+     */
+    onLocalMessagesDeleted?: (code: number, messages: Array<RCIMIWMessage>) => void;
+}
+
+export interface IRCIMIWDeleteMessagesCallback {
+    /**
+     *
+     */
+    onMessagesDeleted?: (code: number, messages: Array<RCIMIWMessage>) => void;
+}
+
+export interface IRCIMIWRecallMessageCallback {
+    /**
+     *
+     */
+    onMessageRecalled?: (code: number, message: RCIMIWMessage) => void;
+}
+
+export interface IRCIMIWSendPrivateReadReceiptMessageCallback {
+    /**
+     *
+     */
+    onPrivateReadReceiptMessageSent?: (code: number) => void;
+}
+
+export interface IRCIMIWSendGroupReadReceiptRequestCallback {
+    /**
+     *
+     */
+    onGroupReadReceiptRequestSent?: (code: number, message: RCIMIWMessage) => void;
+}
+
+export interface IRCIMIWSendGroupReadReceiptResponseCallback {
+    /**
+     *
+     */
+    onGroupReadReceiptResponseSent?: (code: number, message: Array<RCIMIWMessage>) => void;
+}
+
+export interface IRCIMIWUpdateMessageExpansionCallback {
+    /**
+     *
+     */
+    onMessageExpansionUpdated?: (code: number) => void;
+}
+
+export interface IRCIMIWRemoveMessageExpansionForKeysCallback {
+    /**
+     *
+     */
+    onMessageExpansionForKeysRemoved?: (code: number) => void;
+}
+
+export interface IRCIMIWChangeMessageSentStatusCallback {
+    /**
+     *
+     */
+    onMessageSentStatusChanged?: (code: number) => void;
+}
+
+export interface IRCIMIWChangeMessageReceivedStatusCallback {
+    /**
+     *
+     */
+    onMessageReceiveStatusChanged?: (code: number) => void;
+}
+
+export interface IRCIMIWJoinChatRoomCallback {
+    /**
+     *
+     */
+    onChatRoomJoined?: (code: number, targetId: string) => void;
+}
+
+export interface IRCIMIWLeaveChatRoomCallback {
+    /**
+     *
+     */
+    onChatRoomLeft?: (code: number, targetId: string) => void;
+}
+
+export interface IRCIMIWGetChatRoomMessagesCallback extends IRCIMIWObjectCallback<Array<RCIMIWMessage>> { }
+
+export interface IRCIMIWAddChatRoomEntryCallback {
+    /**
+     *
+     */
+    onChatRoomEntryAdded?: (code: number) => void;
+}
+
+export interface IRCIMIWAddChatRoomEntriesCallback {
+    /**
+     *
+     */
+    onChatRoomEntriesAdded?: (code: number, errors: Map<string, number>) => void;
+}
+
+export interface IRCIMIWGetChatRoomEntryCallback extends IRCIMIWObjectCallback<Map<string, string>> { }
+
+export interface IRCIMIWGetChatRoomAllEntriesCallback extends IRCIMIWObjectCallback<Map<string, string>> { }
+
+export interface IRCIMIWRemoveChatRoomEntryCallback {
+    /**
+     *
+     */
+    onChatRoomEntryRemoved?: (code: number) => void;
+}
+
+export interface IRCIMIWRemoveChatRoomEntriesCallback {
+    /**
+     *
+     */
+    onChatRoomEntriesRemoved?: (code: number) => void;
+}
+
+export interface IRCIMIWAddToBlacklistCallback {
+    /**
+     *
+     */
+    onBlacklistAdded?: (code: number, userId: string) => void;
+}
+
+export interface IRCIMIWRemoveFromBlacklistCallback {
+    /**
+     *
+     */
+    onBlacklistRemoved?: (code: number, userId: string) => void;
+}
+
+export interface IRCIMIWGetBlacklistStatusCallback extends IRCIMIWObjectCallback<RCIMIWBlacklistStatus> { }
+
+export interface IRCIMIWGetBlacklistCallback extends IRCIMIWObjectCallback<Array<string>> { }
+
+export interface IRCIMIWSearchMessagesCallback extends IRCIMIWObjectCallback<Array<RCIMIWMessage>> { }
+
+export interface IRCIMIWSearchMessagesByTimeRangeCallback extends IRCIMIWObjectCallback<Array<RCIMIWMessage>> { }
+
+export interface IRCIMIWSearchMessagesByUserIdCallback extends IRCIMIWObjectCallback<Array<RCIMIWMessage>> { }
+
+export interface IRCIMIWSearchConversationsCallback extends IRCIMIWObjectCallback<Array<RCIMIWSearchConversationResult>> { }
+
+export interface IRCIMIWChangeNotificationQuietHoursCallback {
+    /**
+     *
+     */
+    onNotificationQuietHoursChanged?: (code: number) => void;
+}
+
+export interface IRCIMIWRemoveNotificationQuietHoursCallback {
+    /**
+     *
+     */
+    onNotificationQuietHoursRemoved?: (code: number) => void;
+}
+
+export interface IRCIMIWGetNotificationQuietHoursCallback {
+    /**
+     *
+     */
+    onSuccess?: (startTime: string, spanMinutes: number, level: RCIMIWPushNotificationQuietHoursLevel) => void;
+
+    /**
+     *
+     */
+    onError?: (code: number) => void;
+}
+
+export interface IRCIMIWChangeConversationNotificationLevelCallback {
+    /**
+     *
+     */
+    onConversationNotificationLevelChanged?: (code: number) => void;
+}
+
+export interface IRCIMIWGetConversationNotificationLevelCallback extends IRCIMIWObjectCallback<RCIMIWPushNotificationLevel> { }
+
+export interface IRCIMIWChangeConversationTypeNotificationLevelCallback {
+    /**
+     *
+     */
+    onConversationTypeNotificationLevelChanged?: (code: number) => void;
+}
+
+export interface IRCIMIWGetConversationTypeNotificationLevelCallback extends IRCIMIWObjectCallback<RCIMIWPushNotificationLevel> { }
+
+export interface IRCIMIWChangeUltraGroupDefaultNotificationLevelCallback {
+    /**
+     *
+     */
+    onUltraGroupDefaultNotificationLevelChanged?: (code: number) => void;
+}
+
+export interface IRCIMIWGetUltraGroupDefaultNotificationLevelCallback extends IRCIMIWObjectCallback<RCIMIWPushNotificationLevel> { }
+
+export interface IRCIMIWChangeUltraGroupChannelDefaultNotificationLevelCallback {
+    /**
+     *
+     */
+    onUltraGroupChannelDefaultNotificationLevelChanged?: (code: number) => void;
+}
+
+export interface IRCIMIWGetUltraGroupChannelDefaultNotificationLevelCallback extends IRCIMIWObjectCallback<RCIMIWPushNotificationLevel> { }
+
+export interface IRCIMIWChangePushContentShowStatusCallback {
+    /**
+     *
+     */
+    onPushContentShowStatusChanged?: (code: number) => void;
+}
+
+export interface IRCIMIWChangePushLanguageCallback {
+    /**
+     *
+     */
+    onPushLanguageChanged?: (code: number) => void;
+}
+
+export interface IRCIMIWChangePushReceiveStatusCallback {
+    /**
+     *
+     */
+    onPushReceiveStatusChanged?: (code: number) => void;
+}
+
+export interface IRCIMIWSendGroupMessageToDesignatedUsersCallback extends IRCIMIWSendMessageCallback { }
+
+export interface IRCIMIWGetMessageCountCallback extends IRCIMIWObjectCallback<number> { }
+
+export interface IRCIMIWGetTopConversationsCallback extends IRCIMIWObjectCallback<Array<RCIMIWConversation>> { }
+
+export interface IRCIMIWSyncUltraGroupReadStatusCallback {
+    /**
+     *
+     */
+    onUltraGroupReadStatusSynced?: (code: number) => void;
+}
+
+export interface IRCIMIWGetConversationsForAllChannelCallback extends IRCIMIWObjectCallback<Array<RCIMIWConversation>> { }
+
+export interface IRCIMIWModifyUltraGroupMessageCallback {
+    /**
+     *
+     */
+    onUltraGroupMessageModified?: (code: number) => void;
+}
+
+export interface IRCIMIWRecallUltraGroupMessageCallback {
+    /**
+     *
+     */
+    onUltraGroupMessageRecalled?: (code: number) => void;
+}
+
+export interface IRCIMIWClearUltraGroupMessagesCallback {
+    /**
+     *
+     */
+    onUltraGroupMessagesCleared?: (code: number) => void;
+}
+
+export interface IRCIMIWSendUltraGroupTypingStatusCallback {
+    /**
+     *
+     */
+    onUltraGroupTypingStatusSent?: (code: number) => void;
+}
+
+export interface IRCIMIWClearUltraGroupMessagesForAllChannelCallback {
+    /**
+     *
+     */
+    onUltraGroupMessagesClearedForAllChannel?: (code: number) => void;
+}
+
+export interface IRCIMIWGetBatchRemoteUltraGroupMessagesCallback {
+    /**
+     *
+     */
+    onSuccess?: (matchedMessages: Array<RCIMIWMessage>, notMatchedMessages: Array<RCIMIWMessage>) => void;
+
+    /**
+     *
+     */
+    onError?: (code: number) => void;
+}
+
+export interface IRCIMIWUpdateUltraGroupMessageExpansionCallback {
+    /**
+     *
+     */
+    onUltraGroupMessageExpansionUpdated?: (code: number) => void;
+}
+
+export interface IRCIMIWRemoveUltraGroupMessageExpansionForKeysCallback {
+    /**
+     *
+     */
+    onUltraGroupMessageExpansionForKeysRemoved?: (code: number) => void;
+}
+
+export interface IRCIMIWListener {
+    /**
+     *收到消息的监听
+     *@param message    接收到的消息对象
+     *@param left       当客户端连接成功后，服务端会将所有补偿消息以消息包的形式下发给客户端，最多每 200 条消息为一个消息包，即一个 Package, 客户端接受到消息包后，会逐条解析并通知应用。left 为当前消息包（Package）里还剩余的消息条数
+     *@param offline    消息是否离线消息
+     *@param hasPackage 是否在服务端还存在未下发的消息包
+     */
+    onMessageReceived?: (message: RCIMIWMessage, left: number, offline: boolean, hasPackage: boolean) => void;
+
+    /**
+     *网络状态变化
+     *@param status SDK 与融云服务器的连接状态
+     */
+    onConnectionStatusChanged?: (status: RCIMIWConnectionStatus) => void;
+
+    /**
+     *会话状态置顶多端同步监听
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param top       是否置顶
+     */
+    onConversationTopStatusSynced?: (type: RCIMIWConversationType, targetId: string, channelId: string, top: boolean) => void;
+
+    /**
+     *撤回消息监听器
+     *@param message 原本的消息会变为撤回消息
+     */
+    onRemoteMessageRecalled?: (message: RCIMIWMessage) => void;
+
+    /**
+     *单聊中收到消息回执的回调。
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param timestamp 已阅读的最后一条消息的 sendTime
+     */
+    onPrivateReadReceiptReceived?: (targetId: string, channelId: string, timestamp: number) => void;
+
+    /**
+     *消息扩展信息更改的回调
+     *@param expansion 消息扩展信息中更新的键值对，只包含更新的键值对，不是全部的数据。如果想获取全部的键值对，请使用 message 的 expansion 属性。
+     *@param message   发生变化的消息
+     */
+    onRemoteMessageExpansionUpdated?: (expansion: Map<string, string>, message: RCIMIWMessage) => void;
+
+    /**
+     *消息扩展信息删除的回调
+     *@param message 发生变化的消息
+     *@param keys    消息扩展信息中删除的键值对 key 列表
+     */
+    onRemoteMessageExpansionForKeyRemoved?: (message: RCIMIWMessage, keys: Array<string>) => void;
+
+    /**
+     *聊天室用户进入、退出聊天室监听
+     *@param targetId 会话 ID
+     *@param actions  发生的事件
+     */
+    onChatRoomMemberChanged?: (targetId: string, actions: Array<RCIMIWChatRoomMemberAction>) => void;
+
+    /**
+     *会话输入状态发生变化。对于单聊而言，当对方正在输入时，监听会触发一次；当对方不处于输入状态时，该监听还会触发一次，但回调里输入用户列表为空。
+     *@param type             会话类型
+     *@param targetId         会话 ID
+     *@param channelId        频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param userTypingStatus 发生状态变化的集合
+     */
+    onTypingStatusChanged?: (type: RCIMIWConversationType, targetId: string, channelId: string, userTypingStatus: Array<RCIMIWTypingStatus>) => void;
+
+    /**
+     *同步消息未读状态监听接口。多端登录，收到其它端清除某一会话未读数通知的时候
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param timestamp 时间戳
+     */
+    onConversationReadStatusSyncMessageReceived?: (type: RCIMIWConversationType, targetId: string, timestamp: number) => void;
+
+    /**
+     *聊天室 KV 同步完成的回调
+     *@param roomId 聊天室 ID
+     */
+    onChatRoomEntriesSynced?: (roomId: string) => void;
+
+    /**
+     *聊天室 KV 发生变化的回调
+     *@param operationType 操作的类型
+     *@param roomId        聊天室 ID
+     *@param entries       发送变化的 KV
+     */
+    onChatRoomEntriesChanged?: (operationType: RCIMIWChatRoomEntriesOperationType, roomId: string, entries: Map<string, string>) => void;
+
+    /**
+     *超级群消息 kv 被更新
+     *@param messages 被更新的消息集合
+     */
+    onRemoteUltraGroupMessageExpansionUpdated?: (messages: Array<RCIMIWMessage>) => void;
+
+    /**
+     *超级群消息被更改
+     *@param messages 被更新的消息集合
+     */
+    onRemoteUltraGroupMessageModified?: (messages: Array<RCIMIWMessage>) => void;
+
+    /**
+     *超级群消息被撤回
+     *@param messages 撤回的消息集合
+     */
+    onRemoteUltraGroupMessageRecalled?: (messages: Array<RCIMIWMessage>) => void;
+
+    /**
+     *超级群已读的监听
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param timestamp
+     */
+    onUltraGroupReadTimeReceived?: (targetId: string, channelId: string, timestamp: number) => void;
+
+    /**
+     *用户输入状态变化的回调
+     *当客户端收到用户输入状态的变化时，会回调此接口，通知发生变化的会话以及当前正在输入的RCUltraGroupTypingStatusInfo列表
+     *@param info 正在输入的RCUltraGroupTypingStatusInfo列表（nil标示当前没有用户正在输入）
+     */
+    onUltraGroupTypingStatusChanged?: (info: Array<RCIMIWUltraGroupTypingStatusInfo>) => void;
+
+    /**
+     *发送含有敏感词消息被拦截的回调
+     *@param info 被拦截消息的相关信息
+     */
+    onMessageBlocked?: (info: RCIMIWBlockedMessageInfo) => void;
+
+    /**
+     *聊天室状态发生变化的监听
+     *@param targetId 会话 ID
+     *@param status   聊天室变化的状态
+     */
+    onChatRoomStatusChanged?: (targetId: string, status: RCIMIWChatRoomStatus) => void;
+
+    /**
+     *收到群聊已读回执请求的监听
+     *@param targetId   会话 ID
+     *@param messageUId 消息的 messageUid
+     */
+    onGroupMessageReadReceiptRequestReceived?: (targetId: string, messageUId: string) => void;
+
+    /**
+     *收到群聊已读回执响应的监听
+     *@param targetId       会话 ID
+     *@param messageUId     收到回执响应的消息的 messageUId
+     *@param respondUserIds 会话中响应了此消息的用户列表。其中 key： 用户 id ； value： 响应时间。
+     */
+    onGroupMessageReadReceiptResponseReceived?: (targetId: string, messageUId: string, respondUserIds: Map<string, number>) => void;
+
+    /**
+     *{@link connect} 的接口监听，收到链接结果的回调
+     *@param code   接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param userId 链接成功的用户 ID
+     */
+    onConnected?: (code: number, userId: string) => void;
+
+    /**
+     *{@link connect} 的接口监听，数据库打开时发生的回调
+     *@param code 接口回调的状态码，0 代表成功，非 0 代表出现异常
+     */
+    onDatabaseOpened?: (code: number) => void;
+
+    /**
+     *{@link loadConversation} 的接口监听
+     *@param code         接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type         会话类型
+     *@param targetId     会话 ID
+     *@param channelId    频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param conversation 获取到的会话
+     */
+    onConversationLoaded?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, conversation: RCIMIWConversation) => void;
+
+    /**
+     *{@link loadConversations} 的接口监听
+     *@param code              接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param conversationTypes 会话类型集合
+     *@param channelId         频道 ID，仅支持超级群使用，
+     *@param startTime         时间戳（毫秒）
+     *@param count             查询的数量
+     *@param conversations     查询到的会话集合
+     */
+    onConversationsLoaded?: (code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string, startTime: number, count: number, conversations: Array<RCIMIWConversation>) => void;
+
+    /**
+     *{@link removeConversation} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     */
+    onConversationRemoved?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string) => void;
+
+    /**
+     *{@link removeConversations} 的接口监听
+     *@param code              接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param conversationTypes 会话类型集合
+     *@param channelId         频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     */
+    onConversationsRemoved?: (code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string) => void;
+
+    /**
+     *{@link loadTotalUnreadCount} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param count     未读数量
+     */
+    onTotalUnreadCountLoaded?: (code: number, channelId: string, count: number) => void;
+
+    /**
+     *{@link loadUnreadCount} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param count     未读数量
+     */
+    onUnreadCountLoaded?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, count: number) => void;
+
+    /**
+     *{@link loadUnreadCountByConversationTypes} 的接口监听
+     *@param code              接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param conversationTypes 会话类型集合
+     *@param channelId         频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param contain           是否包含免打扰消息的未读消息数。
+     *@param count             未读数量
+     */
+    onUnreadCountByConversationTypesLoaded?: (code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string, contain: boolean, count: number) => void;
+
+    /**
+     *{@link loadUnreadMentionedCount} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param count     未读数量
+     */
+    onUnreadMentionedCountLoaded?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, count: number) => void;
+
+    /**
+     *{@link loadUltraGroupAllUnreadMentionedCount} 的接口监听
+     *@param code  接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param count 未读数量
+     */
+    onUltraGroupAllUnreadCountLoaded?: (code: number, count: number) => void;
+
+    /**
+     *{@link loadUltraGroupAllUnreadMentionedCount} 的接口监听
+     *@param code  接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param count 未读数量
+     */
+    onUltraGroupAllUnreadMentionedCountLoaded?: (code: number, count: number) => void;
+
+    /**
+     *{@link clearUnreadCount} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param timestamp 该会话已阅读的最后一条消息的发送时间戳
+     */
+    onUnreadCountCleared?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, timestamp: number) => void;
+
+    /**
+     *{@link saveDraftMessage} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param draft     草稿信息
+     */
+    onDraftMessageSaved?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, draft: string) => void;
+
+    /**
+     *{@link clearDraftMessage} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     */
+    onDraftMessageCleared?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string) => void;
+
+    /**
+     *{@link loadDraftMessage} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常 接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param draft     草稿信息
+     */
+    onDraftMessageLoaded?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, draft: string) => void;
+
+    /**
+     *{@link loadBlockedConversations} 的接口监听
+     *@param code              接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param conversationTypes 会话类型集合
+     *@param channelId         频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param conversations     获取到的会话集合
+     */
+    onBlockedConversationsLoaded?: (code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string, conversations: Array<RCIMIWConversation>) => void;
+
+    /**
+     *{@link changeConversationTopStatus} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param top       是否置顶
+     */
+    onConversationTopStatusChanged?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, top: boolean) => void;
+
+    /**
+     *{@link loadConversationTopStatus} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param top       是否置顶
+     */
+    onConversationTopStatusLoaded?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, top: boolean) => void;
+
+    /**
+     *{@link syncConversationReadStatus} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param timestamp 会话中已读的最后一条消息的发送时间戳
+     */
+    onConversationReadStatusSynced?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, timestamp: number) => void;
+
+    /**
+     *{@link sendMessage} 的接口监听
+     *@param message 发送的消息
+     */
+    onMessageAttached?: (message: RCIMIWMessage) => void;
+
+    /**
+     *{@link sendMessage} 的接口监听
+     *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param message 发送的消息
+     */
+    onMessageSent?: (code: number, message: RCIMIWMessage) => void;
+
+    /**
+     *{@link sendMediaMessage} 的接口监听
+     *@param message 发送的消息
+     */
+    onMediaMessageAttached?: (message: RCIMIWMediaMessage) => void;
+
+    /**
+     *{@link sendMediaMessage} 的接口监听
+     *@param message  发送的消息
+     *@param progress 发送的进度
+     */
+    onMediaMessageSending?: (message: RCIMIWMediaMessage, progress: number) => void;
+
+    /**
+     *{@link cancelSendingMediaMessage} 的接口监听
+     *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param message 发送的消息
+     */
+    onSendingMediaMessageCanceled?: (code: number, message: RCIMIWMediaMessage) => void;
+
+    /**
+     *{@link sendMediaMessage} 的接口监听
+     *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param message 发送的消息
+     */
+    onMediaMessageSent?: (code: number, message: RCIMIWMediaMessage) => void;
+
+    /**
+     *{@link downloadMediaMessage} 的接口监听
+     *@param message  下载的消息
+     *@param progress 下载的进度
+     */
+    onMediaMessageDownloading?: (message: RCIMIWMediaMessage, progress: number) => void;
+
+    /**
+     *{@link downloadMediaMessage} 的接口监听
+     *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param message 下载的消息
+     */
+    onMediaMessageDownloaded?: (code: number, message: RCIMIWMediaMessage) => void;
+
+    /**
+     *{@link cancelDownloadingMediaMessage} 的接口监听
+     *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param message 取消下载的消息
+     */
+    onDownloadingMediaMessageCanceled?: (code: number, message: RCIMIWMediaMessage) => void;
+
+    /**
+     *{@link loadMessages} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param sentTime  当前消息时间戳
+     *@param order     获取消息的方向。BEFORE：获取 sentTime 之前的消息 （时间递减），AFTER：获取 sentTime 之后的消息 （时间递增）
+     *@param messages  获取到的消息集合
+     */
+    onMessagesLoaded?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, sentTime: number, order: RCIMIWTimeOrder, messages: Array<RCIMIWMessage>) => void;
+
+    /**
+     *{@link loadUnreadMentionedMessages} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param messages  获取到的消息集合
+     */
+    onUnreadMentionedMessagesLoaded?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, messages: Array<RCIMIWMessage>) => void;
+
+    /**
+     *{@link loadFirstUnreadMessage} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param message   获取到的消息
+     */
+    onFirstUnreadMessageLoaded?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, message: RCIMIWMessage) => void;
+
+    /**
+     *{@link insertMessage} 的接口监听
+     *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param message 插入的消息
+     */
+    onMessageInserted?: (code: number, message: RCIMIWMessage) => void;
+
+    /**
+     *{@link insertMessages} 的接口监听
+     *@param code     接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param messages 插入的消息集合
+     */
+    onMessagesInserted?: (code: number, messages: Array<RCIMIWMessage>) => void;
+
+    /**
+     *{@link clearMessages} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param timestamp 时间戳
+     */
+    onMessagesCleared?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, timestamp: number) => void;
+
+    /**
+     *{@link deleteLocalMessages} 的接口监听
+     *@param code     接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param messages 删除的消息集合
+     */
+    onLocalMessagesDeleted?: (code: number, messages: Array<RCIMIWMessage>) => void;
+
+    /**
+     *{@link deleteMessages} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param messages  删除的消息集合
+     */
+    onMessagesDeleted?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, messages: Array<RCIMIWMessage>) => void;
+
+    /**
+     *{@link recallMessage} 的接口监听
+     *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param message 撤回的消息
+     */
+    onMessageRecalled?: (code: number, message: RCIMIWMessage) => void;
+
+    /**
+     *{@link sendPrivateReadReceiptMessage} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param timestamp 时间戳
+     */
+    onPrivateReadReceiptMessageSent?: (code: number, targetId: string, channelId: string, timestamp: number) => void;
+
+    /**
+     *{@link updateMessageExpansion} 的接口监听
+     *@param code       接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param messageUId 消息的 messageUid
+     *@param expansion  要更新的消息扩展信息键值对，类型是 HashMap
+     */
+    onMessageExpansionUpdated?: (code: number, messageUId: string, expansion: Map<string, string>) => void;
+
+    /**
+     *{@link removeMessageExpansionForKeys} 的接口监听
+     *@param code       接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param messageUId 消息的 messageUid
+     *@param keys       消息扩展信息中待删除的 key 的列表，类型是 ArrayList
+     */
+    onMessageExpansionForKeysRemoved?: (code: number, messageUId: string, keys: Array<string>) => void;
+
+    /**
+     *{@link changeMessageReceiveStatus} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param messageId 消息的 messageId
+     */
+    onMessageReceiveStatusChanged?: (code: number, messageId: number) => void;
+
+    /**
+     *{@link changeMessageSentStatus} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param messageId 消息的 messageId
+     */
+    onMessageSentStatusChanged?: (code: number, messageId: number) => void;
+
+    /**
+     *{@link joinChatRoom} 的接口监听
+     *@param code     接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId 会话 ID
+     */
+    onChatRoomJoined?: (code: number, targetId: string) => void;
+
+    /**
+     *正在加入聊天室的回调
+     *@param targetId 聊天室 ID
+     */
+    onChatRoomJoining?: (targetId: string) => void;
+
+    /**
+     *{@link leaveChatRoom} 的接口监听
+     *@param code     接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId 会话 ID
+     */
+    onChatRoomLeft?: (code: number, targetId: string) => void;
+
+    /**
+     *{@link loadChatRoomMessages} 的接口监听
+     *@param code     接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId 会话 ID
+     *@param messages 加载到的消息
+     *@param syncTime 下次拉取的时间戳
+     */
+    onChatRoomMessagesLoaded?: (code: number, targetId: string, messages: Array<RCIMIWMessage>, syncTime: number) => void;
+
+    /**
+     *{@link addChatRoomEntry} 的接口监听
+     *@param code     接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId 会话 ID
+     *@param key      聊天室属性名称
+     */
+    onChatRoomEntryAdded?: (code: number, targetId: string, key: string) => void;
+
+    /**
+     *{@link addChatRoomEntries} 的接口监听
+     *@param code         接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId     会话 ID
+     *@param entries      聊天室属性
+     *@param errorEntries 发生错误的属性
+     */
+    onChatRoomEntriesAdded?: (code: number, targetId: string, entries: Map<string, string>, errorEntries: Map<string, number>) => void;
+
+    /**
+     *{@link loadChatRoomEntry} 的接口监听
+     *@param code     接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId 会话 ID
+     *@param entry    获取到的属性。
+     */
+    onChatRoomEntryLoaded?: (code: number, targetId: string, entry: Map<string, string>) => void;
+
+    /**
+     *{@link loadChatRoomAllEntries} 的接口监听
+     *@param code     接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId 会话 ID
+     *@param entries  获取到的属性集合。
+     */
+    onChatRoomAllEntriesLoaded?: (code: number, targetId: string, entries: Map<string, string>) => void;
+
+    /**
+     *{@link removeChatRoomEntry} 的接口监听
+     *@param code     接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId 会话 ID
+     *@param key      聊天室属性键值
+     */
+    onChatRoomEntryRemoved?: (code: number, targetId: string, key: string) => void;
+
+    /**
+     *{@link removeChatRoomEntries} 的接口监听
+     *@param code     接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId 会话 ID
+     *@param keys     聊天室属性键值集合
+     */
+    onChatRoomEntriesRemoved?: (code: number, targetId: string, keys: Array<string>) => void;
+
+    /**
+     *{@link addToBlacklist} 的接口监听
+     *@param code   接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param userId 用户 ID
+     */
+    onBlacklistAdded?: (code: number, userId: string) => void;
+
+    /**
+     *{@link removeFromBlacklist} 的接口监听
+     *@param code   接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param userId 用户 ID
+     */
+    onBlacklistRemoved?: (code: number, userId: string) => void;
+
+    /**
+     *{@link loadBlacklistStatus} 的接口监听
+     *@param code   接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param userId 用户 ID
+     *@param status 当前状态
+     */
+    onBlacklistStatusLoaded?: (code: number, userId: string, status: RCIMIWBlacklistStatus) => void;
+
+    /**
+     *{@link loadBlacklist} 的接口监听
+     *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param userIds 用户 ID 集合
+     */
+    onBlacklistLoaded?: (code: number, userIds: Array<string>) => void;
+
+    /**
+     *{@link searchMessages} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param keyword   搜索的关键字
+     *@param startTime 查询 beginTime 之前的消息
+     *@param count     查询的数量
+     *@param messages  查询到的消息集合
+     */
+    onMessagesSearched?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, keyword: string, startTime: number, count: number, messages: Array<RCIMIWMessage>) => void;
+
+    /**
+     *{@link searchMessagesByTimeRange} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param keyword   搜索的关键字
+     *@param startTime 开始时间
+     *@param endTime   结束时间
+     *@param offset    偏移量
+     *@param count     查询的数量
+     *@param messages  查询到的消息集合
+     */
+    onMessagesSearchedByTimeRange?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, keyword: string, startTime: number, endTime: number, offset: number, count: number, messages: Array<RCIMIWMessage>) => void;
+
+    /**
+     *{@link searchMessagesByUserId} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param userId    用户 id
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param startTime 查询记录的起始时间
+     *@param count     查询的数量
+     *@param messages  查询到的消息集合
+     */
+    onMessagesSearchedByUserId?: (code: number, userId: string, type: RCIMIWConversationType, targetId: string, channelId: string, startTime: number, count: number, messages: Array<RCIMIWMessage>) => void;
+
+    /**
+     *{@link searchConversations} 的接口监听
+     *@param code              接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param conversationTypes 会话类型集合
+     *@param channelId         频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param messageTypes      搜索的消息类型
+     *@param keyword           搜索的关键字
+     *@param conversations     查询到的会话集合
+     */
+    onConversationsSearched?: (code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string, messageTypes: Array<RCIMIWMessageType>, keyword: string, conversations: Array<RCIMIWSearchConversationResult>) => void;
+
+    /**
+     *sendGroupReadReceiptRequest 的接口监听
+     *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param message 需要请求已读回执的消息
+     */
+    onGroupReadReceiptRequestSent?: (code: number, message: RCIMIWMessage) => void;
+
+    /**
+     *{@link sendGroupReadReceiptResponse} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param messages  会话中需要发送已读回执的消息列表
+     */
+    onGroupReadReceiptResponseSent?: (code: number, targetId: string, channelId: string, messages: Array<RCIMIWMessage>) => void;
+
+    /**
+     *{@link changeNotificationQuietHours} 的接口回调
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param startTime 开始消息免打扰时间
+     *@param spanMinutes  需要消息免打扰分钟数，0 < spanMinutes < 1440（ 比如，您设置的起始时间是 00：00， 结束时间为 01:00，则 spanMinutes 为 60 分钟。设置为 1439 代表全天免打扰 （23  60 + 59 = 1439 ））
+     *@param level     消息通知级别
+     */
+    onNotificationQuietHoursChanged?: (code: number, startTime: string, spanMinutes: number, level: RCIMIWPushNotificationQuietHoursLevel) => void;
+
+    /**
+     *{@link removeNotificationQuietHours} 的接口回调
+     *@param code 接口回调的状态码，0 代表成功，非 0 代表出现异常
+     */
+    onNotificationQuietHoursRemoved?: (code: number) => void;
+
+    /**
+     *{@link loadNotificationQuietHours} 的接口回调
+     *@param code        接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param startTime   开始消息免打扰时间
+     *@param spanMinutes 已设置的屏蔽时间分钟数，0 < spanMinutes < 1440
+     *@param level       消息通知级别
+     */
+    onNotificationQuietHoursLoaded?: (code: number, startTime: string, spanMinutes: number, level: RCIMIWPushNotificationQuietHoursLevel) => void;
+
+    /**
+     *{@link changeConversationNotificationLevel} 的接口回调
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param level     消息通知级别
+     */
+    onConversationNotificationLevelChanged?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, level: RCIMIWPushNotificationLevel) => void;
+
+    /**
+     *{@link loadConversationNotificationLevel} 的接口回调
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param level     当前会话的消息通知级别
+     */
+    onConversationNotificationLevelLoaded?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, level: RCIMIWPushNotificationLevel) => void;
+
+    /**
+     *{@link changeConversationTypeNotificationLevel} 的接口回调
+     *@param code  接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type  会话类型
+     *@param level 消息通知级别
+     */
+    onConversationTypeNotificationLevelChanged?: (code: number, type: RCIMIWConversationType, level: RCIMIWPushNotificationLevel) => void;
+
+    /**
+     *{@link loadConversationTypeNotificationLevel} 的接口回调
+     *@param code  接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type  会话类型
+     *@param level 消息通知级别
+     */
+    onConversationTypeNotificationLevelLoaded?: (code: number, type: RCIMIWConversationType, level: RCIMIWPushNotificationLevel) => void;
+
+    /**
+     *{@link changeUltraGroupDefaultNotificationLevel} 的接口回调
+     *@param code     接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId 会话 ID
+     *@param level    消息通知级别
+     */
+    onUltraGroupDefaultNotificationLevelChanged?: (code: number, targetId: string, level: RCIMIWPushNotificationLevel) => void;
+
+    /**
+     *{@link loadUltraGroupDefaultNotificationLevel} 的接口回调
+     *@param code     接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId 会话 ID
+     *@param level    消息通知级别
+     */
+    onUltraGroupDefaultNotificationLevelLoaded?: (code: number, targetId: string, level: RCIMIWPushNotificationLevel) => void;
+
+    /**
+     *{@link changeUltraGroupChannelDefaultNotificationLevel} 的接口回调
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用。
+     *@param level     消息通知级别
+     */
+    onUltraGroupChannelDefaultNotificationLevelChanged?: (code: number, targetId: string, channelId: string, level: RCIMIWPushNotificationLevel) => void;
+
+    /**
+     *{@link loadUltraGroupChannelDefaultNotificationLevel} 的接口回调
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用。
+     *@param level     消息通知级别
+     */
+    onUltraGroupChannelDefaultNotificationLevelLoaded?: (code: number, targetId: string, channelId: string, level: RCIMIWPushNotificationLevel) => void;
+
+    /**
+     *{@link changePushContentShowStatus} 的接口监听
+     *@param code        接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param showContent 是否显示远程推送内容
+     */
+    onPushContentShowStatusChanged?: (code: number, showContent: boolean) => void;
+
+    /**
+     *{@link changePushLanguage} 的接口监听
+     *@param code     接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param language 推送语言
+     */
+    onPushLanguageChanged?: (code: number, language: string) => void;
+
+    /**
+     *{@link changePushReceiveStatus} 的接口监听
+     *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param receive 是否接收
+     */
+    onPushReceiveStatusChanged?: (code: number, receive: boolean) => void;
+
+    /**
+     *{@link loadMessageCount} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type      会话类型
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param count     消息的数量
+     */
+    onMessageCountLoaded?: (code: number, type: RCIMIWConversationType, targetId: string, channelId: string, count: number) => void;
+
+    /**
+     *@param code              接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param conversationTypes 会话类型集合
+     *@param channelId         频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param conversations     加载的会话集合
+     */
+    onTopConversationsLoaded?: (code: number, conversationTypes: Array<RCIMIWConversationType>, channelId: string, conversations: Array<RCIMIWConversation>) => void;
+
+    /**
+     *{@link sendGroupMessageToDesignatedUsers} 的接口回调
+     *消息存入数据库的回调
+     *@param message 发送的消息内容
+     */
+    onGroupMessageToDesignatedUsersAttached?: (message: RCIMIWMessage) => void;
+
+    /**
+     *{@link sendGroupMessageToDesignatedUsers} 的接口回调
+     *消息发送完成的回调
+     *@param code    接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param message 发送的消息内容
+     */
+    onGroupMessageToDesignatedUsersSent?: (code: number, message: RCIMIWMessage) => void;
+
+    /**
+     *{@link syncUltraGroupReadStatus} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param timestamp 已读时间
+     */
+    onUltraGroupReadStatusSynced?: (code: number, targetId: string, channelId: string, timestamp: number) => void;
+
+    /**
+     *{@link loadConversationsForAllChannel} 的接口监听
+     *@param code          接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param type          会话类型
+     *@param targetId      会话 ID
+     *@param conversations 获取到的会话集合
+     */
+    onConversationsLoadedForAllChannel?: (code: number, type: RCIMIWConversationType, targetId: string, conversations: Array<RCIMIWConversation>) => void;
+
+    /**
+     *{@link loadUltraGroupUnreadMentionedCount} 的接口监听
+     *@param code     接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId 会话 ID
+     *@param count    未读数量
+     */
+    onUltraGroupUnreadMentionedCountLoaded?: (code: number, targetId: string, count: number) => void;
+
+    /**
+     *
+     */
+    onUltraGroupUnreadCountLoaded?: (code: number, targetId: string, count: number) => void;
+
+    /**
+     *{@link modifyUltraGroupMessage} 的接口监听
+     *@param code       接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param messageUId 消息的 messageUid
+     */
+    onUltraGroupMessageModified?: (code: number, messageUId: string) => void;
+
+    /**
+     *{@link recallUltraGroupMessage} 的接口监听
+     *@param code         接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param message      撤回的消息
+     *@param deleteRemote 调用接口时传入的是否删除远端消息
+     */
+    onUltraGroupMessageRecalled?: (code: number, message: RCIMIWMessage, deleteRemote: boolean) => void;
+
+    /**
+     *{@link clearUltraGroupMessages} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId  会话 ID
+     *@param channelId 频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param timestamp 时间戳
+     *@param policy    清除策略
+     */
+    onUltraGroupMessagesCleared?: (code: number, targetId: string, channelId: string, timestamp: number, policy: RCIMIWMessageOperationPolicy) => void;
+
+    /**
+     *{@link clearUltraGroupMessagesForAllChannel} 的接口监听
+     *@param code      接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId  会话 ID
+     *@param timestamp 时间戳
+     */
+    onUltraGroupMessagesClearedForAllChannel?: (code: number, targetId: string, timestamp: number) => void;
+
+    /**
+     *{@link sendUltraGroupTypingStatus} 的接口监听
+     *@param code         接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param targetId     会话 ID
+     *@param channelId    频道 ID，仅支持超级群使用，其他会话类型传 null 即可。
+     *@param typingStatus
+     */
+    onUltraGroupTypingStatusSent?: (code: number, targetId: string, channelId: string, typingStatus: RCIMIWUltraGroupTypingStatus) => void;
+
+    /**
+     *{@link loadBatchRemoteUltraGroupMessages} 的接口监听
+     *@param code               接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param matchedMessages    从服务获取的消息列表
+     *@param notMatchedMessages 非法参数或者从服务没有拿到对应消息
+     */
+    onBatchRemoteUltraGroupMessagesLoaded?: (code: number, matchedMessages: Array<RCIMIWMessage>, notMatchedMessages: Array<RCIMIWMessage>) => void;
+
+    /**
+     *{@link updateUltraGroupMessageExpansion} 的接口监听
+     *@param code       接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param expansion  更新的消息扩展信息键值对
+     *@param messageUId 消息的 messageUid
+     */
+    onUltraGroupMessageExpansionUpdated?: (code: number, expansion: Map<string, string>, messageUId: string) => void;
+
+    /**
+     *{@link removeUltraGroupMessageExpansionForKeys} 的接口监听
+     *@param code       接口回调的状态码，0 代表成功，非 0 代表出现异常
+     *@param messageUId 消息的 messageUid
+     *@param keys       消息扩展信息中待删除的 key 的列表
+     */
+    onUltraGroupMessageExpansionForKeysRemoved?: (code: number, messageUId: string, keys: Array<string>) => void;
 }
