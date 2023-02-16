@@ -1,6 +1,6 @@
 {
   "name": "@rongcloud/react-native-im-wrapper",
-  "version": "5.2.5.release.1",
+  "version": "5.2.5-release.1",
   "description": "React Native RongCloud Im Wrapper",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
